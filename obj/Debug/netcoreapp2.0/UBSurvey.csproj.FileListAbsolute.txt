@@ -8,3 +8,13 @@ c:\UBSurvey\obj\Debug\netcoreapp2.0\UBSurvey.AssemblyInfoInputs.cache
 c:\UBSurvey\obj\Debug\netcoreapp2.0\UBSurvey.AssemblyInfo.cs
 c:\UBSurvey\obj\Debug\netcoreapp2.0\UBSurvey.dll
 c:\UBSurvey\obj\Debug\netcoreapp2.0\UBSurvey.pdb
+D:\project\UbSurvey\survey\bin\Debug\netcoreapp2.0\UBSurvey.deps.json
+D:\project\UbSurvey\survey\bin\Debug\netcoreapp2.0\UBSurvey.runtimeconfig.json
+D:\project\UbSurvey\survey\bin\Debug\netcoreapp2.0\UBSurvey.runtimeconfig.dev.json
+D:\project\UbSurvey\survey\bin\Debug\netcoreapp2.0\UBSurvey.dll
+D:\project\UbSurvey\survey\bin\Debug\netcoreapp2.0\UBSurvey.pdb
+D:\project\UbSurvey\survey\obj\Debug\netcoreapp2.0\UBSurvey.csproj.CoreCompileInputs.cache
+D:\project\UbSurvey\survey\obj\Debug\netcoreapp2.0\UBSurvey.AssemblyInfoInputs.cache
+D:\project\UbSurvey\survey\obj\Debug\netcoreapp2.0\UBSurvey.AssemblyInfo.cs
+D:\project\UbSurvey\survey\obj\Debug\netcoreapp2.0\UBSurvey.dll
+D:\project\UbSurvey\survey\obj\Debug\netcoreapp2.0\UBSurvey.pdb
