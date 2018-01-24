@@ -15,7 +15,6 @@ namespace UBSurvey
         {
             Configuration = configuration;
         }
-        
 
         public IConfiguration Configuration { get; }
 
