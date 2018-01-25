@@ -7,13 +7,7 @@
     <script src="~/js/vue-component.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
      <link rel="stylesheet" href="~/css/site.css" />
-    <environment include="Development">
-        <script src="~/js/vue.js"></script>
-        <script src="~/js/vue-component.js"></script>
-    </environment>
-    <environment include="Production">    
-        <script src="~/js/vue.min.js"></script>
-    </environment>
+    @RenderSection("Scripts", required: false)
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -54,6 +48,6 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     </environment>
 
-    @RenderSection("Scripts", required: false)
+    
 </body>
 </html>

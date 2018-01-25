@@ -1,8 +1,17 @@
 ﻿@{
     ViewData["Title"] = "M Index";
 }
+@section Scripts
+{
 
-
+<environment include="Development">
+    <script src="~/js/vue.js"></script>
+</environment>
+<environment include="Production">    
+    <script src="~/js/vue.min.js"></script>
+</environment>
+<script src="~/js/vue-component.js"></script>
+}
 <h2>Index</h2>
 <div id="container">
     <button v-on:click="addsuvey">설문추가</button>
