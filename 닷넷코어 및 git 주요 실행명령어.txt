@@ -1,15 +1,15 @@
-git commit -m "¸Ş¼¼Áö"
-git push -u origin master ¼­¹östore¿¡ ³Ö±â
-git pull (´ç°Ü¿À±â) 
-git reset ÇöÀç ¼öÁ¤ÇÑ°Í Ãë¼ÒÇÏ±â
-git status ÇöÀç ¼öÁ¤µÈ »óÅÂº¸±â
-git add . ¸ğµç ÆÄÀÏ add 
-git add {Æú´õ or File} Æú´õ ¶Ç´Â ÆÄÀÏ add 
+ï»¿git commit -m "ë©”ì„¸ì§€"
+git push -u origin master ì„œë²„storeì— ë„£ê¸°
+git pull (ë‹¹ê²¨ì˜¤ê¸°) 
+git reset í˜„ì¬ ìˆ˜ì •í•œê²ƒ ì·¨ì†Œí•˜ê¸°
+git status í˜„ì¬ ìˆ˜ì •ëœ ìƒíƒœë³´ê¸°
+git add . ëª¨ë“  íŒŒì¼ add 
+git add {í´ë” or File} í´ë” ë˜ëŠ” íŒŒì¼ add 
 
 
-dotnet add package ÆĞÅ°Áö¸í ex) NewtonSoft.Json
-dotnet restore package ´ç°Ü¿À±â
-dotnet run ½ÇÇà
-dotnet build ºôµå ½ÇÇà
-dotnet publish -o {°æ·Î} -c {Debug|Release}
-dotnet {ÇÁ·ÎÁ§Æ®}.dll ½ÇÇà  < ¹èÆ÷µÈ ½ÇÇà 
+dotnet add package íŒ¨í‚¤ì§€ëª… ex) NewtonSoft.Json
+dotnet restore package ë‹¹ê²¨ì˜¤ê¸°
+dotnet run ì‹¤í–‰
+dotnet build ë¹Œë“œ ì‹¤í–‰
+dotnet publish -o {ê²½ë¡œ} -c {Debug|Release}
+dotnet {í”„ë¡œì íŠ¸}.dll ì‹¤í–‰  < ë°°í¬ëœ ì‹¤í–‰ 
