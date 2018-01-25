@@ -1,0 +1,15 @@
+git commit -m "메세지"
+git push -u origin master 서버store에 넣기
+git pull (당겨오기) 
+git reset 현재 수정한것 취소하기
+git status 현재 수정된 상태보기
+git add . 모든 파일 add 
+git add {폴더 or File} 폴더 또는 파일 add 
+
+
+dotnet add package 패키지명 ex) NewtonSoft.Json
+dotnet restore package 당겨오기
+dotnet run 실행
+dotnet build 빌드 실행
+dotnet publish -o {경로} -c {Debug|Release}
+dotnet {프로젝트}.dll 실행  < 배포된 실행 
