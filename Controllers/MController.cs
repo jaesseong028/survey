@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UBSurvey.Controllers
 {
-    public class MController : Controller
+    public class EditController : Controller
     {
         public IActionResult Index()
         {
