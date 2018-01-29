@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "M Index";
+    Layout = "~/Views/Shared/EditLayout/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/Example/main.css" />
+<environment include="Development">
+    <script src="~/js/Example/view.js"></script>
+</environment>
+<environment include="Production">    
+    <script src="~/js/Example/view.js"></script>
+</environment>
+<script>
+            //var survey = '{"pages" : [{"elements" : [{"type": "radiogroup","choices": ["item4","item2","item3"],"title":"1번문항","name": "question1"},{"type": "radiogroup","choices": ["item1","item2","item3"],"title":"2번문항","name": "question2"}, {"type": "checkbox","choices": ["item1","item2","item3"],"title":"3번문항","name": "question3"}, {"type": "text","title":"4번문항","name": "question4"},{"type" : "textarea", "title" : "5번문항","name":"question5"}], "name" : "page1"},{"elements" : [{"type": "radiogroup","choices": ["item4","item2","item3"],"title":"6번문항","name": "question6"},{"type": "radiogroup","choices": ["item1","item2","item3"],"title":"7번문항","name": "question7"}, {"type": "checkbox","choices": ["item1","item2","item3"],"title":"8번문항","name": "question8"}, {"type": "text","title":"9번문항","name": "question9"},{"type" : "textarea", "title" : "10번문항","name":"question10"}], "name" : "page2"}]}';
+            var survey = '{"pages" : [{"elements" : [{"type": "radiogroup","choices": ["item4","item2","item3"],"title":"1번문항","name": "question1"},{"type": "radiogroup","choices": ["item1","item2","item3"],"title":"2번문항","name": "question2"}, {"type": "checkbox","choices": ["item1","item2","item3"],"title":"3번문항","name": "question3"}, {"type": "text","title":"4번문항","name": "question4"},{"type" : "textarea", "title" : "5번문항","name":"question5"}], "name" : "page1"},{"elements" : [{"type": "radiogroup","choices": ["item4","item2","item3"],"title":"6번문항","name": "question6"},{"type": "radiogroup","choices": ["item1","item2","item3"],"title":"7번문항","name": "question7"}, {"type": "checkbox","choices": ["item1","item2","item3"],"title":"8번문항","name": "question8"}, {"type": "text","title":"9번문항","name": "question9"},{"type" : "textarea", "title" : "10번문항","name":"question10"}], "name" : "page2"},{"elements" : [{"type": "radiogroup","choices": ["item4","item2","item3"],"title":"11번문항","name": "question11"},{"type": "radiogroup","choices": ["item1","item2","item3"],"title":"12번문항","name": "question12"}, {"type": "checkbox","choices": ["item1","item2","item3"],"title":"13번문항","name": "question13"}, {"type": "text","title":"14번문항","name": "question14"},{"type" : "textarea", "title" : "15번문항","name":"question15"}], "name" : "page3"}]}';
+</script>
+
+<div id="ubSurvey"></div>
