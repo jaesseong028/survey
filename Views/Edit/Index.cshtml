@@ -10,67 +10,69 @@
     <script src="~/js/vue.min.js"></script>
 </environment>
 <script src="~/js/vue-component.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-    
-});
-</script>
 }
 
 
 <div id="container">
-    <button v-on:click="addsuvey">추가</button>
-    <div class="col-sm-2 sidenav">
-        <p><a href="#">Link</a></p>
-        <p><a href="#">Link</a></p>
-        <p><a href="#">Link</a></p>
+    <div class="col-sm-1 sidenav">
+        <p><a href="#" v-on:click=addsuvey(Terms.checkbox)>체크박스</a></p>
+        <p><a href="#" v-on:click=addsuvey(Terms.radiogroup)>라디오박스</a></p>
+        <p><a href="#" v-on:click=addsuvey(Terms.text)>텍스트</a></p>
     </div> 
-    <div class="col-sm-8 text-left"> 
+    <div class="col-sm-9 text-left"> 
         <div class="scrollable-container">
             <div class="scrollable">
                 <div class="tabs">
                     <div v-for="(page, index) in survey.pages">
                         <div class="tab">
-                            <input type="radio" :id="page.name + '_' + index" name="tabgroup" class="tabgroup" :checked="page == selectPage"  v-on:change="changedPage(page, index)" >
-                            <label class="labelfor" :for="page.name + '_' + index">{{page.name}}</label>
+                            <input type="radio" :id="page.name + '_' + index" name="tabgroup" class="tabgroup" :checked="page == selectPage"  v-on:click="changedPage(page, index)" >
+                            <label class="labelfor" v-bind:class="{setting: page === settings}" :for="page.name + '_' + index">{{page.name}}</label>
                             <div class="tab-container">
                                 <div v-for="(el, index) in page.elements">
-                                    <template v-if="el.type === 'radio'">
-                                        <radio-com :el=el></radio-com>
+                                    <template v-if="el.type === Terms.radiogroup">
+                                        <radio-com :el=el :settings=settings></radio-com>
                                     </template>
                                     <template v-else-if="el.type === 'checkbox'">
-                                        <check-com :el=el></check-com>
+                                        <check-com :el=el :settings=settings></check-com>
                                     </template>
                                     <template v-else-if="el.type === 'text' && el.rows ===  undefined ">
-                                        <text-com :el=el></text-com>
+                                        <text-com :el=el :settings=settings></text-com>
                                     </template>
                                     <template v-else-if="el.type === 'text'">
-                                        <textarea-com :el=el></textarea-com>
+                                        <textarea-com :el=el :settings=settings></textarea-com>
+                                    </template>
+                                    <template v-else-if="el.type === Terms.rate">
+                                        <rate-com :el=el :settings=settings></rate-com>
                                     </template>
                                     <template v-else="">
                                     </template>
                                 </div>
                             </div>
-                            <p class="underline"></p>
+                            <!-- <p class="underline"></p> -->
                         </div>
                     </div>
                 </div>
             </div>
-            <pre>
-            {{ selectPage | pretty }}
-            </pre>
+            
         </div>
     </div>
     <div class="col-sm-2 sidenav">
+        <pre>
+             {{ settings | pretty }}
+        </pre>
         asedfsdf
     </div>
 </div>
 
 <script>
+    var EventBus = new Vue();
+    
     var vue = new Vue({
         el: '#container',
         data: {
+            Terms : { radiogroup : "radiogroup", checkbox : "checkbox", text : "text", rate : "rate" },
             selectPage : null,
+            settings : null,
             survey:
             {
                 title: "의사랑 설문조사 입니다.",
@@ -80,13 +82,15 @@ $(document).ready(function() {
                 logo_background_color: "#efefef",
                 logo_font_color: "#efefef",
                 pages: [ { name: "page1", elements: [
-                        { name: "만족도", type: "radio", title: "의사랑 제품에 만족 합니까?", choices: [{ item: "예" }, { item: "아니요" }] },
-                        { name: "유입경로", type: "checkbox", min_num : 1, max_num : 5, title: "유입경로는?", choices: [{ item: "의사랑" }, {   item: "약사회" }, { item: "인터넷신문" }, { type : "text", item : "기타", rows : 5, required : false, max_len : 100 }], skip: /*or And 추가 */[{ name: "만족도", choices: ["예"] }] },
-                        { name: "유입경로", type: "text", rows: 5, title: "의사랑에 대한 의견을 적어 주세요." }, 
-                        { name: "유입경로", type: "text", rows: 5, title: "의사랑에 대한 의견을 적어 주세요." }
+                        { name: "만족도", type: "radiogroup", title: "의사랑 제품에 만족 합니까?", choices: ["예", "아니요"], other_text : "기타", other_text_len : 100 },
+                        { name: "만족도1", type: "radiogroup", title: "의사랑 제품에 만족 합니까?", choices: ["예", "아니요"], other_text : "기타", other_text_len : 100 },
+                        { name: "유입경로3", type: "checkbox",  title: "유입경로는?", choices: ["의사랑", "약사회", "인터넷신문"], skip: [{ name: "만족도", choices: ["예"] }] },
+                        { name: "유입경로2", type: "text", rows: 5, title: "의사랑에 대한 의견을 적어 주세요." }, 
+                        { name: "유입경로1", type: "text", title: "의사랑에 대한 의견을 적어 주세요." },
+                        { name: "높낮", type: "rate",  title: "높음 낮음?", choices: [1, 2, 3, 4, 5], min_description : "낮냐?", max_description : "높냐?",  }
                 ] }, {  name: "page2", elements: [
-                   { name: "11", type: "radio", title: "의사랑 제품에 만족 합니까?", choices: [{ item: "예" }, { item: "아니요" }] },
-                   { name: "기간", type: "radio", title: "의사랑을 몇년간 사용했나요?", choices: [{ item: "1년" }, { item: "2년이상" }, { item: "5년이상" }, { item: "10년이상" }] },
+                   { name: "11", type: "radiogroup", title: "의사랑 제품에 만족 합니까?", choices: ["예", "아니요"] },
+                   { name: "기간", type: "radiogroup", title: "의사랑을 몇년간 사용했나요?", choices: ["1년", "2년이상"] },
                    { name: "말씀", type: "text", required : false, max_len:20, title: "간단한  의견?" },
                 ]}
                 ]
@@ -95,18 +99,37 @@ $(document).ready(function() {
             methods: {
                 changedPage : function(page, index) {
                     this.selectPage = this.survey.pages[index];
+                    this.settings = this.survey.pages[index];
                 },
-                addsuvey: function () {
-                    this.selectPage.elements.push({ name: "question1", type: "checkbox", title: "question1", choices: [{ item: "item1" }, { item: "item2" }, { item: "item3" }] });
+                addsuvey: function (type) {
+                    var item = { name: "question1", type: type, title: "question1", description: "", is_required : false, skip : []};
+                    if (type == this.Terms.checkbox || type == this.Terms.radiogroup) {
+                        item.choices = ["item1", "item2", "item3"];
+                    }
+                    if( type == this.Terms.rate) {
+                        item.choices = [1, 2, 3, 4, 5];
+                        item.max_description = "높음";
+                        item.min_description = "낮음";
+                    }
+                    this.selectPage.elements.push(item);
+                    this.settings = item;
+                }, 
+                edit : function (el) {
+                    this.settings = el;
                 }
             }, filters: {
                 pretty: function (value) {
                     return JSON.stringify(value, null, 2);
                 }
             }, 
+            beforeCreate  : function() {
+                //Terms = 
+            },
             created : function() {
+                window.addEventListener('resize', this.resizeWindow);
                 this.selectPage = this.survey.pages[0];
-                $(".scrollable").height(screen.height - 246);
+                this.settings = this.survey.pages[0];
+                EventBus.$on('edit', this.edit);
             }
         }
     );
