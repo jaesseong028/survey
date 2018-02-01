@@ -15,12 +15,45 @@ else if (document.attachEvent) {
     });
 } 
 
+
+//줄 바꿈 엘리먼트 생성
+function createBRtag(){
+    var elBrtag = document.createElement('br');
+    return elBrtag;
+}
+
+function createPtag(){
+    var elPtag = document.createElement('p');
+    return elPtag;
+}
+
 // 질문 텍스트 엘리먼트 생성
 function createQT(data){
+
     var elDiv = document.createElement('div');
     var elLabel = document.createElement('label');
-    elLabel.innerHTML = data.title;
+
+    if('is_required' in data)
+    {
+        var elRequired = document.createElement('strong');
+        elRequired.innerText = '*';
+        elDiv.appendChild(elRequired);
+        console.log(elRequired);
+    }
+
+    elLabel.innerText = data.title;
+    
     elDiv.appendChild(elLabel);
+    elDiv.appendChild(createBRtag());
+
+    //Description 
+    if('description' in data)
+    {
+        var elDescription = document.createElement('label');
+        elDescription.innerText = data.description;
+        elDiv.appendChild(elDescription);
+    }
+
     return elDiv;
 }
 
@@ -39,7 +72,7 @@ function createQA(data , name ,type)
 
 // 라디오, 체크 박스 엘리먼트 생성 생성
 function createCheckRadio ( data, type){
-    var type = data.type == 'radiogroup' ? 'radio'  : 'checkbox';
+    var type = data.type == 'radio' ? data.type : 'checkbox';
     
     var elDiv = document.createElement('div');
     
@@ -71,14 +104,24 @@ function createText( data ){
         var elText = document.createElement('input');
         elText.setAttribute('type', 'text');
         elText.setAttribute('id', data.name);
+        
+        if('max_len' in data )
+        {
+            elText.setAttribute('maxLength',data.max_len);
+        }
+
         elDiv.appendChild(elText);
+
     }else  // 멀티 텍스트
     {
         var elMText = document.createElement('textarea');
         elMText.setAttribute('id', data.name);
+        elMText.setAttribute('rows',5);
+        elMText.setAttribute('cols',30);
+        elMText.setAttribute('maxLength',30);
         elDiv.appendChild(elMText);
     }
-
+    
     return elDiv;
 }
 
@@ -92,11 +135,11 @@ function createQuestion( elements, elDivPage){
             elDivPage.appendChild(createQT(surveyElement));
 
             // 라디오, 체크 박스
-            if(surveyElement.type === 'radiogroup' || surveyElement.type === 'checkbox')
+            if(surveyElement.type === 'radio' || surveyElement.type === 'checkbox')
                 elDivPage.appendChild(createCheckRadio(surveyElement));
             
             // 단일텍스트, 멀티 텍스트
-            else if(surveyElement.type === 'text' || surveyElement.type === 'textarea')
+            else if(surveyElement.type === 'text' || surveyElement.type === 'comment')
                 elDivPage.appendChild(createText(surveyElement));
         }
     }
@@ -179,30 +222,38 @@ function domReady (){
         console.log(surveyJson);
 
         var surveyId = document.getElementById('ubSurvey');
-        var pages  = surveyJson.pages;
 
-        for(var page in pages)
+        if( ('survey' in surveyJson) && ('pages' in surveyJson.survey[0]) && ('title' in surveyJson.survey[0]))
         {
-            if(pages.hasOwnProperty(page))
+            
+            var surveyTitle = surveyJson.title;
+            var pages  = surveyJson.survey[0].pages;
+            console.log(pages);
+
+            for(var page in pages)
             {
-                var elements = surveyJson.pages[page].elements;
-                
-                // 페이지 별 DIV ID 생성
-                var elDivPage = document.createElement('div');
-                elDivPage.setAttribute('id',pages[page].name);
-                
-                if(page == 0)   // 첫페이지는 무조건 보이기
-                    isVisiblePage(elDivPage,true);
-                else
-                    isVisiblePage(elDivPage,false);
+                console.log('elements',pages[page].elements);
+                if(pages.hasOwnProperty(page))
+                {
+                    var elements = pages[page].elements;
+                    
+                    console.log(elements);
+                    // // 페이지 별 DIV ID 생성
+                    var elDivPage = document.createElement('div');
+                    elDivPage.setAttribute('id',pages[page].name);
+                    
+                    if(page == 0)   // 첫페이지는 무조건 보이기
+                        isVisiblePage(elDivPage,true);
+                    else
+                        isVisiblePage(elDivPage,false);
 
-                surveyId.appendChild(createQuestion(elements, elDivPage ));
+                    surveyId.appendChild(createQuestion(elements, elDivPage ));
 
-                createPageBtn(elDivPage, pages.length, page);
-                
+                    createPageBtn(elDivPage, pages.length, page);
+                    
+                }
             }
         }
-
 
     }catch(e){
 
