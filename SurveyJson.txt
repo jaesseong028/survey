@@ -26,13 +26,14 @@
 			"name": "question2",
 			"title":"질문타이틀2",
 			"is_required" : true,
+			"skip" :{"choices":["예"],{ "skinQuestionNames":["question3"] }]},
 			"other_text" :"기타",
 			"other_text_len": 100
 		},
 		{
 			"type":"checkbox",
 			"choices" : ["인터넷","약사회","의사랑"],
-			"skip" :[{"name":"question2", "choices":["예"]}],
+			"skip" :{"choices":["인터넷", "약사회"],{ "skinQuestionNames":["question4", "question5"] }]},
 			"col_count" : 2,
 			"description":"질문설명3",
 			"name": "question3",
@@ -47,6 +48,7 @@
 			"type":"rate",
 			"choices" : [1,2,3,4,5,6,7,8,9,10],
 			"description":"질문설명4",
+			"skip" :[{"name":"question2", "choices":["예"]}],
 			"name": "question4",
 			"title":"질문타이틀4",
 			"is_required" : true,

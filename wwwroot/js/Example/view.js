@@ -30,15 +30,20 @@ function createPtag(){
 // 질문 텍스트 엘리먼트 생성
 function createQT(data){
 
+    // Question DIV
     var elDiv = document.createElement('div');
-    var elLabel = document.createElement('label');
+    elDiv.setAttribute('class','question');
 
+    // Title Label
+    var elLabel = document.createElement('label');
+    elLabel.setAttribute('class','title');
+
+    // 필수 확인
     if('is_required' in data)
     {
         var elRequired = document.createElement('strong');
         elRequired.innerText = '*';
         elDiv.appendChild(elRequired);
-        console.log(elRequired);
     }
 
     elLabel.innerText = data.title;
@@ -51,6 +56,7 @@ function createQT(data){
     {
         var elDescription = document.createElement('label');
         elDescription.innerText = data.description;
+        elDescription.setAttribute('class','description');
         elDiv.appendChild(elDescription);
     }
 
@@ -58,7 +64,7 @@ function createQT(data){
 }
 
 // 질문 보기 텍스트 엘리먼트 생성
-function createQA(data , name ,type)
+function createQA(data , name)
 {
     var elLbl = document.createElement('label');
     elLbl.setAttribute('for', name);
@@ -89,7 +95,7 @@ function createCheckRadio ( data, type){
                 elCR.setAttribute('name', data.name);
 
             elDiv.appendChild(elCR);
-            elDiv.appendChild(createQA(data.choices[choice], data.name + choice, type));
+            elDiv.appendChild(createQA(data.choices[choice], data.name + choice));
         }
     }
     return elDiv;
@@ -106,9 +112,7 @@ function createText( data ){
         elText.setAttribute('id', data.name);
         
         if('max_len' in data )
-        {
             elText.setAttribute('maxLength',data.max_len);
-        }
 
         elDiv.appendChild(elText);
 
@@ -125,24 +129,71 @@ function createText( data ){
     return elDiv;
 }
 
+//등급 엘리먼트 생성
+function createRate( data ){
+    var elDiv = document.createElement('div');
+    elDiv.setAttribute('class','rate');
+
+    if('min_description' in data)
+    {
+        var elMinlbl = document.createElement('label');
+        elMinlbl.setAttribute('class','rate_min');
+        elMinlbl.innerText = data.min_description;
+        elDiv.appendChild(elMinlbl);
+    }
+        
+    for(var choice in data.choices)
+    {
+        if(data.choices.hasOwnProperty(choice))
+        {
+            var elRate = document.createElement('input');
+            elRate.setAttribute('type', 'radio');
+            elRate.setAttribute('id', data.name + choice);
+            elRate.setAttribute('value', data.choices[choice]);
+            elRate.setAttribute('name', data.name);
+            
+            elDiv.appendChild(elRate);
+            elDiv.appendChild(createQA(data.choices[choice], data.name + choice));
+        }
+    }
+
+    if('max_description' in data)
+    {
+        var elMaxlbl = document.createElement('label');
+        elMaxlbl.setAttribute('class','rate_max');
+        elMaxlbl.innerText = data.max_description;
+        elDiv.appendChild(elMaxlbl);
+    }
+        
+    return elDiv;
+}
+
 //질문 별 문제 생성
 function createQuestion( elements, elDivPage){
     for(var element in elements)
     {
         if(elements.hasOwnProperty(element))
         {
+            var elFieldset = document.createElement('fieldset');
+
             var surveyElement = elements[element];
-            elDivPage.appendChild(createQT(surveyElement));
+            elFieldset.appendChild(createQT(surveyElement));
 
             // 라디오, 체크 박스
             if(surveyElement.type === 'radio' || surveyElement.type === 'checkbox')
-                elDivPage.appendChild(createCheckRadio(surveyElement));
-            
+                elFieldset.appendChild(createCheckRadio(surveyElement));
             // 단일텍스트, 멀티 텍스트
             else if(surveyElement.type === 'text' || surveyElement.type === 'comment')
-                elDivPage.appendChild(createText(surveyElement));
+                elFieldset.appendChild(createText(surveyElement));
+            // 등급
+            else if(surveyElement.type === 'rate')
+                elFieldset.appendChild(createRate(surveyElement));
+
+            elDivPage.appendChild(elFieldset);
         }
     }
+
+    
 
     return elDivPage;
 }
