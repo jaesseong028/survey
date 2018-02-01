@@ -14,53 +14,31 @@
 
 
 <div id="container">
-    <div class="col-sm-1 sidenav">
-        <p><a href="#" v-on:click=addsuvey(Terms.checkbox)>체크박스</a></p>
-        <p><a href="#" v-on:click=addsuvey(Terms.radiogroup)>라디오박스</a></p>
-        <p><a href="#" v-on:click=addsuvey(Terms.text)>텍스트</a></p>
+    <div class="col-sm-2 sidenav leftnav">
+        <p><label href="#" v-on:click=addsurvey(Terms.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>
+        <p><label href="#" v-on:click=addsurvey(Terms.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>
+        <p><label href="#" v-on:click=addsurvey(Terms.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>
+        <p><label href="#" v-on:click=addsurvey(Terms.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>
     </div> 
-    <div class="col-sm-9 text-left"> 
-        <div class="scrollable-container">
-            <div class="scrollable">
-                <div class="tabs">
-                    <div v-for="(page, index) in survey.pages">
-                        <div class="tab">
-                            <input type="radio" :id="page.name + '_' + index" name="tabgroup" class="tabgroup" :checked="page == selectPage"  v-on:click="changedPage(page, index)" >
-                            <label class="labelfor" v-bind:class="{setting: page === settings}" :for="page.name + '_' + index">{{page.name}}</label>
-                            <div class="tab-container">
-                                <div v-for="(el, index) in page.elements">
-                                    <template v-if="el.type === Terms.radiogroup">
-                                        <radio-com :el=el :settings=settings></radio-com>
-                                    </template>
-                                    <template v-else-if="el.type === 'checkbox'">
-                                        <check-com :el=el :settings=settings></check-com>
-                                    </template>
-                                    <template v-else-if="el.type === 'text' && el.rows ===  undefined ">
-                                        <text-com :el=el :settings=settings></text-com>
-                                    </template>
-                                    <template v-else-if="el.type === 'text'">
-                                        <textarea-com :el=el :settings=settings></textarea-com>
-                                    </template>
-                                    <template v-else-if="el.type === Terms.rate">
-                                        <rate-com :el=el :settings=settings></rate-com>
-                                    </template>
-                                    <template v-else="">
-                                    </template>
-                                </div>
-                            </div>
-                            <!-- <p class="underline"></p> -->
-                        </div>
+    <div class="col-sm-7 text-left"> 
+        <div class="tabs">
+            <div v-for="(page, index) in survey.pages">
+                <div class="tab">
+                    <label class="labelfor survey" v-if="index == 0" v-bind:class="{setting: survey === settings}"  v-on:click="surveyinfo">설문설정 <span v-bind:class="{sel: survey === settings}" class="glyphicon glyphicon-cog"></span></label>
+                    <input type="radio" :id="page.name + '_' + index" name="tabgroup" class="tabgroup" :checked="page == selectPage"  v-on:click="changedPage(index)" >
+                    <label class="labelfor" v-bind:class="{setting: page === settings}" :for="page.name + '_' + index">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>
+                    <label class="plus" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>
+                    <div class="tab-container">
+                        <controllayout-com :elements=page.elements :settings=settings :terms=Terms></controllayout-com>
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
-    <div class="col-sm-2 sidenav">
+    <div class="col-sm-3 sidenav">
         <pre>
              {{ settings | pretty }}
         </pre>
-        asedfsdf
     </div>
 </div>
 
@@ -70,41 +48,71 @@
     var vue = new Vue({
         el: '#container',
         data: {
-            Terms : { radiogroup : "radiogroup", checkbox : "checkbox", text : "text", rate : "rate" },
+            Terms : { radio : "radio", checkbox : "checkbox", text : "text", rate : "rate" },
             selectPage : null,
             settings : null,
-            survey:
-            {
-                title: "의사랑 설문조사 입니다.",
-                background_color: "#efefef",
-                font_color: "#efefef",
-                logo_text: "의사랑",
-                logo_background_color: "#efefef",
-                logo_font_color: "#efefef",
-                pages: [ { name: "page1", elements: [
-                        { name: "만족도", type: "radiogroup", title: "의사랑 제품에 만족 합니까?", choices: ["예", "아니요"], other_text : "기타", other_text_len : 100 },
-                        { name: "만족도1", type: "radiogroup", title: "의사랑 제품에 만족 합니까?", choices: ["예", "아니요"], other_text : "기타", other_text_len : 100 },
-                        { name: "유입경로3", type: "checkbox",  title: "유입경로는?", choices: ["의사랑", "약사회", "인터넷신문"], skip: [{ name: "만족도", choices: ["예"] }] },
-                        { name: "유입경로2", type: "text", rows: 5, title: "의사랑에 대한 의견을 적어 주세요." }, 
-                        { name: "유입경로1", type: "text", title: "의사랑에 대한 의견을 적어 주세요." },
-                        { name: "높낮", type: "rate",  title: "높음 낮음?", choices: [1, 2, 3, 4, 5], min_description : "낮냐?", max_description : "높냐?",  }
-                ] }, {  name: "page2", elements: [
-                   { name: "11", type: "radiogroup", title: "의사랑 제품에 만족 합니까?", choices: ["예", "아니요"] },
-                   { name: "기간", type: "radiogroup", title: "의사랑을 몇년간 사용했나요?", choices: ["1년", "2년이상"] },
-                   { name: "말씀", type: "text", required : false, max_len:20, title: "간단한  의견?" },
-                ]}
-                ]
-            }
+            survey: {
+                    title: "",
+                    description : "",
+                    background_color: "",
+                    font_color: "",
+                    logo_text: "",
+                    logo_background_color: "",
+                    logo_font_color: "",
+                    pages: [ 
+                        { name: "page1", elements: [] }
+                    ]
+                }
             },
             methods: {
-                changedPage : function(page, index) {
+                surveyinfo : function() {
+                    this.settings = this.survey;
+                },
+                appendPage : function(index) {
+                    this.survey.pages.push({ name: "page" + (index + 1), elements: [] });
+                    this.changedPage(index);
+                },
+                changedPage : function(index) {
                     this.selectPage = this.survey.pages[index];
                     this.settings = this.survey.pages[index];
                 },
-                addsuvey: function (type) {
-                    var item = { name: "question1", type: type, title: "question1", description: "", is_required : false, skip : []};
-                    if (type == this.Terms.checkbox || type == this.Terms.radiogroup) {
+                keywatch : function(evt) {
+                    var canAction = function () { return ("type" in this.settings) && this.selectPage != null; };
+                    if (evt.key == 'Delete') {
+                        if (canAction) {
+                            var idx = _.findIndex(this.selectPage.elements, this.settings);
+                            if(idx != -1) {
+                                this.selectPage.elements.splice(idx, 1);
+                                if (idx == this.selectPage.elements.length) {
+                                    --idx;
+                                }
+                                this.settings = this.selectPage.elements[idx];
+                            }
+                        }
+                    }
+                    if (evt.key == 'ArrowUp') {
+                        if (canAction) {
+                            var idx = _.findIndex(this.selectPage.elements, this.settings);
+                            if (idx != -1 && idx != 0) {
+                                 this.selectPage.elements.splice(idx - 1, 0, this.selectPage.elements.splice(idx, 1)[0]);
+                            }
+                        }
+                    }
+                    if (evt.key == 'ArrowDown') {
+                        if (canAction){
+                            var idx = _.findIndex(this.selectPage.elements, this.settings);
+                            if (idx != -1 && this.selectPage.elements.length != idx) {
+                                this.selectPage.elements.splice(idx + 1, 0, this.selectPage.elements.splice(idx, 1)[0]);
+                            }
+                        }
+                    }
+                },
+                addsurvey: function (type) {
+                    var questionName = this.maxQuesitionName();
+                    var item = { name: questionName, type: type, title: questionName, description: "", is_required : false, skip : []};
+                    if (type == this.Terms.checkbox || type == this.Terms.radio) {
                         item.choices = ["item1", "item2", "item3"];
+                        item.other_text = "기타";
                     }
                     if( type == this.Terms.rate) {
                         item.choices = [1, 2, 3, 4, 5];
@@ -113,23 +121,101 @@
                     }
                     this.selectPage.elements.push(item);
                     this.settings = item;
+                    
+                    // 스크롤 아래로 이동하기
+                    var activetab = $(this.$el).find(".tabs input:radio:checked").siblings(".tab-container");    
+                    activetab.animate({ scrollTop: activetab.prop("scrollHeight")}, 100);
+                    // 스크롤 아래로 이동하기
                 }, 
                 edit : function (el) {
                     this.settings = el;
+                },
+                maxQuesitionName : function() {
+                    var arr = [];
+                    var inc = 0;
+                    
+                    for (var p=0; p < this.survey.pages.length; p++) {
+                            for (var e=0; e<this.survey.pages[p].elements.length; e++) {
+                                var i = parseInt(this.survey.pages[p].elements[e].name.replace("question", ""));
+                                if (!isNaN(i)) {
+                                    arr.push(i);
+                                }
+                        }
+                    }
+
+                    if(arr.length == 0)
+                        return "question1";
+
+                    Array.prototype.diff = function(a) {
+                        return this.filter(function(i) {return a.indexOf(i) < 0;});
+                    };
+                    var last = Math.max.apply(null, arr) + 1;
+                    
+                    var arr1 = Array.from(new Array(last),(val,index)=>index+1);
+                    var diff = arr1.diff(arr);
+                    var value = Math.min.apply(null,diff);
+                    
+                    //console.timeEnd("calculatingTime 재성꺼");
+                    /*console.time("calculatingTime 오진꺼");
+                    var rangeFuc = function (start, end) { return [...Array(1+end-start).keys()].map(v => start+v) };
+                    var max  = Math.max(...arr);
+                    var range = rangeFuc(Math.min(...arr), max);
+                    var a = new Set(arr);
+                    var b = new Set(range);
+                    let difference = new Set([...b].filter(x => !a.has(x)));
+                    if(difference.length == 0) {
+                        maxId =  max + 1;
+                    }else{
+                        var maxId = Math.min(...difference);
+                        if(!isFinite(maxId)) {
+                            maxId =  max + 1;
+                        }
+                    }
+                    console.timeEnd("calculatingTime 오진꺼");
+
+
+                    console.time("calculatingTime 평범한");
+                    arr.sort(function(a,b) {return a - b;});
+                    while(++inc)
+                    {
+                        
+                        if(!arr.includes(inc))
+                        {
+                            break;
+                        }
+                    }
+                    console.timeEnd("calculatingTime 평범한");*/
+
+
+                    return "question" + value; 
                 }
             }, filters: {
                 pretty: function (value) {
                     return JSON.stringify(value, null, 2);
                 }
             }, 
-            beforeCreate  : function() {
-                //Terms = 
+            updated  : function() {
+                if (('localStorage' in window) && window['localStorage'] != null){
+                    localStorage.setItem('survey', JSON.stringify(this.survey));
+                }
+               
             },
-            created : function() {
-                window.addEventListener('resize', this.resizeWindow);
+            mounted  : function() {
+                if (('localStorage' in window) && window['localStorage'] != null) {
+                    var data = JSON.parse(localStorage.getItem('survey'));
+                    if(data != null)
+                        this.survey = JSON.parse(localStorage.getItem('survey'));
+                }
                 this.selectPage = this.survey.pages[0];
                 this.settings = this.survey.pages[0];
+                $("#container").show();
+            },
+            created : function() {
                 EventBus.$on('edit', this.edit);
+                window.addEventListener('keyup', this.keywatch)
+            }, 
+            watch : {
+               
             }
         }
     );
