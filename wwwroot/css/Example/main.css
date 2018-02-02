@@ -13,8 +13,10 @@
 
 /* Rate */
 .rate [type=radio] { display: none;}
-.rate label { min-width: 5em; background-color: #FFFFFF; cursor: pointer;}
-.rate [type=radio]:checked + label {color: #333;background-color: #e6e6e6;border-color: #adadad; }
+.rate label { min-width: 5em; background-color: #FFFFFF; border: 1px solid #ccc; cursor: pointer; text-align: center;}
+.rate [type=radio]:checked + label {color: #333;background-color: #e6e6e6;border-color: #adadad;}
+.rate [type=radio]:hover + label{ color: #333;background-color: #e6e6e6;border-color: #adadad; }
+
 .rate_min { padding-right: 3px; }
 .rate_max { padding-left: 3px; }
 
