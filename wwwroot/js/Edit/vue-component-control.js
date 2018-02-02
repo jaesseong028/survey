@@ -4,16 +4,16 @@
             <div v-for="(el, index) in elements">\
                 <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
                     <div class="question">{{el.title}}</div>\
-                    <choice-list-com v-if="el.type === terms.radio || el.type === terms.checkbox" :el=el :settings=settings></choice-list-com>\
-                    <text-com v-else-if="el.type === terms.text" :el=el :settings=settings></text-com>\
-                    <comment-com v-else-if="el.type === terms.comment" :el=el :settings=settings></comment-com>\
-                    <rate-com v-else-if="el.type === terms.rate" :el=el :settings=settings></rate-com>\
+                    <choice-list-com v-if="el.type === control.radio || el.type === control.checkbox" :el=el :settings=settings></choice-list-com>\
+                    <text-com v-else-if="el.type === control.text" :el=el :settings=settings></text-com>\
+                    <comment-com v-else-if="el.type === control.comment" :el=el :settings=settings></comment-com>\
+                    <rate-com v-else-if="el.type === control.rate" :el=el :settings=settings></rate-com>\
                     <template v-else/>\
                 </fieldset>\
             </div>\
     </div>',
     data: function () { return {} },
-    props: { elements: { type: Array, required: true }, settings : { type: Object }, terms: {type : Object, required: true}},
+    props: { elements: { type: Array, required: true }, settings : { type: Object }, control: {type : Object, required: true}},
     methods :{
         edit :  function (el) {
             EventBus.$emit('edit',  el);
@@ -23,10 +23,10 @@
 
 Vue.component('choice-com', {
     template: '\
-    <div>\
+    <span style="display:inline-block">\
         <input :type=inputType :name=name :id=uid :value=choice />\
         <label :for="uid">{{choice}}</label>\
-    </div>',
+    </span>',
     data: function () { return {  } },
     props: { choice: { type: String, required: true }, name : { type : String, required: true }, index : { type : Number, required: true }, inputType : { type : String, required: true } },
     computed : {

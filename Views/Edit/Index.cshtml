@@ -17,11 +17,11 @@
 
 <div id="container">
     <div class="col-sm-2 sidenav leftnav">
-        <p><label href="#" v-on:click=addsurvey(Terms.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>
-        <p><label href="#" v-on:click=addsurvey(Terms.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>
-        <p><label href="#" v-on:click=addsurvey(Terms.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>
-        <p><label href="#" v-on:click=addsurvey(Terms.comment)><span class="glyphicon glyphicon-text-background"></span> 코멘트</label></p>
-        <p><label href="#" v-on:click=addsurvey(Terms.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>
+        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>
+        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>
+        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>
+        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-text-background"></span> 코멘트</label></p>
+        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>
     </div> 
     <div class="col-sm-7 text-left"> 
         <div class="tabs">
@@ -32,17 +32,15 @@
                     <label class="labelfor" v-bind:class="{setting: page === settings}" :for="page.name + '_' + index">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>
                     <label class="plus" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>
                     <div class="tab-container">
-                        <controllayout-com :elements=page.elements :settings=settings :terms=Terms></controllayout-com>
+                        <controllayout-com :elements=page.elements :settings=settings :control=GlobalValues.control></controllayout-com>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-sm-3 sidenav">
-       <settinglayout-com :settings=settings></settinglayout-com>
-        <pre>
-             {{ settings | pretty }}
-        </pre>
+       <settinglayout-com :settings=settings :options=options></settinglayout-com>
+        
     </div>
 </div>
 
@@ -52,11 +50,12 @@
     var vue = new Vue({
         el: '#container',
         data: {
-            Terms : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment", question : 'question', page : 'page', maxCreatePage : 10 },
+            GlobalValues : { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment" }, question : 'question', page : 'page', maxCreatePage : 10 },
+            options : Options,
             selectPage : null,
             settings : null,
             survey: {
-                    title: "",
+                    //title: "",
                     description : "",
                     background_color: "",
                     font_color: "",
@@ -73,12 +72,11 @@
                     this.settings = this.survey;
                 },
                 appendPage : function(index) {
-                    console.log(this.survey.pages.length);
-                    if(this.survey.pages.length + 1 > maxCreatePage){
-                        alert('최대 ' + maxCreatePage + '개까지 가능합니다.');
+                    if(this.survey.pages.length + 1 > this.GlobalValues.maxCreatePage){
+                        alert('최대 ' + this.GlobalValues.maxCreatePage + '개까지 가능합니다.');
                         return;
                     }
-                    var papgName = this.emptyName(this.Terms.page);
+                    var papgName = this.emptyName(this.GlobalValues.page);
                     this.survey.pages.push({ name: papgName, elements: [] });
                     this.changedPage(index);
                 },
@@ -88,7 +86,7 @@
                 },
                 keywatch : function(evt) {
                     var canAction = function () { return ("type" in this.settings) && this.selectPage != null; };
-                    if (evt.key == 'Delete') {
+                    if (evt.key == 'Delete' || evt.key == 'Del') {
                         if (canAction) {
                             var idx = _.findIndex(this.selectPage.elements, this.settings);
                             if(idx != -1) {
@@ -102,16 +100,15 @@
                     }
                 },
                 addsurvey: function (type) {
-                    console.log(Options.page);
-                    var questionName = this.emptyName(this.Terms.question);
+                    var questionName = this.emptyName(this.GlobalValues.question);
                     var item = { name: questionName, type: type, title: questionName, description: "", is_required : false};
-                    if (type == this.Terms.checkbox || type == this.Terms.radio) {
+                    if (type == this.GlobalValues.control.checkbox || type == this.GlobalValues.control.radio) {
                         item.choices = ["item1", "item2", "item3"];
                     }
-                    if( type == this.Terms.rate) {
+                    if( type == this.GlobalValues.control.rate) {
                         item.choices = [1, 2, 3, 4, 5];
                     }
-                    if (type == this.Terms.comment) { 
+                    if (type == this.GlobalValues.control.comment) { 
                         item.rows = 5;
                     }
                     this.selectPage.elements.push(item);
@@ -137,10 +134,10 @@
                     }
                     
                     for (var p=0; p < this.survey.pages.length; p++) {
-                        if (subOtType == this.Terms.page) {
+                        if (subOtType == this.GlobalValues.page) {
                             putInArray(arr, this.survey.pages[p].name, subOtType);
                         }
-                        if (subOtType == this.Terms.question) {
+                        if (subOtType == this.GlobalValues.question) {
                             for (var e=0; e<this.survey.pages[p].elements.length; e++) {
                                 putInArray(arr, this.survey.pages[p].elements[e].name, subOtType);
                             }
@@ -156,9 +153,9 @@
                     };
                     var last = Math.max.apply(null, arr) + 1;
                     
-                    var arr1 = Array.from(new Array(last),(val,index)=>index+1);
+                    var arr1 = _.range(1, last + 1);
                     var diff = arr1.diff(arr);
-                    var value = Math.min.apply(null,diff);
+                    var value = Math.min.apply(null, diff);
 
                     return subOtType + value; 
                 }
@@ -186,7 +183,8 @@
             created : function() {
                 
                 EventBus.$on('edit', this.edit);
-                window.addEventListener('keyup', this.keywatch)
+                window.addEventListener('keyup', this.keywatch);
+                
             }, 
             watch : {
                
