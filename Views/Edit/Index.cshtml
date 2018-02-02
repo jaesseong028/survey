@@ -9,7 +9,7 @@
 <environment include="Production">    
     <script src="~/js/vue.min.js"></script>
 </environment>
-<script src="~/js/edit/optionsTypes.js"></script>
+<script src="~/js/edit/Options.js"></script>
 <script src="~/js/edit/vue-component-control.js"></script>
 <script src="~/js/edit/vue-component-settinglayer.js"></script>
 }
@@ -52,7 +52,7 @@
     var vue = new Vue({
         el: '#container',
         data: {
-            Terms : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment", question : 'question', page : 'page' },
+            Terms : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment", question : 'question', page : 'page', maxCreatePage : 10 },
             selectPage : null,
             settings : null,
             survey: {
@@ -73,6 +73,11 @@
                     this.settings = this.survey;
                 },
                 appendPage : function(index) {
+                    console.log(this.survey.pages.length);
+                    if(this.survey.pages.length + 1 > maxCreatePage){
+                        alert('최대 ' + maxCreatePage + '개까지 가능합니다.');
+                        return;
+                    }
                     var papgName = this.emptyName(this.Terms.page);
                     this.survey.pages.push({ name: papgName, elements: [] });
                     this.changedPage(index);
@@ -97,7 +102,7 @@
                     }
                 },
                 addsurvey: function (type) {
-                    console.log(OptionTypes.page);
+                    console.log(Options.page);
                     var questionName = this.emptyName(this.Terms.question);
                     var item = { name: questionName, type: type, title: questionName, description: "", is_required : false};
                     if (type == this.Terms.checkbox || type == this.Terms.radio) {

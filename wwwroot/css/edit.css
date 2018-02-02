@@ -6,10 +6,10 @@ body, html{ height:102%; }
 #container { display: none; }
 
 .survey {background:white !important; top:-3px}
-.leftnav {color:#87B2F1; padding: 10px 0;}
+.leftnav {color:#87B2F1; padding: 47px 0;}
 .leftnav p { border-bottom: 1px solid #eee; }
 /* page tab 처리 */
-.tabs {position: relative;clear: both;margin: 52px -27px 25px;background: white;}
+.tabs {position: relative;clear: both;margin: 52px -27px 0px -11px;background: white;}
 .tab {float: left; }
 .tab fieldset {border:1px solid white; padding:20px; margin-bottom:10px; background-color: #eee; height: 100%}
 .tab fieldset.setting {border:1px solid #87B2F1;}

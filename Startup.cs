@@ -24,7 +24,7 @@ namespace UBSurvey
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddResponseCompression();
-            services.AddWebOptimizer();
+            //services.AddWebOptimizer();
             services.Configure<GzipCompressionProviderOptions>(options => 
             {
                 options.Level = CompressionLevel.Fastest;
@@ -48,7 +48,7 @@ namespace UBSurvey
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            //app.UseWebOptimizer();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>

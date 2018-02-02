@@ -1,4 +1,4 @@
-var OptionTypes = {
+﻿var Options = {
     survey : {
         title : { ko : "제목", type : "String" }, 
         description : { ko : "설명", type : "String" },
