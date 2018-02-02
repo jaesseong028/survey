@@ -1,24 +1,21 @@
-﻿// Configure bundling and minification for the project.
-// More info at https://go.microsoft.com/fwlink/?LinkId=808241
-[
+﻿[
   {
-    "outputFileName": "wwwroot/css/site.min.css",
-    // An array of relative input file paths. Globbing patterns supported
+    "outputFileName": "wwwroot/css/edit.min.css",
     "inputFiles": [
-      "wwwroot/css/site.css"
+      "wwwroot/css/edit.css"
     ]
   },
   {
-    "outputFileName": "wwwroot/js/site.min.js",
+    "outputFileName": "wwwroot/js/edit/edit.js",
     "inputFiles": [
-      "wwwroot/js/site.js"
+      "wwwroot/js/edit/OptionsTypes.js",
+      "wwwroot/js/edit/vue-component-control.js",
+      "wwwroot/js/edit/vue-component-settinglayer.js"
     ],
-    // Optionally specify minification options
     "minify": {
       "enabled": true,
       "renameLocals": true
     },
-    // Optionally generate .map file
     "sourceMap": false
   }
 ]

@@ -1,14 +1,13 @@
 
-Vue.component('choice-com', {
-    template: ' <div>\
-                    <input :type=inputType :name=name :id=uid :value=choice />\
-                    <label :for="uid">{{choice}}</label>\
-               </div>',
-                data: function () { return {  } },
-                props: { choice: { type: String }, name : { type : String }, index : { type : Number }, inputType : { type : String } },
-                computed : {
-                    uid : function() { 
-                        return this.name + "_" + this._uid;
-                    }
-                }
+Vue.component('settinglayout-com', {
+    template: '\
+    </div>\
+        <div style="border: 1px solid #87B2F1; margin-top: 41px">{{settings}}</div>\
+    </div>',
+    data: function () { return {} },
+    props: { settings : { type: Object }},
+})
+
+Vue.component('control-setting-com', {
+    template: ' <div style="border: 1px solid #87B2F1; margin-top: 41px">셋팅\</div>',
 })

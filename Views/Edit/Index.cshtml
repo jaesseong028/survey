@@ -9,8 +9,9 @@
 <environment include="Production">    
     <script src="~/js/vue.min.js"></script>
 </environment>
-<script src="~/js/vue-component-control.js"></script>
-<script src="~/js/vue-component-settinglayer.js"></script>
+<script src="~/js/edit/optionsTypes.js"></script>
+<script src="~/js/edit/vue-component-control.js"></script>
+<script src="~/js/edit/vue-component-settinglayer.js"></script>
 }
 
 
@@ -19,6 +20,7 @@
         <p><label href="#" v-on:click=addsurvey(Terms.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>
         <p><label href="#" v-on:click=addsurvey(Terms.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>
         <p><label href="#" v-on:click=addsurvey(Terms.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>
+        <p><label href="#" v-on:click=addsurvey(Terms.comment)><span class="glyphicon glyphicon-text-background"></span> 코멘트</label></p>
         <p><label href="#" v-on:click=addsurvey(Terms.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>
     </div> 
     <div class="col-sm-7 text-left"> 
@@ -37,9 +39,7 @@
         </div>
     </div>
     <div class="col-sm-3 sidenav">
-        <div>
-            
-        </div>?
+       <settinglayout-com :settings=settings></settinglayout-com>
         <pre>
              {{ settings | pretty }}
         </pre>
@@ -48,11 +48,11 @@
 
 <script>
     var EventBus = new Vue();
-    
+        
     var vue = new Vue({
         el: '#container',
         data: {
-            Terms : { radio : "radio", checkbox : "checkbox", text : "text", rate : "rate" },
+            Terms : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment", question : 'question', page : 'page' },
             selectPage : null,
             settings : null,
             survey: {
@@ -73,7 +73,8 @@
                     this.settings = this.survey;
                 },
                 appendPage : function(index) {
-                    this.survey.pages.push({ name: "page" + (index + 1), elements: [] });
+                    var papgName = this.emptyName(this.Terms.page);
+                    this.survey.pages.push({ name: papgName, elements: [] });
                     this.changedPage(index);
                 },
                 changedPage : function(index) {
@@ -94,34 +95,19 @@
                             }
                         }
                     }
-                    if (evt.key == 'ArrowUp') {
-                        if (canAction) {
-                            var idx = _.findIndex(this.selectPage.elements, this.settings);
-                            if (idx != -1 && idx != 0) {
-                                 this.selectPage.elements.splice(idx - 1, 0, this.selectPage.elements.splice(idx, 1)[0]);
-                            }
-                        }
-                    }
-                    if (evt.key == 'ArrowDown') {
-                        if (canAction){
-                            var idx = _.findIndex(this.selectPage.elements, this.settings);
-                            if (idx != -1 && this.selectPage.elements.length != idx) {
-                                this.selectPage.elements.splice(idx + 1, 0, this.selectPage.elements.splice(idx, 1)[0]);
-                            }
-                        }
-                    }
                 },
                 addsurvey: function (type) {
-                    var questionName = this.maxQuesitionName();
-                    var item = { name: questionName, type: type, title: questionName, description: "", is_required : false, skip : []};
+                    console.log(OptionTypes.page);
+                    var questionName = this.emptyName(this.Terms.question);
+                    var item = { name: questionName, type: type, title: questionName, description: "", is_required : false};
                     if (type == this.Terms.checkbox || type == this.Terms.radio) {
                         item.choices = ["item1", "item2", "item3"];
-                        item.other_text = "기타";
                     }
                     if( type == this.Terms.rate) {
                         item.choices = [1, 2, 3, 4, 5];
-                        item.max_description = "높음";
-                        item.min_description = "낮음";
+                    }
+                    if (type == this.Terms.comment) { 
+                        item.rows = 5;
                     }
                     this.selectPage.elements.push(item);
                     this.settings = item;
@@ -134,21 +120,31 @@
                 edit : function (el) {
                     this.settings = el;
                 },
-                maxQuesitionName : function() {
+                emptyName : function(subOtType) {
                     var arr = [];
                     var inc = 0;
+
+                    var putInArray = function(ar, n, t) {
+                        var i = parseInt(n.replace(t, ""));
+                        if (!isNaN(i)) {
+                            ar.push(i);
+                        }
+                    }
                     
                     for (var p=0; p < this.survey.pages.length; p++) {
+                        if (subOtType == this.Terms.page) {
+                            putInArray(arr, this.survey.pages[p].name, subOtType);
+                        }
+                        if (subOtType == this.Terms.question) {
                             for (var e=0; e<this.survey.pages[p].elements.length; e++) {
-                                var i = parseInt(this.survey.pages[p].elements[e].name.replace("question", ""));
-                                if (!isNaN(i)) {
-                                    arr.push(i);
-                                }
+                                putInArray(arr, this.survey.pages[p].elements[e].name, subOtType);
+                            }
                         }
                     }
 
-                    if(arr.length == 0)
-                        return "question1";
+
+                    if (arr.length == 0)
+                        return subOtType + "1";
 
                     Array.prototype.diff = function(a) {
                         return this.filter(function(i) {return a.indexOf(i) < 0;});
@@ -158,40 +154,8 @@
                     var arr1 = Array.from(new Array(last),(val,index)=>index+1);
                     var diff = arr1.diff(arr);
                     var value = Math.min.apply(null,diff);
-                    
-                    //console.timeEnd("calculatingTime 재성꺼");
-                    /*console.time("calculatingTime 오진꺼");
-                    var rangeFuc = function (start, end) { return [...Array(1+end-start).keys()].map(v => start+v) };
-                    var max  = Math.max(...arr);
-                    var range = rangeFuc(Math.min(...arr), max);
-                    var a = new Set(arr);
-                    var b = new Set(range);
-                    let difference = new Set([...b].filter(x => !a.has(x)));
-                    if(difference.length == 0) {
-                        maxId =  max + 1;
-                    }else{
-                        var maxId = Math.min(...difference);
-                        if(!isFinite(maxId)) {
-                            maxId =  max + 1;
-                        }
-                    }
-                    console.timeEnd("calculatingTime 오진꺼");
 
-
-                    console.time("calculatingTime 평범한");
-                    arr.sort(function(a,b) {return a - b;});
-                    while(++inc)
-                    {
-                        
-                        if(!arr.includes(inc))
-                        {
-                            break;
-                        }
-                    }
-                    console.timeEnd("calculatingTime 평범한");*/
-
-
-                    return "question" + value; 
+                    return subOtType + value; 
                 }
             }, filters: {
                 pretty: function (value) {
@@ -215,6 +179,7 @@
                 $("#container").show();
             },
             created : function() {
+                
                 EventBus.$on('edit', this.edit);
                 window.addEventListener('keyup', this.keywatch)
             }, 
