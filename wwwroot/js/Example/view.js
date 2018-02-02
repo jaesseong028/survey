@@ -78,7 +78,6 @@ function createQA(data , name)
 
 // 라디오, 체크 박스 엘리먼트 생성 생성
 function createCheckRadio ( data, type){
-    var type = data.type == 'radio' ? data.type : 'checkbox';
     
     var elDiv = document.createElement('div');
     
@@ -86,18 +85,39 @@ function createCheckRadio ( data, type){
     {
         if(data.choices.hasOwnProperty(choice))
         {
+            var elQDiv = document.createElement('div');
+
             var elCR = document.createElement('input');
-            elCR.setAttribute('type', type);
+            elCR.setAttribute('type', data.type == 'radio' ? data.type : 'checkbox');
             elCR.setAttribute('id', data.name + choice);
             elCR.setAttribute('value', data.choices[choice]);
 
             if(type === 'radio')
                 elCR.setAttribute('name', data.name);
 
-            elDiv.appendChild(elCR);
-            elDiv.appendChild(createQA(data.choices[choice], data.name + choice));
+                 
+            
+            if(data.col_count == 1)
+            {
+                elQDiv.setAttribute('style','display: inline-block;')
+
+            }else if (data.col_count > 1)
+            {   
+                var width_percent = 100 / data.col_count;
+                console.log(data.col_count);
+                console.log(data.choices.length);
+                console.log(width_percent);
+                elQDiv.setAttribute('style','display: inline-block; width: ' + width_percent + '%;');
+            }
+
+            elQDiv.appendChild(elCR);
+            elQDiv.appendChild(createQA(data.choices[choice], data.name + choice));
+            elDiv.appendChild(elQDiv);
         }
     }
+
+    
+
     return elDiv;
 }
 
@@ -136,7 +156,7 @@ function createRate( data ){
 
     if('min_description' in data)
     {
-        var elMinlbl = document.createElement('label');
+        var elMinlbl = document.createElement('spen');
         elMinlbl.setAttribute('class','rate_min');
         elMinlbl.innerText = data.min_description;
         elDiv.appendChild(elMinlbl);
@@ -151,6 +171,8 @@ function createRate( data ){
             elRate.setAttribute('id', data.name + choice);
             elRate.setAttribute('value', data.choices[choice]);
             elRate.setAttribute('name', data.name);
+           
+
             
             elDiv.appendChild(elRate);
             elDiv.appendChild(createQA(data.choices[choice], data.name + choice));
@@ -159,7 +181,7 @@ function createRate( data ){
 
     if('max_description' in data)
     {
-        var elMaxlbl = document.createElement('label');
+        var elMaxlbl = document.createElement('spen');
         elMaxlbl.setAttribute('class','rate_max');
         elMaxlbl.innerText = data.max_description;
         elDiv.appendChild(elMaxlbl);
@@ -192,8 +214,6 @@ function createQuestion( elements, elDivPage){
             elDivPage.appendChild(elFieldset);
         }
     }
-
-    
 
     return elDivPage;
 }
@@ -278,8 +298,12 @@ function domReady (){
         {
             
             var surveyTitle = surveyJson.title;
+            //surveyId.appendChild(surveyTitle);
+
             var pages  = surveyJson.survey[0].pages;
             console.log(pages);
+
+
 
             for(var page in pages)
             {
