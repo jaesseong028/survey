@@ -300,13 +300,20 @@ function domReady (){
 
                     // 페이지 타이틀
                     var elDivTitle = document.createElement('div');
-                    elDivtitle.setAttribute('class','pagetitle');
+                    elDivTitle.setAttribute('class','pagetitle');
+                    elDivTitle.innerText = pages[page].title;
                     
                     // 페이지 설명
                     var elDivDescript = document.createElement('div');
-                    elDivDescript.setAttribute('class','pagetdescription');
+                    elDivDescript.setAttribute('class','pagedescription');
+                    elDivDescript.innerText = pages[page].description;
 
+                    // 페이지 타이틀
+                    elDivPage.appendChild(elDivTitle);
+                    elDivPage.appendChild(elDivDescript);
                     
+                    console.log(elDivPage);
+
                     if(page == 0)   // 첫페이지는 무조건 보이기
                         isVisiblePage(elDivPage,true);
                     else
