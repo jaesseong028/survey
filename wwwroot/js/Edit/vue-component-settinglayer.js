@@ -38,8 +38,12 @@ Vue.component('settinglayout-com', {
 Vue.component('string-setting-com', {
     template: '\
 <div>\
+    <div class="option_name">\
     {{ko}}\
+    </div>\
+    <div class="option_name">\
     <input v-model="settings[property]">\
+    </div>\
 </div>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}}
 })

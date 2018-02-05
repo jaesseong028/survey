@@ -27,6 +27,7 @@
 			"title":"질문타이틀2",
 			"is_required" : true,
 			"skip" :{"choices":["예"], "skinQuestionNames":["question3"] },
+			"is_other" : true,
 			"other_text" :"기타",
 			"other_text_len": 100
 		},

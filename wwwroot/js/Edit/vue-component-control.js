@@ -40,12 +40,10 @@ Vue.component('choice-list-com', {
     template: '<div>\
         <span v-for="(choice, index) in el.choices">\
             <choice-com :choice=choice :index=index :name=el.name :inputType=el.type></choice-com>\
-        </span>\
-        <span>\
-                <span v-if="el.other_text !== undefined" style="display:inline-block; width:50%;">\
+        </span><span><span v-if="el.is_other" style="display:inline-block; width:50%;">\
                     <input :type=el.type :name=el.name :id=uid :value=el.other_text />\
                     <label :for="uid">{{el.other_text}}</label>\
-                    <!--<input type="text" />-->\
+                    <input type="text" />\
                 </span>\
         </span>\
     </div>',
@@ -54,7 +52,8 @@ Vue.component('choice-list-com', {
     computed : {
         uid : function() { 
             return this.el.name + "_" + this._uid;
-        }
+        },
+
     }
 })
 
