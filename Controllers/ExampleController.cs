@@ -13,5 +13,10 @@ namespace UBSurvey.Controllers
         {
             return View();
         }
+
+        public IActionResult Sample()
+        {
+            return View();
+        }
     }
 }
