@@ -4,10 +4,10 @@
             <div v-for="(el, index) in elements">\
                 <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
                     <div class="question">{{el.title}}</div>\
-                    <choice-list-com v-if="el.type === control.radio || el.type === control.checkbox" :el=el :settings=settings></choice-list-com>\
-                    <text-com v-else-if="el.type === control.text" :el=el :settings=settings></text-com>\
-                    <comment-com v-else-if="el.type === control.comment" :el=el :settings=settings></comment-com>\
-                    <rate-com v-else-if="el.type === control.rate" :el=el :settings=settings></rate-com>\
+                    <choice-list-com v-if="el.type === control.radio || el.type === control.checkbox" :el=el></choice-list-com>\
+                    <text-com v-else-if="el.type === control.text" :el=el></text-com>\
+                    <comment-com v-else-if="el.type === control.comment" :el=el></comment-com>\
+                    <rate-com v-else-if="el.type === control.rate" :el=el></rate-com>\
                     <template v-else/>\
                 </fieldset>\
             </div>\
@@ -23,7 +23,7 @@
 
 Vue.component('choice-com', {
     template: '\
-    <span style="display:inline-block">\
+    <span style="display:inline-block; width:50%;">\
         <input :type=inputType :name=name :id=uid :value=choice />\
         <label :for="uid">{{choice}}</label>\
     </span>',
@@ -37,15 +37,17 @@ Vue.component('choice-com', {
 })
 
 Vue.component('choice-list-com', {
-    template: '\
-    <div> <div v-for="(choice, index) in el.choices"> \
-        <choice-com :choice=choice :index=index :name=el.name :inputType=el.type></choice-com>\
-    </div>\
-    <div v-if="el.other_text !== undefined">\
-            <input :type=el.type :name="el.name" :id=uid :value="el.other_text" />\
-            <label :for="uid">{{el.other_text}}</label>\
-            <input type="text" >\
-    </div>\
+    template: '<div>\
+        <span v-for="(choice, index) in el.choices">\
+            <choice-com :choice=choice :index=index :name=el.name :inputType=el.type></choice-com>\
+        </span>\
+        <span>\
+                <span v-if="el.other_text !== undefined" style="display:inline-block; width:50%;">\
+                    <input :type=el.type :name=el.name :id=uid :value=el.other_text />\
+                    <label :for="uid">{{el.other_text}}</label>\
+                    <!--<input type="text" />-->\
+                </span>\
+        </span>\
     </div>',
     data: function () { return {  } },
     props: { el: { type: Object, required: true }},
@@ -63,7 +65,7 @@ Vue.component('comment-com', {
         <textarea type="text" :name="el.name" :rows="el.rows" :id="uid" style="width:100%" />\
     </div>',
     data: function () { return {  } },
-    props: { el: { type: Object, required: true }, settings : { type: Object, required: true }},
+    props: { el: { type: Object, required: true }},
     computed : {
         uid : function() { 
             return this.el.name + "_" + this._uid;
@@ -101,7 +103,7 @@ Vue.component('rate-com', {
         </template>\
     </div>',
     data: function () { return { } },
-    props: { el: { type: Object, required: true }, settings : { type: Object, required: true }},
+    props: { el: { type: Object, required: true }},
     computed : {
         uid : function() { 
             return this.el.name + "_" + this._uid;

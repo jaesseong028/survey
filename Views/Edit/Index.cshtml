@@ -105,8 +105,10 @@
                     if (type == this.GlobalValues.control.checkbox || type == this.GlobalValues.control.radio) {
                         item.choices = ["item1", "item2", "item3"];
                     }
-                    if( type == this.GlobalValues.control.rate) {
+                    if (type == this.GlobalValues.control.rate) {
                         item.choices = [1, 2, 3, 4, 5];
+                        item.max_description = "높음";
+                        item.min_description = "낮음";
                     }
                     if (type == this.GlobalValues.control.comment) { 
                         item.rows = 5;

@@ -4,9 +4,9 @@ Vue.component('settinglayout-com', {
     <div>\
         <div style="border: 1px solid #87B2F1; margin-top: 41px">\
             <div v-for="(option, propertyName) in options[optionType]">\
-                <string-setting-com v-if="option.type === options.types.String" :option=option :ko=value.ko :settings=settings :property=propertyName></string-setting-com>\
-                <checkbox-setting-com v-if="option.type === options.types.Boolean" :option=option :ko=value.ko :settings=settings :property=propertyName></checkbox-setting-com>\
-                <int-setting-com v-if="option.type === options.types.Int" :option=option :ko=value.ko :settings=settings :property=propertyName></int-setting-com>\
+                <string-setting-com v-if="option.type === options.types.String" :option=option :ko=option.ko :settings=settings :property=propertyName></string-setting-com>\
+                <checkbox-setting-com v-else-if="option.type === options.types.Boolean" :option=option :ko=option.ko :settings=settings :property=propertyName></checkbox-setting-com>\
+                <int-setting-com v-else-if="option.type === options.types.Int" :option=option :ko=option.ko :settings=settings :property=propertyName></int-setting-com>\
             </div>\
         </div>\
         <div v-for="(value, propertyName) in settings">\
@@ -41,14 +41,7 @@ Vue.component('string-setting-com', {
     {{ko}}\
     <input v-model="settings[property]">\
 </div>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
-    mouted : function(){
-        if(settings !== undefined){
-            if(settings[property] === undefined){
-                settings[property] = '';
-            }
-        }
-    },
+    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}}
 })
 
 
@@ -58,51 +51,20 @@ Vue.component('checkbox-setting-com', {
     {{ko}}\
     <input type="checkbox" v-model="settings[property]">\
 </div>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
-    mouted : function(){
-        if(settings !== undefined){
-            if(settings[property] === undefined){
-                settings[property] = '';
-            }
-        }
-    },
+    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}}
 })
-
-
-Vue.component('checkbox-setting-com', {
-    template: '\
-<div>\
-    {{ko}}\
-    <input type="checkbox" v-model="settings[property]" />\
-</div>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
-    mouted : function(){
-        if(settings !== undefined){
-            if(settings[property] === undefined){
-                settings[property] = '';
-            }
-        }
-    },
-})
-
 
 
 Vue.component('int-setting-com', {
     template: '\
 <div>\
     {{ko}}\
-    <input v-model.number="settings[property]" min="1" max="5" type="number" v-on:keypress="disableDot" />\
+    <input v-model.number="settings[property]" :min="option.min" :max="option.max" type="number" v-on:keypress="disableDot" />\
 </div>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
-    mouted : function(){
-        if(settings !== undefined){
-            if(settings[property] === undefined){
-                settings[property] = 0;
-            }
-        }
-    },
+   
     methods : {
-        disableDot : function (e){
+        disableDot : function (e) {
             e.preventDefault();
         }
     }
