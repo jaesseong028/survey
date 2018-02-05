@@ -1,15 +1,8 @@
-.pagehide {
-    display: none;
-}
+.pagehide { display: none; }
 
-.pageshow{
-    display: inline;
-}
+.pageshow{ display: inline; }
 
-/* textarea {
-    resize: none;
-} */
-
+textarea { resize: none; }
 
 /* Rate */
 .rate [type=radio] { display: none;}
@@ -26,7 +19,8 @@ fieldset {border:1px solid white; padding:15px; margin-bottom:10px; background-c
 fieldset .setting {border:1px solid green;}
 fieldset .question {font-weight: bold; padding-bottom: 5px;}
 fieldset .question .title { font-size: 1.2em; font-weight: bold; margin-bottom:0px;}
-fieldset .question .description { font-size: 0.9em;}
+fieldset .question .description { font-size: 0.9em; margin-left: 5px;}
+
 
 
 /* 

@@ -89,34 +89,21 @@ function createCheckRadio ( data, type){
 
             var elCR = document.createElement('input');
             elCR.setAttribute('type', data.type == 'radio' ? data.type : 'checkbox');
-            elCR.setAttribute('id', data.name + choice);
+            elCR.setAttribute('id', data.name + '_' + choice);
             elCR.setAttribute('value', data.choices[choice]);
 
-            if(type === 'radio')
+            if(data.type === 'radio')
                 elCR.setAttribute('name', data.name);
-
-                 
+        
+            // col_count 체크
+            var width_percent = data.col_count <= 1 ? '100' : 100 / data.col_count;
+            elQDiv.setAttribute('style','display: inline-block; width: ' + width_percent + '%;');
             
-            if(data.col_count == 1)
-            {
-                elQDiv.setAttribute('style','display: inline-block;')
-
-            }else if (data.col_count > 1)
-            {   
-                var width_percent = 100 / data.col_count;
-                console.log(data.col_count);
-                console.log(data.choices.length);
-                console.log(width_percent);
-                elQDiv.setAttribute('style','display: inline-block; width: ' + width_percent + '%;');
-            }
-
             elQDiv.appendChild(elCR);
-            elQDiv.appendChild(createQA(data.choices[choice], data.name + choice));
+            elQDiv.appendChild(createQA(data.choices[choice], data.name + '_' + choice));
             elDiv.appendChild(elQDiv);
         }
     }
-
-    
 
     return elDiv;
 }
@@ -168,14 +155,12 @@ function createRate( data ){
         {
             var elRate = document.createElement('input');
             elRate.setAttribute('type', 'radio');
-            elRate.setAttribute('id', data.name + choice);
+            elRate.setAttribute('id', data.name + '_' + choice);
             elRate.setAttribute('value', data.choices[choice]);
             elRate.setAttribute('name', data.name);
-           
 
-            
             elDiv.appendChild(elRate);
-            elDiv.appendChild(createQA(data.choices[choice], data.name + choice));
+            elDiv.appendChild(createQA(data.choices[choice], data.name + '_' + choice));
         }
     }
 
@@ -303,19 +288,24 @@ function domReady (){
             var pages  = surveyJson.survey[0].pages;
             console.log(pages);
 
-
-
             for(var page in pages)
             {
-                console.log('elements',pages[page].elements);
                 if(pages.hasOwnProperty(page))
                 {
                     var elements = pages[page].elements;
                     
-                    console.log(elements);
                     // // 페이지 별 DIV ID 생성
                     var elDivPage = document.createElement('div');
                     elDivPage.setAttribute('id',pages[page].name);
+
+                    // 페이지 타이틀
+                    var elDivTitle = document.createElement('div');
+                    elDivtitle.setAttribute('class','pagetitle');
+                    
+                    // 페이지 설명
+                    var elDivDescript = document.createElement('div');
+                    elDivDescript.setAttribute('class','pagetdescription');
+
                     
                     if(page == 0)   // 첫페이지는 무조건 보이기
                         isVisiblePage(elDivPage,true);
