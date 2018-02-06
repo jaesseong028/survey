@@ -32,3 +32,5 @@ body, html{ height:102%; }
 
 .rate_min { padding-right: 3px; }
 .rate_max { padding-left: 3px; }
+
+.required {color: red}

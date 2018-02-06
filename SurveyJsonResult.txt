@@ -30,4 +30,5 @@
 
 }
 
+{"question4" : [{ "value" : "인터넷"}, {"value" :"약사회"},{ "value" :"기타답변입니다", IsOther: true}]}
 

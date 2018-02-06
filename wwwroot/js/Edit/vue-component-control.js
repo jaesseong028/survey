@@ -3,7 +3,7 @@
     <div>\
             <div v-for="(el, index) in elements">\
                 <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
-                    <div class="question">{{el.title}}</div>\
+                    <label class="required" v-if="el.is_required">*</label>.<label class="question">{{el.title}}</label>\
                     <choice-list-com v-if="el.type === control.radio || el.type === control.checkbox" :el=el></choice-list-com>\
                     <text-com v-else-if="el.type === control.text" :el=el></text-com>\
                     <comment-com v-else-if="el.type === control.comment" :el=el></comment-com>\
@@ -12,7 +12,7 @@
                 </fieldset>\
             </div>\
     </div>',
-    data: function () { return {} },
+    data: function () { return { counter : 1 } },
     props: { elements: { type: Array, required: true }, settings : { type: Object }, control: {type : Object, required: true}},
     methods :{
         edit :  function (el) {
@@ -23,37 +23,53 @@
 
 Vue.component('choice-com', {
     template: '\
-    <span style="display:inline-block; width:50%;">\
-        <input :type=inputType :name=name :id=uid :value=choice />\
+    <div :style="col_style">\
+        <input :type=el.type :name=el.name :id=uid :value=choice />\
         <label :for="uid">{{choice}}</label>\
-    </span>',
-    data: function () { return {  } },
-    props: { choice: { type: String, required: true }, name : { type : String, required: true }, index : { type : Number, required: true }, inputType : { type : String, required: true } },
+    </div>',
+    data: function () { return {  row_per : '' } },
+    props: { el: { type: Object, required: true }, choice: { type: String, required: true }, index : { type : Number, required: true },},
     computed : {
         uid : function() { 
             return this.name + "_" + this._uid;
+        },
+        col_style : function() {
+            var style = { width : '', display : '' };
+            if (this.el.col_count !== undefined && this.el.col_count !== 1) {
+                style.width = (100 / this.el.col_count) + '%';
+                style.display = 'inline-block';
+            }
+            return style;
         }
     }
 })
 
 Vue.component('choice-list-com', {
-    template: '<div>\
-        <span v-for="(choice, index) in el.choices">\
-            <choice-com :choice=choice :index=index :name=el.name :inputType=el.type></choice-com>\
-        </span><span><span v-if="el.is_other" style="display:inline-block; width:50%;">\
-                    <input :type=el.type :name=el.name :id=uid :value=el.other_text />\
-                    <label :for="uid">{{el.other_text}}</label>\
-                    <input type="text" />\
-                </span>\
-        </span>\
+    template: '\
+    <div>\
+        <template v-for="(choice, index) in el.choices">\
+            <choice-com :choice=choice :index=index :el=el></choice-com>\
+        </template>\<template>\<div v-if="el.is_other" :style="col_style">\
+                <input :type=el.type :name=el.name :id=uid :value=el.other_text />\
+                <label :for="uid">{{el.other_text}}</label>\
+                <input type="text" />\
+            </div>\
+        </template>\
     </div>',
-    data: function () { return {  } },
+    data: function () { return { } },
     props: { el: { type: Object, required: true }},
     computed : {
         uid : function() { 
             return this.el.name + "_" + this._uid;
         },
-
+        col_style : function() {
+            var style = { width : '', display : '' };
+            if (this.el.col_count !== undefined && this.el.col_count !== 1) {
+                style.width = (100 / this.el.col_count) + '%';
+                style.display = 'inline-block';
+            }
+            return style;
+        }
     }
 })
 

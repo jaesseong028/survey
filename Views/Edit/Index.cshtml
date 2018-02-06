@@ -40,13 +40,11 @@
     </div>
     <div class="col-sm-3 sidenav">
        <settinglayout-com :settings=settings :options=options></settinglayout-com>
-        
     </div>
 </div>
 
 <script>
     var EventBus = new Vue();
-        
     var vue = new Vue({
         el: '#container',
         data: {
@@ -101,7 +99,7 @@
                 },
                 addsurvey: function (type) {
                     var questionName = this.emptyName(this.GlobalValues.question);
-                    var item = { name: questionName, type: type, title: questionName, description: "", is_required : false};
+                    var item = { name: questionName, type: type, title: questionName, description: "", is_required : true};
                     if (type == this.GlobalValues.control.checkbox || type == this.GlobalValues.control.radio) {
                         item.choices = ["item1", "item2", "item3"];
                     }
@@ -185,6 +183,7 @@
             created : function() {
                 
                 EventBus.$on('edit', this.edit);
+                EventBus.$on('increment', this.increment);
                 window.addEventListener('keyup', this.keywatch);
                 
             }, 
