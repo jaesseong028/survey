@@ -1,0 +1,33 @@
+{
+    "survey_answer":
+    [{
+        "type" : "text",
+        "name" : "question1",   <!-- 텍스트 -->
+        "answer" : "안녕하세요"
+    },
+    {
+        "type" : "radio",
+        "name" : "question2",
+        "answer" : ["아니오"],
+    },
+    {
+        "type" : "checkbox",
+        "name" : "question3",
+        "answer" : ["인터넷","약사회","기타"],
+        "answer_other" : "기타답변입니다."
+    },
+    {
+        "type":"rate",
+        "name" : "question4",
+        "answer" : "4"
+    },
+    {
+        "type": "comment",
+		"name": "question5",
+        "answer" : "comment 답변입니다."
+    }
+    ]
+
+}
+
+

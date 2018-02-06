@@ -42,6 +42,7 @@
 			"min_num":1,
 			"max_num":3,
 			"is_required" : true,
+			"is_other" : true,
 			"other_text" :"기타",
 			"other_text_max_len": 100
 		},
@@ -49,7 +50,6 @@
 			"type":"rate",
 			"choices" : [1,2,3,4,5,6,7,8,9,10],
 			"description":"질문설명4",
-			"skip" :[{"name":"question2", "choices":["예"]}],
 			"name": "question4",
 			"title":"질문타이틀4",
 			"is_required" : true,

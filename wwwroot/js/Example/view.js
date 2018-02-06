@@ -35,26 +35,24 @@ function createQT(data){
     elDiv.setAttribute('class','question');
 
     // Title Label
-    var elLabel = document.createElement('label');
+    var elLabel = document.createElement('p');
     elLabel.setAttribute('class','title');
 
+    elLabel.innerText = data.title;
     // 필수 확인
     if('is_required' in data)
     {
         var elRequired = document.createElement('strong');
         elRequired.innerText = '*';
-        elDiv.appendChild(elRequired);
+        elLabel.insertBefore(elRequired, elLabel.childNodes[0]);
     }
 
-    elLabel.innerText = data.title;
-    
     elDiv.appendChild(elLabel);
-    elDiv.appendChild(createBRtag());
 
     //Description 
     if('description' in data)
     {
-        var elDescription = document.createElement('label');
+        var elDescription = document.createElement('p');
         elDescription.innerText = data.description;
         elDescription.setAttribute('class','description');
         elDiv.appendChild(elDescription);
@@ -75,36 +73,75 @@ function createQA(data , name)
     return elLbl;
 }
 
+function createChoiceValue ( data , choice , col_style ){
+
+    var elQDiv = document.createElement('div');
+    elQDiv.setAttribute('style',col_style);
+
+    var elCR = document.createElement('input');
+    elCR.setAttribute('type', data.type == 'radio' ? data.type : 'checkbox');
+    elCR.setAttribute('id', data.name + '_' + choice);
+    elCR.setAttribute('value', data.choices[choice]);
+
+    if(data.type === 'radio')
+        elCR.setAttribute('name', data.name);
+
+    elQDiv.appendChild(elCR);
+    elQDiv.appendChild(createQA(data.choices[choice], data.name + '_' + choice));
+
+    return elQDiv;
+}
+
+function createOthersValue ( data , col_style ){
+
+    var elQDiv = document.createElement('div');
+    elQDiv.setAttribute('style',col_style);
+
+    var elCR = document.createElement('input');
+    elCR.setAttribute('type', data.type == 'radio' ? data.type : 'checkbox');
+    elCR.setAttribute('id', data.name + '_OtherText');
+    elCR.setAttribute('value', data.other_text);
+
+    if(data.type === 'radio')
+        elCR.setAttribute('name', data.name);
+
+    elQDiv.appendChild(elCR);
+    elQDiv.appendChild(createQA(data.other_text, data.name + '_OtherText'));
+    
+    var elText = document.createElement('input');
+    elText.setAttribute('type', 'text');
+    elText.setAttribute('id', data.name);
+    
+    if('other_text_len' in data )
+        elText.setAttribute('maxLength',data.other_text_len);
+
+    elQDiv.appendChild(elText);
+
+
+    return elQDiv;
+}
+
 
 // 라디오, 체크 박스 엘리먼트 생성 생성
 function createCheckRadio ( data, type){
     
     var elDiv = document.createElement('div');
     
+    // col_count 체크
+    var width_percent = data.col_count <= 1 ? '100' : 100 / data.col_count;
+    var col_style = 'display: inline-block; width: ' + width_percent + '%;';
+
     for(var choice in data.choices)
     {
         if(data.choices.hasOwnProperty(choice))
-        {
-            var elQDiv = document.createElement('div');
-
-            var elCR = document.createElement('input');
-            elCR.setAttribute('type', data.type == 'radio' ? data.type : 'checkbox');
-            elCR.setAttribute('id', data.name + '_' + choice);
-            elCR.setAttribute('value', data.choices[choice]);
-
-            if(data.type === 'radio')
-                elCR.setAttribute('name', data.name);
-        
-            // col_count 체크
-            var width_percent = data.col_count <= 1 ? '100' : 100 / data.col_count;
-            elQDiv.setAttribute('style','display: inline-block; width: ' + width_percent + '%;');
-            
-            elQDiv.appendChild(elCR);
-            elQDiv.appendChild(createQA(data.choices[choice], data.name + '_' + choice));
-            elDiv.appendChild(elQDiv);
-        }
+            elDiv.appendChild(createChoiceValue(data, choice, col_style));
     }
 
+    if('is_other' in data )
+    {
+        elDiv.appendChild(createOthersValue(data, col_style));
+    }
+    
     return elDiv;
 }
 
@@ -234,6 +271,10 @@ function createPageBtn(elDivPage, totalPage, currPage )
     }
 }
 
+
+
+
+
 function addBtnEvent(elDivPage, btnType)
 {
     var elBtn = document.createElement('button');
@@ -243,13 +284,18 @@ function addBtnEvent(elDivPage, btnType)
     elBtn.addEventListener('click', function(){
         var obj = this;
         var pObj = obj.parentNode;
-
+        
+        console.log('obj',obj);
+        console.log('pObj',pObj);
+        
         if(btnType == 'After')
         {
             isVisiblePage(pObj, false);
 
             var nextPObj = pObj.nextSibling;
             isVisiblePage(nextPObj, true);
+            
+
         }else if (btnType == 'Pre')
         {
             isVisiblePage(pObj, false);
@@ -311,8 +357,6 @@ function domReady (){
                     // 페이지 타이틀
                     elDivPage.appendChild(elDivTitle);
                     elDivPage.appendChild(elDivDescript);
-                    
-                    console.log(elDivPage);
 
                     if(page == 0)   // 첫페이지는 무조건 보이기
                         isVisiblePage(elDivPage,true);
