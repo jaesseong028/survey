@@ -5,6 +5,7 @@ git reset 현재 수정한것 취소하기
 git status 현재 수정된 상태보기
 git add . 모든 파일 add 
 git add {폴더 or File} 폴더 또는 파일 add 
+git checkout . 수정된 파일 되돌리기
 
 
 dotnet add package 패키지명 ex) NewtonSoft.Json
