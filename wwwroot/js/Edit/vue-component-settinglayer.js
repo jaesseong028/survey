@@ -2,7 +2,7 @@
 Vue.component('settinglayout-com', {
     template: '\
     <div>\
-        <div style="margin-top: 41px">\
+        <div class="setting-layout">\
              <template v-for="(option, propertyName) in options[optionType]">\
                     <string-setting-com v-if="option.type === options.types.String" :option=option :ko=option.ko :settings=settings :property=propertyName></string-setting-com>\
                     <long-string-setting-com v-if="option.type === options.types.LongString" :option=option :ko=option.ko :settings=settings :property=propertyName></long-string-setting-com>\
@@ -32,7 +32,6 @@ Vue.component('settinglayout-com', {
                 return this.settings.type;
             }
             else {
-                console.log("asfasdf");
                 return "";
             }
         }
@@ -59,14 +58,19 @@ Vue.component('long-string-setting-com', {
     <div class="form-group text-left">\
         <label class="col-md-6">{{ko}}</label>\
         <div class="col-md-6">\
-            <a class="input-group" href="#">\
-                <input type="text" class="form-control" :placeholder=placeholder>\
+            <a class="input-group" href="#" v-on:click=layerOpen>\
+                <input type="text" class="form-control" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">수정</span>\
             </a>\
         </div>\
     </div>\
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    methods : {
+        layerOpen : function () {
+            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type);
+        }
+    },
     computed : {
         placeholder : function() { 
             return this.settings[this.property];
@@ -80,17 +84,21 @@ Vue.component('items-setting-com', {
     <div class="form-group text-left">\
         <label class="col-md-6">{{ko}}</label>\
         <div class="col-md-6">\
-            <a class="input-group" href="#">\
-                <input type="text" class="form-control" :placeholder=placeholder>\
+            <a class="input-group" href="#" v-on:click=layerOpen>\
+                <input type="text" class="form-control" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">Items</span>\
             </a>\
         </div>\
     </div>\
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    methods : {
+        layerOpen : function () {
+            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type);
+        }
+    },
     computed : {
         placeholder : function() { 
-            //console.log(this.settings[this.property]);
             return 'items:' + this.settings[this.property].length;
         }
     }
@@ -148,7 +156,145 @@ Vue.component('drop-setting-com', {
                 data.push({ text: i, value: i })
             }
             return data;
-          
+        }
+    }
+})
+
+
+
+Vue.component('modallayout-com', {
+    template: '\
+<div class="modal-mask" v-show="opened">\
+    <div id="modal" class="panel panel-primary layer" :style=style>\
+        <items-com v-if="opened && type === options.types.ChoiesArray" :values=settings[property]></items-com>\
+        <longstring-com v-else-if="opened && type === options.types.LongString" :value=settings[property]></longstring-com>\
+    </div>\
+</div>',
+    data: function () { return {  opened : false, settings : null, property : '', type : '' } },
+    props: { options : { type : Object } },
+    computed : {
+        style : function() {
+            var style = { display : 'none', marginTop: '-1px', marginLeft : '-1px'};
+            if (this.opened) {
+                style.display = 'block';
+                style.marginTop = '-' + (($("#modal").outerHeight() / 2) + $(window).scrollTop()) + 'px';
+                style.marginLeft = '-' + (($("#modal").outerWidth() / 2) + $(window).scrollTop()) + 'px';
+            }
+            return style;
+        }, 
+    }, 
+    methods : {
+        layerOpen : function (settings, property, type) {
+            this.opened  = true;
+            this.settings  = settings;
+            this.property  = property;
+            this.type  = type;
+        }, 
+        layerClose : function (val) {
+            console.log(val);
+            this.opened  = false;
+            this.settings[this.property] = val;
+        }
+    },
+    created : function() {
+        EventBus.$on('layerOpen', this.layerOpen);
+        EventBus.$on('layerClose', this.layerClose);
+    }
+})
+
+
+
+Vue.component('longstring-com', {
+    template: '\
+<div>\
+    <div class="modal-items">\
+        <span class="row">\
+            <div class="form-group">\
+                <div class="col-md-12">\
+                    <textarea type="text" class="form-control" v-model="text" rows="17" />\
+                </div>\
+            </div>\
+        </span>\
+    </div>\
+    <div class="modal-bottom">\
+        <span class="row">\
+            <div style="height:40px;">&nbsp;</div>\
+            <div class="form-group">\
+                <div class="col-md-12">\
+                    <button class="btn btn-info" v-on:click=regist>확인</button>\
+                    <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
+                </div>\
+            </div>\
+        </span>\
+    </div>\
+</div>',
+    data: function () { return { text : this.value } },
+    props: { value : { type : String } },
+    methods : {
+        regist : function() {
+            EventBus.$emit('layerClose', this.text);
+        }, 
+        cancle : function(){
+            EventBus.$emit('layerClose', this.value);
+        }
+    }
+})
+
+
+Vue.component('items-com', {
+    template: '\
+<div>\
+    <div class="modal-items">\
+        <template v-for="(v, index) in copyData">\
+            <span class="row">\
+                <div class="form-group">\
+                    <div class="col-md-10">\
+                        <input type="text" class="form-control" v-model="copyData[index]" />\
+                    </div>\
+                    <div class="col-md-2">\
+                        <button class="btn btn-danger" v-on:click=deleteItem(index)>-</button>\
+                    </div>\
+                </div>\
+            </span>\
+        </template>\
+    </div>\
+    <div class="modal-bottom">\
+        <span class="row">\
+            <div class="form-group">\
+                <div class="col-md-1">\
+                    <button class="btn btn-warning" v-on:click=appendItem>+</button>\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <div class="col-md-12">\
+                        <button class="btn btn-info" v-on:click=regist>확인</button>\
+                        <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
+                </div>\
+            </div>\
+        </span>\
+    </div>\
+</div>',
+    data: function () { return { copyData : _.toArray(this.values) } },
+    props: { values : { type : Array }  },
+    methods : {
+        appendItem : function(){
+            this.copyData.push('');
+            var modalItems = $(this.$el).find(".modal-items");
+            modalItems.animate({ scrollTop: modalItems.prop("scrollHeight")}, 100);
+        }, 
+        deleteItem : function (index){
+            this.copyData.splice(index, 1);
+        },
+        regist : function() {
+            var data = _.filter(this.copyData, function(item){ return item !== ''; });
+            this.values.splice(0, this.values.length);
+            for (var d in data) {
+                this.values.push(data[d]);
+            }
+            EventBus.$emit('layerClose', this.values);
+        }, 
+        cancle : function(){
+            EventBus.$emit('layerClose', this.values);
         }
     }
 })

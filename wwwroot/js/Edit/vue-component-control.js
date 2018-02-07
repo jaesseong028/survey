@@ -1,9 +1,10 @@
-﻿Vue.component('controllayout-com', {
+﻿
+Vue.component('controllayout-com', {
     template: '\
     <div>\
             <div v-for="(el, index) in elements">\
                 <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
-                    <label class="required" v-if="el.is_required">*</label>.<label class="question">{{el.title}}</label>\
+                    <label class="required" v-if="el.is_required">*</label><label class="question">{{el.title}}</label>\
                     <choice-list-com v-if="el.type === control.radio || el.type === control.checkbox" :el=el></choice-list-com>\
                     <text-com v-else-if="el.type === control.text" :el=el></text-com>\
                     <comment-com v-else-if="el.type === control.comment" :el=el></comment-com>\
@@ -12,7 +13,7 @@
                 </fieldset>\
             </div>\
     </div>',
-    data: function () { return { counter : 1 } },
+    data: function () { return { } },
     props: { elements: { type: Array, required: true }, settings : { type: Object }, control: {type : Object, required: true}},
     methods :{
         edit :  function (el) {
@@ -52,7 +53,7 @@ Vue.component('choice-list-com', {
         </template>\<template>\<div v-if="el.is_other" :style="col_style">\
                 <input :type=el.type :name=el.name :id=uid :value=el.other_text />\
                 <label :for="uid">{{el.other_text}}</label>\
-                <input type="text" />\
+                <input type="text" style="width:100px" :maxlength="el.other_text_len" />\
             </div>\
         </template>\
     </div>',
@@ -125,4 +126,7 @@ Vue.component('rate-com', {
         }
     }
 })
+
+
+
 

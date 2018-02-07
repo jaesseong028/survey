@@ -12,37 +12,41 @@
 <script src="~/js/edit/Options.js"></script>
 <script src="~/js/edit/vue-component-control.js"></script>
 <script src="~/js/edit/vue-component-settinglayer.js"></script>
+<script src="~/js/edit/vue-component-modal.js"></script>
 }
 
-
-<div id="container">
-    <div class="col-sm-2 sidenav leftnav">
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-text-background"></span> 코멘트</label></p>
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>
-    </div> 
-    <div class="col-sm-7 text-left"> 
-        <div class="tabs">
-            <div v-for="(page, index) in survey.pages">
-                <div class="tab">
-                    <label class="labelfor survey" v-if="index == 0" v-bind:class="{setting: survey === settings}"  v-on:click="surveyinfo">설문설정 <span v-bind:class="{sel: survey === settings}" class="glyphicon glyphicon-cog"></span></label>
-                    <input type="radio" :id="page.name + '_' + index" name="tabgroup" class="tabgroup" :checked="page == selectPage"  v-on:click="changedPage(index)" >
-                    <label class="labelfor" v-bind:class="{setting: page === settings}" :for="page.name + '_' + index">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>
-                    <label class="plus" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>
-                    <div class="tab-container">
-                        <controllayout-com :elements=page.elements :settings=settings :control=GlobalValues.control></controllayout-com>
+<div class="container-fluid text-center">    
+    <div class="row content">
+        <div id="container">
+            <div class="col-sm-2 sidenav leftnav">
+                <p><label href="#" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>
+                <p><label href="#" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>
+                <p><label href="#" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>
+                <p><label href="#" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-text-background"></span> 코멘트</label></p>
+                <p><label href="#" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>
+            </div> 
+            <div class="col-sm-7 text-left"> 
+                <div class="tabs">
+                    <div v-for="(page, index) in survey.pages">
+                        <div class="tab">
+                            <label class="labelfor survey" v-if="index == 0" v-bind:class="{setting: survey === settings}"  v-on:click="surveyinfo">설문설정 <span v-bind:class="{sel: survey === settings}" class="glyphicon glyphicon-cog"></span></label>
+                            <input type="radio" :id="page.name + '_' + index" name="tabgroup" class="tabgroup" :checked="page == selectPage"  v-on:click="changedPage(index)" >
+                            <label class="labelfor" v-bind:class="{setting: page === settings}" :for="page.name + '_' + index">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>
+                            <label class="plus" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>
+                            <div class="tab-container">
+                                <controllayout-com :elements=page.elements :settings=settings :control=GlobalValues.control></controllayout-com>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="col-sm-3 sidenav">
+            <settinglayout-com :settings=settings :options=options></settinglayout-com>
+            </div>
+            <modallayout-com :options=options></modallayout-com>
         </div>
     </div>
-    <div class="col-sm-3 sidenav">
-       <settinglayout-com :settings=settings :options=options></settinglayout-com>
-    </div>
 </div>
-
 <script>
     var EventBus = new Vue();
     var vue = new Vue({
@@ -52,6 +56,8 @@
             options : Options,
             selectPage : null,
             settings : null,
+            layerPopupOpened : false,
+            layerPostObj : null,
             survey: {
                     //title: "",
                     description : "",
@@ -168,7 +174,6 @@
                 if (('localStorage' in window) && window['localStorage'] != null){
                     localStorage.setItem('survey', JSON.stringify(this.survey));
                 }
-               
             },
             mounted  : function() {
                 if (('localStorage' in window) && window['localStorage'] != null) {
@@ -181,11 +186,8 @@
                 $("#container").show();
             },
             created : function() {
-                
                 EventBus.$on('edit', this.edit);
-                EventBus.$on('increment', this.increment);
                 window.addEventListener('keyup', this.keywatch);
-                
             }, 
             watch : {
                
