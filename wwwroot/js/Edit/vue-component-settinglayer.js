@@ -3,25 +3,25 @@ Vue.component('settinglayout-com', {
     template: '\
     <div>\
         <div class="setting-layout">\
-             <template v-for="(option, propertyName) in options[optionType]">\
-                    <string-setting-com v-if="option.type === options.types.String" :option=option :ko=option.ko :settings=settings :property=propertyName></string-setting-com>\
-                    <long-string-setting-com v-if="option.type === options.types.LongString" :option=option :ko=option.ko :settings=settings :property=propertyName></long-string-setting-com>\
-                    <checkbox-setting-com v-else-if="option.type === options.types.Boolean" :option=option :ko=option.ko :settings=settings :property=propertyName></checkbox-setting-com>\
-                    <int-setting-com v-else-if="option.type === options.types.Int" :option=option :ko=option.ko :settings=settings :property=propertyName></int-setting-com>\
-                    <drop-setting-com v-else-if="option.type === options.types.ShortInt" :option=option :ko=option.ko :settings=settings :property=propertyName></drop-setting-com>\
-                    <items-setting-com v-else-if="option.type === options.types.ChoiesArray" :option=option :ko=option.ko :settings=settings :property=propertyName></items-setting-com>\
+             <template v-for="(option, propertyName) in Options[optionType]">\
+                    <string-setting-com v-if="option.type === Options.types.String" :option=option :ko=option.ko :settings=settings :property=propertyName></string-setting-com>\
+                    <long-string-setting-com v-if="option.type === Options.types.LongString" :option=option :ko=option.ko :settings=settings :property=propertyName></long-string-setting-com>\
+                    <checkbox-setting-com v-else-if="option.type === Options.types.Boolean" :option=option :ko=option.ko :settings=settings :property=propertyName></checkbox-setting-com>\
+                    <int-setting-com v-else-if="option.type === Options.types.Int" :option=option :ko=option.ko :settings=settings :property=propertyName></int-setting-com>\
+                    <drop-setting-com v-else-if="option.type === Options.types.ShortInt" :option=option :ko=option.ko :settings=settings :property=propertyName></drop-setting-com>\
+                    <items-setting-com v-else-if="option.type === Options.types.ChoiesArray" :option=option :ko=option.ko :settings=settings :property=propertyName></items-setting-com>\
+                    <skip-setting-com v-else-if="option.type === Options.types.SkipArray" :option=option :ko=option.ko :settings=settings :property=propertyName></skip-setting-com >\
                     <template v-else />\
             </template>\
         </div>\
-        <div v-for="(value, propertyName) in settings">\
+        <!--<div v-for="(value, propertyName) in settings">\
             <div>{{ propertyName }}: {{ value }}</div>\
-        </div>\
+        </div>-->\
     </div>',
     data: function () { return {} },
-    props: { settings : { type: Object }, options : {type:Object}},
+    props: { settings : { type: Object }},
     computed : {
         optionType : function() {
-            //console.log(this.settings);
             if (this.settings == null)
                 return "";
             if ('pages' in this.settings)
@@ -56,8 +56,8 @@ Vue.component('long-string-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-md-6">{{ko}}</label>\
-        <div class="col-md-6">\
+        <label class="col-sm-6">{{ko}}</label>\
+        <div class="col-sm-6">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
                 <input type="text" class="form-control" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">수정</span>\
@@ -68,7 +68,7 @@ Vue.component('long-string-setting-com', {
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
     methods : {
         layerOpen : function () {
-            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type);
+            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, this.ko  + ' 수정');
         }
     },
     computed : {
@@ -78,15 +78,16 @@ Vue.component('long-string-setting-com', {
     }
 })
 
-Vue.component('items-setting-com', {
+
+Vue.component('skip-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-md-6">{{ko}}</label>\
-        <div class="col-md-6">\
+        <label class="col-sm-6">{{ko}}</label>\
+        <div class="col-sm-6">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
                 <input type="text" class="form-control" :placeholder=placeholder readonly>\
-                <span class="input-group-addon">Items</span>\
+                <span class="input-group-addon">편집</span>\
             </a>\
         </div>\
     </div>\
@@ -94,7 +95,33 @@ Vue.component('items-setting-com', {
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
     methods : {
         layerOpen : function () {
-            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type);
+            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, '건너뛰기 편집');
+        }
+    },
+    computed : {
+        placeholder : function() { 
+            //return 'items:' + this.settings[this.property].length;
+        }
+    }
+})
+
+Vue.component('items-setting-com', {
+    template: '\
+<span class="row">\
+    <div class="form-group text-left">\
+        <label class="col-sm-6">{{ko}}</label>\
+        <div class="col-sm-6">\
+            <a class="input-group" href="#" v-on:click=layerOpen>\
+                <input type="text" class="form-control" :placeholder=placeholder readonly>\
+                <span class="input-group-addon">항목</span>\
+            </a>\
+        </div>\
+    </div>\
+</span>',
+    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    methods : {
+        layerOpen : function () {
+            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, '아이템 편집');
         }
     },
     computed : {
@@ -109,8 +136,8 @@ Vue.component('checkbox-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-md-6">{{ko}}</label>\
-        <div class="col-md-6"><input type="checkbox" v-model="settings[property]"></div>\
+        <label class="col-sm-6">{{ko}}</label>\
+        <div class="col-sm-6"><input type="checkbox" v-model="settings[property]"></div>\
     </div>\
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}}
@@ -121,16 +148,11 @@ Vue.component('int-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-md-6">{{ko}}</label>\
-        <div class="col-md-6"><input class="form-control" v-model.number="settings[property]" :min="option.min" :max="option.max" type="number" v-on:keypress="disableDot" /></div>\
+        <label class="col-sm-6">{{ko}}</label>\
+        <div class="col-sm-6"><input class="form-control" v-model.number="settings[property]" :min="option.min" :max="option.max" type="number" /></div>\
     </div>\
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
-    methods : {
-        disableDot : function (e) {
-            e.preventDefault();
-        }
-    }
 })
 
 
@@ -138,8 +160,8 @@ Vue.component('drop-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-md-6">{{ko}}</label>\
-        <div class="col-md-6">\
+        <label class="col-sm-6">{{ko}}</label>\
+        <div class="col-sm-6">\
             <select class="form-control" v-model="settings[property]">\
                 <option v-for="o in selectOptions" v-bind:value="o.value">\
                     {{ o.text }}\
@@ -166,12 +188,13 @@ Vue.component('modallayout-com', {
     template: '\
 <div class="modal-mask" v-show="opened">\
     <div id="modal" class="panel panel-primary layer" :style=style>\
-        <items-com v-if="opened && type === options.types.ChoiesArray" :values=settings[property]></items-com>\
-        <longstring-com v-else-if="opened && type === options.types.LongString" :value=settings[property]></longstring-com>\
+        <div class="text-left header">{{header}}<button class="close" type="button" v-on:click=layerClose>×</button></div>\
+        <items-com v-if="opened && type === Options.types.ChoiesArray" :values=settings[property]></items-com>\
+        <longstring-com v-else-if="opened && type === Options.types.LongString" :value=settings[property]></longstring-com>\
     </div>\
 </div>',
-    data: function () { return {  opened : false, settings : null, property : '', type : '' } },
-    props: { options : { type : Object } },
+    data: function () { return {  opened : false, settings : null, property : '', type : '', header : '' } },
+    props: { },
     computed : {
         style : function() {
             var style = { display : 'none', marginTop: '-1px', marginLeft : '-1px'};
@@ -184,16 +207,18 @@ Vue.component('modallayout-com', {
         }, 
     }, 
     methods : {
-        layerOpen : function (settings, property, type) {
+        layerOpen : function (settings, property, type, header) {
             this.opened  = true;
             this.settings  = settings;
             this.property  = property;
             this.type  = type;
+            this.header =  header;
         }, 
         layerClose : function (val) {
-            console.log(val);
             this.opened  = false;
             this.settings[this.property] = val;
+            //vue.$set(this.settings, this.property, val);
+            vue.$forceUpdate(); // 강제 업데이트를 해줘야 함.... 자동으로 observe 하지 않음
         }
     },
     created : function() {
@@ -210,7 +235,7 @@ Vue.component('longstring-com', {
     <div class="modal-items">\
         <span class="row">\
             <div class="form-group">\
-                <div class="col-md-12">\
+                <div class="col-sm-12">\
                     <textarea type="text" class="form-control" v-model="text" rows="17" />\
                 </div>\
             </div>\
@@ -220,7 +245,7 @@ Vue.component('longstring-com', {
         <span class="row">\
             <div style="height:40px;">&nbsp;</div>\
             <div class="form-group">\
-                <div class="col-md-12">\
+                <div class="col-sm-12">\
                     <button class="btn btn-info" v-on:click=regist>확인</button>\
                     <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
                 </div>\
@@ -248,10 +273,10 @@ Vue.component('items-com', {
         <template v-for="(v, index) in copyData">\
             <span class="row">\
                 <div class="form-group">\
-                    <div class="col-md-10">\
+                    <div class="col-sm-10">\
                         <input type="text" class="form-control" v-model="copyData[index]" />\
                     </div>\
-                    <div class="col-md-2">\
+                    <div class="col-sm-2">\
                         <button class="btn btn-danger" v-on:click=deleteItem(index)>-</button>\
                     </div>\
                 </div>\
@@ -261,12 +286,12 @@ Vue.component('items-com', {
     <div class="modal-bottom">\
         <span class="row">\
             <div class="form-group">\
-                <div class="col-md-1">\
+                <div class="col-sm-1">\
                     <button class="btn btn-warning" v-on:click=appendItem>+</button>\
                 </div>\
             </div>\
             <div class="form-group">\
-                <div class="col-md-12">\
+                <div class="col-sm-12">\
                         <button class="btn btn-info" v-on:click=regist>확인</button>\
                         <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
                 </div>\

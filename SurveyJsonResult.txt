@@ -1,34 +1,6 @@
 {
-    "survey_answer":
-    [{
-        "type" : "text",
-        "name" : "question1",   <!-- 텍스트 -->
-        "answer" : "안녕하세요"
-    },
-    {
-        "type" : "radio",
-        "name" : "question2",
-        "answer" : ["아니오"],
-    },
-    {
-        "type" : "checkbox",
-        "name" : "question3",
-        "answer" : ["인터넷","약사회","기타"],
-        "answer_other" : "기타답변입니다."
-    },
-    {
-        "type":"rate",
-        "name" : "question4",
-        "answer" : "4"
-    },
-    {
-        "type": "comment",
-		"name": "question5",
-        "answer" : "comment 답변입니다."
-    }
-    ]
-
+    /*radio*/           {"question1" : "기타", "other_text_value" : "기타답변입니다."},               
+    /*checkbox*/        {"question3" : ["인터넷","약사회","기타"], "other_text_value" : "기타답변입니다."},
+    /*text or comment*/ {"question4" : "1"},
+    /*rate*/            {"question4" : "높음"},
 }
-
-{"question4" : [{ "value" : "인터넷"}, {"value" :"약사회"},{ "value" :"기타답변입니다", IsOther: true}]}
-

@@ -1,12 +1,13 @@
 ﻿
-Options = {
+const globalVal = { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment" }, question : 'question', page : 'page', maxCreatePage : 10 }
+  
+
+options = {
     survey : {
-        title : { ko : "제목", type : "String", 필수 : true }, 
-        background_color : { ko : "바탕색", type : "Color" },
-        font_color : { ko : "글자색", type : "Color" },
+        title : { ko : "제목", type : "LongString", 필수 : true }, 
         logo_text : { ko : "로고텍스트", type : "String" },
-        logo_background_color : { ko : "로고 바탕색", type : "Color" },
-         logo_font_color : { ko : "로고 바탕색", type : "Color" }
+        // logo_background_color : { ko : "로고 바탕색", type : "Color" },
+        // logo_font_color : { ko : "로고 바탕색", type : "Color" }
     }, 
     page : {
         name :  { ko : "페이지명", type : "String", 필수 : true },
@@ -43,7 +44,7 @@ Options = {
         title :  { ko : "제목", type : "LongString", 필수 : true },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean", 필수 : true },
-        choices :  { ko : "건너뛰기", type : "ChoiesArray", 필수 : true },
+        choices :  { ko : "선택항목", type : "ChoiesArray", 필수 : true },
         max_description :  { ko : "높은표시", type : "String", 필수 : true, default : "높음" },
         min_description :  { ko : "낮음표시", type : "String", 필수 : true, default : "낮음" },
     },
@@ -71,3 +72,20 @@ Options = {
         ShortInt : "ShortInt", 
     }
 }
+
+
+globalVal.install = function() {
+    Object.defineProperty(Vue.prototype, 'GlobalValues', {
+        get : function () { return globalVal }
+    })
+}
+Vue.use(globalVal);
+
+
+options.install = function() {
+    Object.defineProperty(Vue.prototype, 'Options', {
+        get : function () { return options }
+    })
+}
+Vue.use(options);
+
