@@ -80,8 +80,9 @@ Vue.component('controllayout-com', {
         edit :  function (el) {
             EventBus.$emit('edit', el);
         }, 
-        convertHtml : function(desc){
-            return desc.replace(/\n/g, "<br>");
+        convertHtml : function(desc){            
+            return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
+            
         }
     }
 })
@@ -95,7 +96,15 @@ Vue.component('choice-com', {
     data: function () { return {  row_per : ''} },
     props: { el: { type: Object, required: true }, choice: { type: String, required: true }, index : { type : Number, required: true }},
     computed : {
+        
         disabled : function () {
+            if (this.el.value instanceof Array) {
+                if (this.el.max_num < this.el.min_num) {
+                    return false;
+                }else {
+                    return this.el.value.length >= this.el.max_num && this.el.value.length >= this.el.min_num && this.el.value.indexOf(this.choice) === -1;
+                }
+            }
             return false;
         },
         uid : function() { 
@@ -119,15 +128,37 @@ Vue.component('choice-list-com', {
         <template v-for="(choice, index) in el.choices">\
             <choice-com :choice=choice :index=index :el=el></check-com>\
         </template>\<template>\<div v-if="el.is_other" :style="col_style">\
-                <input :type=el.type :name=el.name :id=uid :value=el.other_text v-model=el.value />\
+                <input :type=el.type :name=el.name :id=uid :value=el.other_text :disabled=disabled v-model=el.value />\
                 <label :for="uid">{{el.other_text}}</label>\
-                <input type="text" style="width:100px" :maxlength="el.other_text_len" v-model=el.other_text_value />\
+                <input type="text" style="width:100px" :maxlength="el.other_text_len" v-model=el.other_text_value :readonly=readonly />\
             </div>\
         </template>\
     </div>',
     data: function () { return { } },
     props: { el: { type: Object, required: true }},
     computed : {
+        readonly : function() {
+            var is_readonly = false;
+            if (this.el.value instanceof Array) {
+                is_readonly = this.el.value.indexOf(this.el.other_text) === -1;
+            }else{
+                is_readonly =  this.el.value !== this.el.other_text;
+            }
+            if(is_readonly) {
+                this.el.other_text_value = '';
+            }
+            return is_readonly;  
+        },
+        disabled : function () {
+            if (this.el.value instanceof Array) {
+                if (this.el.max_num < this.el.min_num) {
+                    return false;
+                }else {
+                    return this.el.value.length >= this.el.max_num && this.el.value.length >= this.el.min_num && this.el.value.indexOf(this.el.other_text) === -1;
+                }
+            }
+            return false;
+        },
         uid : function() { 
             return this.el.name + "_" + this._uid;
         },

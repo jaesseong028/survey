@@ -2,20 +2,24 @@ var EventBus = new Vue();
 var vue = new Vue({
     template : '\
 <div class="container-fluid text-center">\
-    <div class="row logo-container" style="margin-top:-10px;">\
-        <h2><label class="col-md-3 text-right">{{survey.logo_text}}</label></h2>\
-        <h4><div class="col-md-9 text-left">{{survey.title}}</div></h4>\
+    <div class="row logo-container">\
+        <h2><label class="col-sm-2 text-right">{{survey.logo_text}}</label></h2>\
+        <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
+        <div style="padding-top:20px; padding-left:-20px" class="col-sm-3 text-left">\
+            <label class="btn btn-success"> 저장 </label>\
+            <label class="btn btn-info">미리보기</label>\
+        </div>\
     </div>\
     <div class="row content">\
-        <div class="col-sm-2 sidenav leftnav">\
+        <div class="col-sm-1 sidenav leftnav">\
             <leftnav-com></leftnav-com>\
         </div>\
-        <div class="col-sm-7 text-left">\
+        <div class="col-sm-9 text-left">\
             <tab-page-com :survey=survey :settings=settings :select-page=selectPage></tab-page-com>\
         </div>\
-        <div class="col-sm-3 sidenav">\
+        <div class="col-sm-2 sidenav">\
             <settinglayout-com :settings=settings></settinglayout-com>\
-            {{$data|pretty}}\
+            <!--{{$data|pretty}}-->\
         </div>\
     </div>\
     <modallayout-com></modallayout-com>\
@@ -28,7 +32,6 @@ var vue = new Vue({
         layerPopupOpened : false,
         layerPostObj : null,
         survey: {
-            //title: "",
             description : "",
             background_color: "",
             font_color: "",
@@ -39,7 +42,6 @@ var vue = new Vue({
                 { name: "page1", elements: [] }
             ]
         },
-        
     },
     methods: {
         changedPage : function (index) {
