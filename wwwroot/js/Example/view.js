@@ -52,10 +52,8 @@ function createQT(data){
     //Description 
     if('description' in data)
     {
-        var elDescription = document.createElement('p');
-
-        
-        elDescription.innerHTML = data.description;
+        var elDescription = document.createElement('p');        
+        elDescription.innerHTML = data.description.replace(/(?:\r\n|\r|\n)/g,'<br />');
         elDescription.setAttribute('class','description');
         elDiv.appendChild(elDescription);
     }
@@ -132,8 +130,8 @@ function createOthersValue ( data , col_style ){
     elCR.setAttribute('id', data.name + '_Other');
     elCR.setAttribute('value', data.other_text);
 
-    if(data.type === 'radio')
-        elCR.setAttribute('name', data.name);
+    //if(data.type === 'radio')
+    elCR.setAttribute('name', data.name);
 
 
     elCR.addEventListener('change',function(){
@@ -199,9 +197,7 @@ function createCheckRadio ( data, type){
     }
 
     if('is_other' in data )
-    {
         elDiv.appendChild(createOthersValue(data, col_style));
-    }
     
     return elDiv;
 }
@@ -215,7 +211,8 @@ function createText( data ){
         var elText = document.createElement('input');
         elText.setAttribute('type', 'text');
         elText.setAttribute('id', data.name);
-        
+        elText.setAttribute('style','width:100%;');
+
         if('max_len' in data )
             elText.setAttribute('maxLength',data.max_len);
 
@@ -225,9 +222,9 @@ function createText( data ){
     {
         var elMText = document.createElement('textarea');
         elMText.setAttribute('id', data.name);
-        elMText.setAttribute('rows',5);
-        elMText.setAttribute('cols',30);
-        elMText.setAttribute('maxLength',30);
+        elMText.setAttribute('rows',data.rows);
+        elMText.setAttribute('maxLength',data.max_len);
+        elMText.setAttribute('style','width:100%;');
         elDiv.appendChild(elMText);
     }
     
@@ -383,7 +380,6 @@ function pageMove(){
 function domReady (){
     try
     {
-        console.log(111); 
         console.log(survey);
         var surveyJson = JSON.parse(survey);
         console.log(surveyJson);
