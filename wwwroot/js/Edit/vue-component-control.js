@@ -81,8 +81,8 @@ Vue.component('controllayout-com', {
             EventBus.$emit('edit', el);
         }, 
         convertHtml : function(desc){            
+            console.log(desc);
             return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
-            
         }
     }
 })

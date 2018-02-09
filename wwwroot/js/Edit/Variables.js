@@ -1,5 +1,5 @@
 ﻿
-const globalVal = { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment" }, question : 'question', page : 'page', maxCreatePage : 10 }
+const globalVal = { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment" }, question : 'question', page : 'page', maxCreatePage : 10, emptyString : "" }
   
 
 options = {
