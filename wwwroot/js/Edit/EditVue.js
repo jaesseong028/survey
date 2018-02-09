@@ -51,26 +51,57 @@ var vue = new Vue({
         surveyinfo : function(survey) {
             this.settings = survey;
         },
-        keywatch : function(evt) {
-            var canAction = function () { return ("type" in this.settings) && this.selectPage != null; };
-            if (evt.key == 'Delete' || evt.key == 'Del') {
-                if (canAction) {
-                    var idx = _.findIndex(this.selectPage.elements, this.settings);
-                    if(idx != -1) {
-                        this.selectPage.elements.splice(idx, 1);
-                        if (idx == this.selectPage.elements.length) {
-                            --idx;
-                        }
-                        this.settings = this.selectPage.elements[idx];
+        deleteSetting : function() {
+            var pageDeleteAction = "elements" in this.settings && this.selectPage != null;
+            var surveyDeleteAction = "type" in this.settings && this.selectPage != null;
+            var confirmFuc = function (type) { 
+                return confirm('해당 ' + type + ' 삭제 하시겠습니까?');
+            
+            }
+            if (pageDeleteAction) {
+
+                if(this.survey.pages.length == 1) {
+                    alert('최소 한개의 페이지는 존재해야 합니다.');
+                    return;
+                }
+                if (!confirmFuc('페이지를')){
+                    return;
+                }
+                var idx = _.findIndex(this.survey.pages, this.settings);
+                if(idx != -1) {
+                    this.survey.pages.splice(idx, 1);
+                    if (idx == this.survey.pages.length) {
+                        --idx;
                     }
+
+                    this.selectPage = this.survey.pages[idx];
+                    this.settings = this.survey.pages[idx];
                 }
             }
+
+            if (surveyDeleteAction){
+                if (!confirmFuc('설문을')){
+                    return;
+                }
+                var idx = _.findIndex(this.selectPage.elements, this.settings);
+                if(idx != -1) {
+                    this.selectPage.elements.splice(idx, 1);
+                    if (idx == this.selectPage.elements.length) {
+                        --idx;
+                    }
+                    this.settings = this.selectPage.elements[idx];
+                }
+            }
+        },
+        keywatch : function(evt) {
+
         },
         addsurvey: function (type) {
             var questionName = this.emptyName(this.GlobalValues.question);
             var item = { name: questionName, type: type, title: questionName, description: "", is_required : true, value : null};
             if (type == this.GlobalValues.control.checkbox || type == this.GlobalValues.control.radio) {
                 item.choices = ["item1", "item2", "item3"];
+                item.skip = {"choices":[], "skipQuestionNames":[] };
             }
 
             if (type == this.GlobalValues.control.checkbox) {
@@ -94,7 +125,6 @@ var vue = new Vue({
             activetab.animate({ scrollTop: activetab.prop("scrollHeight")}, 100);
         }, 
         edit : function (el) {
-
             this.settings = el;
         },
         emptyName : function(subOtType) {

@@ -82,14 +82,11 @@ function createChoiceValue ( data , choice , col_style ){
 
     var elCR = document.createElement('input');
     elCR.setAttribute('type', data.type == 'radio' ? data.type : 'checkbox');
-    
     elCR.setAttribute('id', data.name + '_' + choice);
-
     elCR.setAttribute('value', data.choices[choice]);
 
     //if(data.type === 'radio')
     elCR.setAttribute('name', data.name);
-
 
     elCR.addEventListener('change',function(){
         
@@ -135,8 +132,8 @@ function createOthersValue ( data , col_style ){
     elCR.setAttribute('id', data.name + '_Other');
     elCR.setAttribute('value', data.other_text);
 
-    //if(data.type === 'radio')
-    elCR.setAttribute('name', data.name);
+    if(data.type === 'radio')
+        elCR.setAttribute('name', data.name);
 
 
     elCR.addEventListener('change',function(){
@@ -205,9 +202,6 @@ function createCheckRadio ( data, type){
     {
         elDiv.appendChild(createOthersValue(data, col_style));
     }
-
-    //console.log(document.getElementsByName(data.name));
-    
     
     return elDiv;
 }
@@ -221,8 +215,7 @@ function createText( data ){
         var elText = document.createElement('input');
         elText.setAttribute('type', 'text');
         elText.setAttribute('id', data.name);
-        elText.setAttribute('style','width:100%;');
-
+        
         if('max_len' in data )
             elText.setAttribute('maxLength',data.max_len);
 
@@ -232,9 +225,9 @@ function createText( data ){
     {
         var elMText = document.createElement('textarea');
         elMText.setAttribute('id', data.name);
-        elMText.setAttribute('rows',data.rows);
-        elMText.setAttribute('maxLength',20);
-        elMText.setAttribute('style','width:100%;')
+        elMText.setAttribute('rows',5);
+        elMText.setAttribute('cols',30);
+        elMText.setAttribute('maxLength',30);
         elDiv.appendChild(elMText);
     }
     
@@ -293,9 +286,7 @@ function createQuestion( elements, elDivPage){
 
             // 라디오, 체크 박스
             if(surveyElement.type === 'radio' || surveyElement.type === 'checkbox')
-            {
                 elFieldset.appendChild(createCheckRadio(surveyElement));
-            }
             // 단일텍스트, 멀티 텍스트
             else if(surveyElement.type === 'text' || surveyElement.type === 'comment')
                 elFieldset.appendChild(createText(surveyElement));
@@ -438,7 +429,7 @@ function domReady (){
                         isVisiblePage(elDivPage,false);
 
                     surveyId.appendChild(createQuestion(elements, elDivPage ));
-                    
+
                     createPageBtn(elDivPage, pages.length, page);
                     
                 }

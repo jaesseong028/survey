@@ -44,12 +44,19 @@ Vue.component('string-setting-com', {
     <div class="form-group text-left">\
         <label class="col-md-6">{{ko}}</label>\
         <div class="col-md-6">\
-            <input class="form-control" v-model="settings[property]">\
+            <a class="input-group" href="#">\
+                <input class="form-control" v-model="settings[property]">\
+                <span v-if="property == \'name\'" class="input-group-addon delete" v-on:click=deleteSetting>X</span><!-- 페이지 또는 설문일 경우 삭제 하기 버튼 활성화 -->\
+            </a>\
         </div>\
     </div>\
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
-    
+    methods : {
+        deleteSetting : function(){
+            this.$root.deleteSetting();
+        }
+    }
 })
 
 Vue.component('long-string-setting-com', {
@@ -100,7 +107,9 @@ Vue.component('skip-setting-com', {
     },
     computed : {
         placeholder : function() { 
-            //return 'items:' + this.settings[this.property].length;
+            var qty = this.settings[this.property].skipQuestionNames.length;
+            if (qty != 0)
+                return  'skips:' + qty;
         }
     }
 })
@@ -191,6 +200,7 @@ Vue.component('modallayout-com', {
         <div class="text-left header">{{header}}<button class="close" type="button" v-on:click=layerClose>×</button></div>\
         <items-com v-if="opened && type === Options.types.ChoiesArray" :values=settings[property]></items-com>\
         <longstring-com v-else-if="opened && type === Options.types.LongString" :value=settings[property]></longstring-com>\
+        <skip-com v-else-if="opened && type === Options.types.SkipArray" :value=settings[property] :settings=settings></skip-com>\
     </div>\
 </div>',
     data: function () { return {  opened : false, settings : null, property : '', type : '', header : '' } },
@@ -200,6 +210,9 @@ Vue.component('modallayout-com', {
             var style = { display : 'none', marginTop: '-1px', marginLeft : '-1px'};
             if (this.opened) {
                 style.display = 'block';
+                if (this.type == this.Options.types.SkipArray){
+                    style.height = '600px';
+                }
                 style.marginTop = '-' + (($("#modal").outerHeight() / 2) + $(window).scrollTop()) + 'px';
                 style.marginLeft = '-' + (($("#modal").outerWidth() / 2) + $(window).scrollTop()) + 'px';
             }
@@ -216,6 +229,7 @@ Vue.component('modallayout-com', {
         }, 
         layerClose : function (val) {
             this.opened  = false;
+            console.log(val);
             this.settings[this.property] = val;
             //vue.$set(this.settings, this.property, val);
             vue.$forceUpdate(); // 강제 업데이트를 해줘야 함.... 자동으로 observe 하지 않음
@@ -227,6 +241,128 @@ Vue.component('modallayout-com', {
     }
 })
 
+
+Vue.component('skip-com', {
+    template: '\
+<div>\
+    <div class="modal-items">\
+            <span class="row">\
+                <div class="form-group">\
+                    <div class="col-md-6">\
+                        <div class="dropdown text-left">\
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">답변추가\
+                            <span class="caret"></span></button>\
+                            <ul class="dropdown-menu">\
+                                <template v-for="c in settings.choices">\
+                                    <li><a href="#" v-on:click="addChoice(c)">{{c}}</a></li>\
+                                </template>\
+                                <li v-if="settings.is_other">\
+                                    <a href="#" v-on:click="addChoice(settings.other_text)">{{settings.other_text}}</a>\
+                                </li>\
+                            </ul>\
+                            <button class="btn btn-danger" v-on:click=deleteChoice>삭제</button>\
+                        </div>\
+                    </div>\
+                    <div class="col-md-6">\
+                        <div class="dropdown text-left">\
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">질문추가\
+                            <span class="caret"></span></button>\
+                            <ul class="dropdown-menu">\
+                                <template v-for="q in questions">\
+                                    <li><a href="#" v-on:click="addQuestion(q)">{{q}}</a></li>\
+                                </template>\
+                            </ul>\
+                            <button class="btn btn-danger" v-on:click=deleteQuestion>삭제</button>\
+                        </div>\
+                    </div>\
+                </div>\
+            </span>\
+            <span class="row">\
+                <div class="form-group">\
+                    <div class="col-md-6">\
+                        <select name="sometext" multiple="multiple" v-model="choiceSelected" class="chosen-select form-control" size="11">\
+                            <option disable v-if="skip.choices.length == 0">답변을 선택하세요.</option>\
+                            <template v-for="c in skip.choices">\
+                                <option>{{c}}</option>\
+                            </template>\
+                        </select>\
+                    </div>\
+                    <div class="col-md-6">\
+                        <select name="sometext" multiple="multiple" v-model="questionSelected" class="chosen-select form-control" size="11">\
+                            <option disable v-if="skip.skipQuestionNames.length == 0">질문을 선택하세요.</option>\
+                            <template v-for="sq in skip.skipQuestionNames">\
+                                <option>{{sq}}</option>\
+                            </template>\
+                        </select>\
+                    </div>\
+                </div>\
+            </span>\
+    </div>\
+    <div class="modal-bottom">\
+        <span class="row">\
+             ※ 좌측에 있는 답을 선택 하였을 경우 우측의 질문은 선택 불가능 합니다.\
+        </span>\
+        <span class="row">\
+            <div>\
+                <div class="col-sm-12">\
+                    <button class="btn btn-info" v-on:click=regist>확인</button>\
+                    <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
+                </div>\
+            </div>\
+        </span>\
+    </div>\
+</div>',
+    data: function () { return { skip : this.value, choiceSelected : [], questionSelected : []} },
+    props: { value : { type : Object }, settings : { type : Array} },
+    //"skip" :{"choices":["예"], "skipQuestionNames":["question3"] },
+    computed : {
+        questions : function() {
+            var survery = this.$root.survey;
+            var dropData = [];
+            for (var p=0; p < survery.pages.length; p++) {
+                for (var e=0; e< survery.pages[p].elements.length; e++) {
+                    if(this.settings !== survery.pages[p].elements[e])
+                        dropData.push (survery.pages[p].elements[e].name);
+                }
+            }
+            return dropData;
+        }
+    },
+    methods : {
+        addQuestion : function(q) {
+            if (this.skip.skipQuestionNames.indexOf(q) == -1){
+                this.skip.skipQuestionNames.push(q);
+            }
+        },
+        deleteQuestion : function() {
+            for(var q = 0; q < this.questionSelected.length; q++) {
+                var idx = this.skip.skipQuestionNames.indexOf(q);
+                if(idx != -1) {
+                    this.skip.skipQuestionNames.splice(idx, 1);
+                }
+            }
+        },
+        addChoice : function(q) {
+            if (this.skip.choices.indexOf(q) == -1){
+                this.skip.choices.push(q);
+            }
+        },
+        deleteChoice : function() {
+            for(var q = 0; q < this.choiceSelected.length; q++) {
+                var idx = this.skip.choices.indexOf(q);
+                if(idx != -1) {
+                    this.skip.choices.splice(idx, 1);
+                }
+            }
+        },
+        regist : function() {
+            EventBus.$emit('layerClose', this.skip);
+        }, 
+        cancle : function(){
+            EventBus.$emit('layerClose', this.value);
+        }
+    }
+})
 
 
 Vue.component('longstring-com', {
@@ -311,10 +447,13 @@ Vue.component('items-com', {
             this.copyData.splice(index, 1);
         },
         regist : function() {
-            var data = _.filter(this.copyData, function(item){ return item !== ''; });
+            console.log(this.copyData);
+            var data = _.filter(this.copyData, function(item){ return item !== '' && item != null; });
             this.values.splice(0, this.values.length);
             for (var d in data) {
-                this.values.push(data[d]);
+                if (typeof data[d] == 'string'){
+                    this.values.push(data[d]);
+                }
             }
             EventBus.$emit('layerClose', this.values);
         }, 
