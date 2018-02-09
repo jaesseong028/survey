@@ -53,7 +53,9 @@ function createQT(data){
     if('description' in data)
     {
         var elDescription = document.createElement('p');
-        elDescription.innerText = data.description;
+
+        
+        elDescription.innerHTML = data.description;
         elDescription.setAttribute('class','description');
         elDiv.appendChild(elDescription);
     }
@@ -90,11 +92,31 @@ function createChoiceValue ( data , choice , col_style ){
 
 
     elCR.addEventListener('change',function(){
-        console.log(data.choices[choice]);
         
-        var count = document.querySelectorAll('input[name=' + data.name +']:checked');
-        console.log('count : ', count.length);
+        var itemList = document.querySelectorAll('input[name='+ data.name +']');
         
+        var CheckedItem = [].filter.call(itemList, function( el ) {
+            return el.checked;
+        });
+
+        var unCheckedItem = [].filter.call(itemList, function( el ) {
+            return !el.checked;
+        });
+
+        for(var i = 0; i < unCheckedItem.length; i ++)
+        {
+            if(CheckedItem.length >= data.max_num)
+                unCheckedItem[i].disabled = true;
+            else
+                unCheckedItem[i].disabled = false;
+        }
+
+        if(data.type === 'radio')
+        {
+            var itemText = document.querySelector('input[id='+ data.name +'_OtherText]');
+            itemText.value = '';
+        }
+
     });
 
     elQDiv.appendChild(elCR);
@@ -110,18 +132,49 @@ function createOthersValue ( data , col_style ){
 
     var elCR = document.createElement('input');
     elCR.setAttribute('type', data.type == 'radio' ? data.type : 'checkbox');
-    elCR.setAttribute('id', data.name + '_OtherText');
+    elCR.setAttribute('id', data.name + '_Other');
     elCR.setAttribute('value', data.other_text);
 
     //if(data.type === 'radio')
     elCR.setAttribute('name', data.name);
 
+
+    elCR.addEventListener('change',function(){
+        console.log(1);
+        var itemList = document.querySelectorAll('input[name='+ data.name +']');
+        
+        var CheckedItem = [].filter.call(itemList, function( el ) {
+            return el.checked;
+        });
+
+        var unCheckedItem = [].filter.call(itemList, function( el ) {
+            return !el.checked;
+        });
+
+        for(var i = 0; i < unCheckedItem.length; i ++)
+        {
+            if(CheckedItem.length >= data.max_num)
+                unCheckedItem[i].disabled = true;
+            else
+                unCheckedItem[i].disabled = false;
+            
+            // OtherCheckBox fale 일때 Text box 리셋
+            if(unCheckedItem[i].id === data.name + '_Other')
+            {
+                var itemText = document.querySelector('input[id='+ data.name +'_OtherText]');
+                itemText.value = '';
+            }
+        }
+    });
+
+
+
     elQDiv.appendChild(elCR);
-    elQDiv.appendChild(createQA(data.other_text, data.name + '_OtherText'));
+    elQDiv.appendChild(createQA(data.other_text, data.name + '_Other'));
     
     var elText = document.createElement('input');
     elText.setAttribute('type', 'text');
-    elText.setAttribute('id', data.name);
+    elText.setAttribute('id', data.name + '_OtherText');
     
     if('other_text_len' in data )
         elText.setAttribute('maxLength',data.other_text_len);
@@ -302,8 +355,8 @@ function addBtnEvent(elDivPage, btnType)
         var obj = this;
         var pObj = obj.parentNode;
         
-        console.log('obj',obj);
-        console.log('pObj',pObj);
+        // console.log('obj',obj);
+        // console.log('pObj',pObj);
         
         if(btnType == 'After')
         {
@@ -325,8 +378,11 @@ function addBtnEvent(elDivPage, btnType)
         }
     });
 
+
     elDivPage.appendChild(elBtn);
 }
+
+
 
 function pageMove(){
     //이동
@@ -336,6 +392,7 @@ function pageMove(){
 function domReady (){
     try
     {
+        console.log(111); 
         console.log(survey);
         var surveyJson = JSON.parse(survey);
         console.log(surveyJson);
@@ -395,6 +452,3 @@ function domReady (){
 
     }
 }
-
-    
-//})();

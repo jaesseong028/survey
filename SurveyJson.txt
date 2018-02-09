@@ -12,7 +12,7 @@
 		{
 			"type": "text",
 			"name": "question1",
-			"description" : "질문설명1",
+			"description" : "sdfgsdfg\n\nsdfgsdfg\n\nsdfg\nasdf\nqwqer",
 			"is_required" : true,
 			"title" : "질문타이틀1",
 			"max_len" : 20
@@ -26,15 +26,15 @@
 			"name": "question2",
 			"title":"질문타이틀2",
 			"is_required" : true,
-			"skip" :{"choices":["예"], "skinQuestionNames":["question3"] },
+			"skip" :{"choices":["예"], "skipQuestionNames":["question3"] },
 			"is_other" : true,
 			"other_text" :"기타",
 			"other_text_len": 100
 		},
 		{
 			"type":"checkbox",
-			"choices" : ["인터넷","약사회","의사랑"],
-			"skip" :{"choices":["인터넷", "약사회"], "skinQuestionNames":["question4", "question5"]},
+			"choices" : ["인터넷","약사회","의사랑","의사랑1","의사랑2","의사랑3","의사랑4"],
+			"skip" :{"choices":["인터넷", "약사회"], "skipQuestionNames":["question4", "question5"]},
 			"col_count" : 2,
 			"description":"질문설명3",
 			"name": "question3",
