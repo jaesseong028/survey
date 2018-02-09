@@ -216,6 +216,7 @@ Vue.component('modallayout-com', {
         }, 
         layerClose : function (val) {
             this.opened  = false;
+            console.log(val);
             this.settings[this.property] = val;
             //vue.$set(this.settings, this.property, val);
             vue.$forceUpdate(); // 강제 업데이트를 해줘야 함.... 자동으로 observe 하지 않음
@@ -311,11 +312,15 @@ Vue.component('items-com', {
             this.copyData.splice(index, 1);
         },
         regist : function() {
-            var data = _.filter(this.copyData, function(item){ return item !== ''; });
+            console.log(this.copyData);
+            var data = _.filter(this.copyData, function(item){ return item !== '' && item != null; });
             this.values.splice(0, this.values.length);
             for (var d in data) {
-                this.values.push(data[d]);
+                if (typeof data[d] == 'string'){
+                    this.values.push(data[d]);
+                }
             }
+
             EventBus.$emit('layerClose', this.values);
         }, 
         cancle : function(){
