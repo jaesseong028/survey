@@ -29,6 +29,7 @@
 			"skip" :{"choices":["예"], "skipQuestionNames":["question3"] },
 			"is_other" : true,
 			"other_text" :"기타",
+			"other_text_width" : 100,
 			"other_text_len": 100
 		},
 		{
@@ -44,6 +45,7 @@
 			"is_required" : true,
 			"is_other" : true,
 			"other_text" :"기타",
+			"other_text_width" : 100,
 			"other_text_max_len": 100
 		},
 		{
