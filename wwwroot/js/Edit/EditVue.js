@@ -15,7 +15,7 @@ var vue = new Vue({
             <leftnav-com></leftnav-com>\
         </div>\
         <div class="col-sm-9 text-left">\
-            <tab-page-com :survey=survey :settings=settings :select-page=selectPage></tab-page-com>\
+            <tab-page-com :survey=survey :skipQuestions=skipQuestions :settings=settings :select-page=selectPage></tab-page-com>\
         </div>\
         <div class="col-sm-2 sidenav">\
             <settinglayout-com :settings=settings></settinglayout-com>\
@@ -31,6 +31,7 @@ var vue = new Vue({
         settings : null,
         layerPopupOpened : false,
         layerPostObj : null,
+        focusedQeustionName : '', // 
         survey: {
             description : "",
             background_color: "",
@@ -174,12 +175,47 @@ var vue = new Vue({
             localStorage.setItem('survey', JSON.stringify(this.survey));
         }
     },
+    computed : {
+        skipQuestions : function (){ 
+            
+            var s = this.$root.survey;
+            var containVal = false;
+            var skip_Questions = [];
+            for (var p=0; p < s.pages.length; p++) {
+                for (var e=0; e <s.pages[p].elements.length; e++) {
+                    if ('skip' in s.pages[p].elements[e]) {
+                        if (s.pages[p].elements[e].value instanceof Array) {
+                            for (var i = 0; i < s.pages[p].elements[e].value.length; i++) {
+                                if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value[i]) > -1) {
+                                    for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
+                                        if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
+                                            skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value) > -1) {
+                                for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
+                                    if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
+                                        skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return skip_Questions;
+        }
+    },
     mounted  : function() {
         if (('localStorage' in window) && window['localStorage'] != null) {
             var data = JSON.parse(localStorage.getItem('survey'));
             if(data != null)
                 this.survey = JSON.parse(localStorage.getItem('survey'));
         }
+        
         this.selectPage = this.survey.pages[0];
         this.settings = this.survey.pages[0];
         $("#container").show();

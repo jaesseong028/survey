@@ -48,5 +48,6 @@ span.row { padding: 20px}
 .setting-layout input:read-only { background-color: #fff;}
 textarea {resize: none;}
 
-.modal-items option {font-size : 20px}
+.modal-items option {font-size : 17px}
+.modal-items option.disable {height: 10px;}
 .setting-layout .delete { color: red }

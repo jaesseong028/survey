@@ -42,12 +42,17 @@ Vue.component('string-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-md-6">{{ko}}</label>\
-        <div class="col-md-6">\
-            <a class="input-group" href="#">\
+        <label class="col-md-4">{{ko}}</label>\
+        <div class="col-md-8">\
+            <template v-if="property == \'name\'">\
+                <a class="input-group" href="#">\
+                    <input class="form-control" v-on:focus=onfocus v-on:blur=onblur v-model="settings[property]">\
+                    <span class="input-group-addon delete" v-on:click=deleteSetting>X</span><!-- 페이지 또는 설문일 경우 삭제 하기 버튼 활성화 -->\
+                </a>\
+            </template>\
+            <template v-else="">\
                 <input class="form-control" v-model="settings[property]">\
-                <span v-if="property == \'name\'" class="input-group-addon delete" v-on:click=deleteSetting>X</span><!-- 페이지 또는 설문일 경우 삭제 하기 버튼 활성화 -->\
-            </a>\
+            </template>\
         </div>\
     </div>\
 </span>',
@@ -55,6 +60,44 @@ Vue.component('string-setting-com', {
     methods : {
         deleteSetting : function(){
             this.$root.deleteSetting();
+        }, 
+        onfocus : function() {
+            if (this.property == 'name') {
+                this.$root.focusedQeustionName = this.settings[this.property];
+            }
+        }, 
+        onblur : function() {
+            if (this.property == 'name') {
+
+                var newValue = this.settings[this.property];
+                var oldValue = this.$root.focusedQeustionName;
+
+                var survery = this.$root.survey;
+                for (var p=0; p < survery.pages.length; p++) {
+                    for (var e=0; e< survery.pages[p].elements.length; e++) {
+                        /// 동일한 이름 체크 ///
+                        if (survery.pages[p].elements[e] != this.settings) {
+                            console.log(survery.pages[p].elements[e].name);
+                            if (survery.pages[p].elements[e].name == newValue) {
+                                newValue = this.$root.emptyName(this.GlobalValues.question);
+                                this.settings[this.property] = newValue;
+                                vue.$forceUpdate();
+                                alert('이미 다른 곳에 사용중인 이름입니다.');
+                            }
+                        }
+                        /// 동일한 이름 체크 ///
+                        
+                        /// Skip 부분에 설문 이름이 변경 된것을 찾아 바꿔줌
+                        if ('skip' in survery.pages[p].elements[e]) {
+                            var idx = survery.pages[p].elements[e].skip.skipQuestionNames.indexOf(oldValue);
+                            if (idx != -1) {
+                                survery.pages[p].elements[e].skip.skipQuestionNames[idx] = newValue;
+                            }
+                        }
+                        /// Skip 부분에 설문 이름이 변경 된것을 찾아 바꿔줌
+                    }
+                }
+            }
         }
     }
 })
@@ -63,8 +106,8 @@ Vue.component('long-string-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-sm-6">{{ko}}</label>\
-        <div class="col-sm-6">\
+        <label class="col-sm-4">{{ko}}</label>\
+        <div class="col-sm-8">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
                 <input type="text" class="form-control" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">수정</span>\
@@ -90,8 +133,8 @@ Vue.component('skip-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-sm-6">{{ko}}</label>\
-        <div class="col-sm-6">\
+        <label class="col-sm-4">{{ko}}</label>\
+        <div class="col-sm-8">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
                 <input type="text" class="form-control" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">편집</span>\
@@ -118,8 +161,8 @@ Vue.component('items-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-sm-6">{{ko}}</label>\
-        <div class="col-sm-6">\
+        <label class="col-sm-4">{{ko}}</label>\
+        <div class="col-sm-8">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
                 <input type="text" class="form-control" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">항목</span>\
@@ -145,8 +188,8 @@ Vue.component('checkbox-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-sm-6">{{ko}}</label>\
-        <div class="col-sm-6"><input type="checkbox" v-model="settings[property]"></div>\
+        <label class="col-sm-4">{{ko}}</label>\
+        <div class="col-sm-8"><input type="checkbox" v-model="settings[property]"></div>\
     </div>\
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}}
@@ -157,8 +200,8 @@ Vue.component('int-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-sm-6">{{ko}}</label>\
-        <div class="col-sm-6"><input class="form-control" v-model.number="settings[property]" :min="option.min" :max="option.max" type="number" /></div>\
+        <label class="col-sm-4">{{ko}}</label>\
+        <div class="col-sm-8"><input class="form-control" v-model.number="settings[property]" :min="option.min" :max="option.max" type="number" /></div>\
     </div>\
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
@@ -169,8 +212,8 @@ Vue.component('drop-setting-com', {
     template: '\
 <span class="row">\
     <div class="form-group text-left">\
-        <label class="col-sm-6">{{ko}}</label>\
-        <div class="col-sm-6">\
+        <label class="col-sm-4">{{ko}}</label>\
+        <div class="col-sm-8">\
             <select class="form-control" v-model="settings[property]">\
                 <option v-for="o in selectOptions" v-bind:value="o.value">\
                     {{ o.text }}\
@@ -197,10 +240,10 @@ Vue.component('modallayout-com', {
     template: '\
 <div class="modal-mask" v-show="opened">\
     <div id="modal" class="panel panel-primary layer" :style=style>\
-        <div class="text-left header">{{header}}<button class="close" type="button" v-on:click=layerClose>×</button></div>\
+        <div class="text-left header">{{header}}<button class="close" type="button" v-on:click=closedHeaderClick>×</button></div>\
         <items-com v-if="opened && type === Options.types.ChoiesArray" :values=settings[property]></items-com>\
-        <longstring-com v-else-if="opened && type === Options.types.LongString" :value=settings[property]></longstring-com>\
-        <skip-com v-else-if="opened && type === Options.types.SkipArray" :value=settings[property] :settings=settings></skip-com>\
+        <longstring-com v-else-if="opened && type === Options.types.LongString" :settingInfo=settings[property]></longstring-com>\
+        <skip-com v-else-if="opened && type === Options.types.SkipArray" :settingInfo=settings[property] :settings=settings></skip-com>\
     </div>\
 </div>',
     data: function () { return {  opened : false, settings : null, property : '', type : '', header : '' } },
@@ -227,12 +270,16 @@ Vue.component('modallayout-com', {
             this.type  = type;
             this.header =  header;
         }, 
+        closedHeaderClick : function(){
+            this.opened  = false;
+        },
         layerClose : function (val) {
             this.opened  = false;
-            console.log(val);
-            this.settings[this.property] = val;
-            //vue.$set(this.settings, this.property, val);
-            vue.$forceUpdate(); // 강제 업데이트를 해줘야 함.... 자동으로 observe 하지 않음
+            if (val != null){
+                this.settings[this.property] = val;
+                //vue.$set(this.settings, this.property, val);
+                vue.$forceUpdate(); // 강제 업데이트를 해줘야 함.... 자동으로 observe 하지 않음
+            }
         }
     },
     created : function() {
@@ -280,7 +327,7 @@ Vue.component('skip-com', {
             <span class="row">\
                 <div class="form-group">\
                     <div class="col-md-6">\
-                        <select name="sometext" multiple="multiple" v-model="choiceSelected" class="chosen-select form-control" size="11">\
+                        <select name="sometext" multiple="multiple" v-model="choiceSelected" class="chosen-select form-control" size="12">\
                             <option disable v-if="skip.choices.length == 0">답변을 선택하세요.</option>\
                             <template v-for="c in skip.choices">\
                                 <option>{{c}}</option>\
@@ -288,7 +335,7 @@ Vue.component('skip-com', {
                         </select>\
                     </div>\
                     <div class="col-md-6">\
-                        <select name="sometext" multiple="multiple" v-model="questionSelected" class="chosen-select form-control" size="11">\
+                        <select name="sometext" multiple="multiple" v-model="questionSelected" class="chosen-select form-control" size="12">\
                             <option disable v-if="skip.skipQuestionNames.length == 0">질문을 선택하세요.</option>\
                             <template v-for="sq in skip.skipQuestionNames">\
                                 <option>{{sq}}</option>\
@@ -306,23 +353,23 @@ Vue.component('skip-com', {
             <div>\
                 <div class="col-sm-12">\
                     <button class="btn btn-info" v-on:click=regist>확인</button>\
-                    <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
+                    <button class="btn btn-secondary" v-on:click=layerClose>취소</button>\
                 </div>\
             </div>\
         </span>\
     </div>\
 </div>',
-    data: function () { return { skip : this.value, choiceSelected : [], questionSelected : []} },
-    props: { value : { type : Object }, settings : { type : Array} },
-    //"skip" :{"choices":["예"], "skipQuestionNames":["question3"] },
+    data: function () { return { skip : this.settingInfo, choiceSelected : [], questionSelected : []} },
+    props: { settingInfo : { type : Object }, settings : { type : Array} },
     computed : {
         questions : function() {
             var survery = this.$root.survey;
             var dropData = [];
             for (var p=0; p < survery.pages.length; p++) {
                 for (var e=0; e< survery.pages[p].elements.length; e++) {
-                    if(this.settings !== survery.pages[p].elements[e])
+                    if(this.settings !== survery.pages[p].elements[e]){
                         dropData.push (survery.pages[p].elements[e].name);
+                    }
                 }
             }
             return dropData;
@@ -336,7 +383,7 @@ Vue.component('skip-com', {
         },
         deleteQuestion : function() {
             for(var q = 0; q < this.questionSelected.length; q++) {
-                var idx = this.skip.skipQuestionNames.indexOf(q);
+                var idx = this.skip.skipQuestionNames.indexOf(this.questionSelected[q]);
                 if(idx != -1) {
                     this.skip.skipQuestionNames.splice(idx, 1);
                 }
@@ -349,17 +396,23 @@ Vue.component('skip-com', {
         },
         deleteChoice : function() {
             for(var q = 0; q < this.choiceSelected.length; q++) {
-                var idx = this.skip.choices.indexOf(q);
+                var idx = this.skip.choices.indexOf(this.choiceSelected[q]);
                 if(idx != -1) {
                     this.skip.choices.splice(idx, 1);
                 }
             }
         },
         regist : function() {
+
+            if (this.skip.skipQuestionNames.length == 0 || this.skip.choices.length == 0){
+                this.skip.skipQuestionNames = [];
+                this.skip.choices = [];
+            }
+            
             EventBus.$emit('layerClose', this.skip);
         }, 
-        cancle : function(){
-            EventBus.$emit('layerClose', this.value);
+        layerClose : function () {
+            EventBus.$emit('layerClose', null);
         }
     }
 })
@@ -383,20 +436,20 @@ Vue.component('longstring-com', {
             <div class="form-group">\
                 <div class="col-sm-12">\
                     <button class="btn btn-info" v-on:click=regist>확인</button>\
-                    <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
+                    <button class="btn btn-secondary" v-on:click=layerClose>취소</button>\
                 </div>\
             </div>\
         </span>\
     </div>\
 </div>',
-    data: function () { return { text : this.value } },
-    props: { value : { type : String } },
+    data: function () { return { text : this.settingInfo } },
+    props: { settingInfo : { type : String } },
     methods : {
         regist : function() {
             EventBus.$emit('layerClose', this.text);
         }, 
-        cancle : function(){
-            EventBus.$emit('layerClose', this.value);
+        layerClose : function(){
+            EventBus.$emit('layerClose', null);
         }
     }
 })
@@ -429,7 +482,7 @@ Vue.component('items-com', {
             <div class="form-group">\
                 <div class="col-sm-12">\
                         <button class="btn btn-info" v-on:click=regist>확인</button>\
-                        <button class="btn btn-secondary" v-on:click=cancle>취소</button>\
+                        <button class="btn btn-secondary" v-on:click=layerClose>취소</button>\
                 </div>\
             </div>\
         </span>\
@@ -447,18 +500,11 @@ Vue.component('items-com', {
             this.copyData.splice(index, 1);
         },
         regist : function() {
-            console.log(this.copyData);
             var data = _.filter(this.copyData, function(item){ return item !== '' && item != null; });
-            this.values.splice(0, this.values.length);
-            for (var d in data) {
-                if (typeof data[d] == 'string'){
-                    this.values.push(data[d]);
-                }
-            }
-            EventBus.$emit('layerClose', this.values);
+            EventBus.$emit('layerClose', data);
         }, 
-        cancle : function(){
-            EventBus.$emit('layerClose', this.values);
+        layerClose : function(){
+            EventBus.$emit('layerClose', null);
         }
     }
 })
