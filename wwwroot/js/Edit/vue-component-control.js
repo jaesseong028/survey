@@ -105,15 +105,17 @@ Vue.component('leftnav-com', {
 Vue.component('controllayout-com', {
     template: '\
     <div>\
-            <div v-for="(el, index) in elements" :style="skipStyle(el)">\
+            <div v-for="(el, index) in elements">\
                 <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
-                    <label class="required" v-if="el.is_required">* </label><label class="question">{{el.title}}</label>\
-                    <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
-                    <choice-list-com v-if="el.type === GlobalValues.control.radio || el.type === GlobalValues.control.checkbox" :el=el></choice-list-com>\
-                    <text-com v-else-if="el.type === GlobalValues.control.text" :el=el></text-com>\
-                    <comment-com v-else-if="el.type === GlobalValues.control.comment" :el=el></comment-com>\
-                    <rate-list-com v-else-if="el.type === GlobalValues.control.rate" :el=el></rate-list-com>\
-                    <template v-else/>\
+                    <div :style="skipStyle(el)">\
+                        <label class="required" v-if="el.is_required">* </label><label class="question">{{el.title}}</label>\
+                        <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
+                        <choice-list-com v-if="el.type === GlobalValues.control.radio || el.type === GlobalValues.control.checkbox" :el=el></choice-list-com>\
+                        <text-com v-else-if="el.type === GlobalValues.control.text" :el=el></text-com>\
+                        <comment-com v-else-if="el.type === GlobalValues.control.comment" :el=el></comment-com>\
+                        <rate-list-com v-else-if="el.type === GlobalValues.control.rate" :el=el></rate-list-com>\
+                        <template v-else/>\
+                    </div>\
                 </fieldset>\
             </div>\
     </div>',
@@ -122,7 +124,7 @@ Vue.component('controllayout-com', {
         skipStyle : function (el) {
             var style = { "opacity": 1, "pointer-events": ''};
             if (this.skipQuestions.indexOf(el.name) > -1){
-                style.opacity = 0.5;
+                style.opacity = 0.3;
                 style.pointerEvents = 'none';
                 if(el.value instanceof Array) { 
                     el.value = [];
@@ -150,7 +152,7 @@ Vue.component('choice-list-com', {
         </template>\<template>\<div v-if="el.is_other" :style="col_style">\
                 <input :type=el.type :name=el.name :id=uid :value=el.other_text :disabled=disabled v-model=el.value />\
                 <label :for="uid">{{el.other_text}}</label>\
-                <input type="text" style="width:100px" :maxlength="el.other_text_len" v-model=el.other_text_value :readonly=readonly />\
+                <input type="text" :maxlength="el.other_text_len" v-model=el.other_text_value :readonly=readonly />\
             </div>\
         </template>\
     </div>',

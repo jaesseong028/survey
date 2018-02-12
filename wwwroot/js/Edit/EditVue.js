@@ -150,7 +150,6 @@ var vue = new Vue({
                 }
             }
 
-
             if (arr.length == 0)
                 return subOtType + "1";
 

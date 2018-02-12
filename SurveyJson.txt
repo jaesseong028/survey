@@ -1,6 +1,6 @@
 {
 "survey" :
-	{
+	[{
 	"title" : "의사랑 설문 조사 입니다.",
 	
 	"pages": [
@@ -12,7 +12,7 @@
 		{
 			"type": "text",
 			"name": "question1",
-			"description" : "sdfgsdfg\n\nsdfgsdfg\n\nsdfg\nasdf\nqwqer",
+			"description" : "질문설명1",
 			"is_required" : true,
 			"title" : "질문타이틀1",
 			"max_len" : 20
@@ -33,7 +33,7 @@
 		},
 		{
 			"type":"checkbox",
-			"choices" : ["인터넷","약사회","의사랑","의사랑1","의사랑2","의사랑3","의사랑4"],
+			"choices" : ["인터넷","약사회","의사랑"],
 			"skip" :{"choices":["인터넷", "약사회"], "skipQuestionNames":["question4", "question5"]},
 			"col_count" : 2,
 			"description":"질문설명3",
@@ -81,5 +81,5 @@
 			"max_len" : 20
 		}]
 	}]
-	}
+	}]
 }
