@@ -31,7 +31,6 @@ var cdom = {
     },
     append: function(o){
         var obj = cdom.get(o);
-        console.log(1234,obj);
         this.element.appendChild(obj.element);
         return obj;
     },
@@ -39,6 +38,11 @@ var cdom = {
         this.element.appendChild(document.createTextNode(t));
         return this;
     },
+    // html: function(t){
+    //     this.element.appendChild()
+    // }
+    
+    // ,
     attribute: function(k, v){
         this.element.setAttribute(k,v);
         return this;
@@ -67,7 +71,7 @@ var cdom = {
 }
 
 
-function createSurvey()
+function createSurveySet()
 {
     var elSurvey = cdom.get('div').css('survey');
     elSurvey.append('div')
@@ -88,15 +92,18 @@ function createSurvey()
 //     </div>
 // </div>
 /////////////////////////////////////// 
-function createPage()
+function createPageSet()
 {
     var elPage = cdom.get('div').css('page');
     elPage.append('div')
             .css('header')
             .append('p')
-                .css('titile')
+                .css('title')
             .insert('p')
                 .css('description');
+    elPage.append('div')
+            .css('questions');
+
     return elPage.element;
 }
 // ////////////////////////////////////
@@ -134,6 +141,36 @@ function createQuestionItems()
 
 }
 
+function createQuestion(elPage, questions)
+{
+    //Question Create
+    for(var p in questions)
+    {
+        console.log(questions[p]);
+
+        if(questions.hasOwnProperty(p))
+        {
+            var elQuestion = createQuestionSet();
+            
+            //Page iD
+            cdom.get(elQuestion).attribute('id',questions[p].name);
+            
+            if(('is_required' in questions[p]) && (questions[p].is_required == true))
+                cdom.getcss(elQuestion,'title',0).append('strong').text('*');
+            
+            //Page title
+            cdom.getcss(elQuestion,'title',0).text(questions[p].title);
+            
+            //Page description
+            cdom.getcss(elQuestion,'description',0).text(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+
+            cdom.getcss(elPage,'questions',0).append(elQuestion);
+
+        }
+    }
+}
+
+
 
 function domReady (){
     try
@@ -145,32 +182,43 @@ function domReady (){
         if( ('survey' in surveyJson) && ('pages' in surveyJson.survey) && ('title' in surveyJson.survey))
         {
             //Create Survey 
-            var elSurvey = createSurvey();
+            var elSurvey = createSurveySet();
 
             //Survey Title
             cdom.getcss(elSurvey,'title',0).text(surveyJson.survey.title);
             
-            //SUrvey Page
+            //Survey Page
             var pages  = surveyJson.survey.pages;
-
-            for(var page in pages)
+            
+            for(var p in pages)
             {
-                if(pages.hasOwnProperty(page))
+                if(pages.hasOwnProperty(p))
                 {
-                    //pages[page].element;
-                    var elPage = createPage();
-                    
+                    //Page element 
+                    var elPage = createPageSet();
 
+                    //Page iD
+                    cdom.get(elPage).attribute('id',pages[p].name);
+                    //Page title
+                    cdom.getcss(elPage,'title',0).text(pages[p].title);
+                    //Page description
+                    cdom.getcss(elPage,'description',0).text(pages[p].description);
 
+                    //Page Question
+                    if(('elements') in pages[p])
+                    {
+                        createQuestion(elPage, pages[p].elements);
 
+                    }
 
+                    cdom.getcss(elSurvey,'page-set',0).append(elPage);                    
                 }
             }
 
 
-
-
             surveyId.appendChild(elSurvey);
+
+            
 
 
 
@@ -178,21 +226,6 @@ function domReady (){
             //Page Set 생성
 
             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         }
 
