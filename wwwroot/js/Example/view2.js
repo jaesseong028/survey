@@ -11,9 +11,9 @@ else if (document.attachEvent) {
         if (document.readyState === "complete") { 
             document.detachEvent("onreadystatechange", arguments.callee); 
             domReady(); 
-        } 
+        }
     });
-} 
+}
 
 var cdom = {
     element: null,
@@ -32,6 +32,12 @@ var cdom = {
     append: function(o){
         var obj = cdom.get(o);
         this.element.appendChild(obj.element);
+        return obj;
+    },
+    insert: function(o){
+        var obj = cdom.get(o);
+        pelement = this.element.parentNode;
+        pelement.insertBefore(obj.element,this.element.nextSibling);
         return obj;
     },
     text: function(t){
@@ -58,18 +64,22 @@ var cdom = {
             console.log('IE9이상');
             this.element.addEventListener(e, f, false);
         }
-
         return this;
-    },
-    insert: function(o){
-        var obj = cdom.get(o);
-        pelement = this.element.parentNode;
-        pelement.insertBefore(obj.element,this.element.nextSibling);
-        return obj;
     }
 }
 
-
+// ////////////////////////////////////
+// /// Survey Set 생성
+// ////////////////////////////////////
+// <div class='survey'>
+//     <div class='header'>
+//         <p class='title'></p>
+//         <p class='description'></p>
+//     </div>
+//     <div class='page-set'>
+//     </div>
+// </div>
+///////////////////////////////////////
 function createSurveySet()
 {
     var elSurvey = cdom.get('div').css('survey');
@@ -169,15 +179,16 @@ function createCheckRadio( elItems, items )
                         .attribute('id',items.name + '_other')
                         .attribute('value',items.other_text)
                         .attribute('name', items.name)
-                        .css('i_' + items.type)
+                        .css('i_' + items.type + '_other')
                     .insert('label')
-                        .css('lbl_' + items.type)
+                        .css('lbl_' + items.type + '_other')
                         .attribute('for', items.name + '_other')
                         .inhtml(items.other_text)
                     .insert('input')
                         .attribute('type','text')
                         .attribute('id',items.name + '_other')
-                        .attribute('maxLength',items.other_text_len);
+                        .attribute('maxLength',items.other_text_len)
+                        .css('txt_' + items.type + '_other');
         
         cdom.getcss(elItems,'items',0).append(elOtherItem.element);
     }
@@ -213,8 +224,43 @@ function createTextBox( elItems, items )
 
 //Rate Box Create
 function createRate( elItems, items )
-{
-    
+{   
+    var elItem = cdom.get('div').css(items.type + '_set');
+
+    if('min_description' in items)
+    {
+        elItem.append('spen')
+                .css('min_description')
+                .inhtml(items.min_description);
+    }
+
+    for(var p in items.choices)
+    {
+        if(items.choices.hasOwnProperty(p))
+        {
+            elItem.append('input')
+                        .attribute('type', 'radio')
+                        .attribute('id', items.name + '_' + p)
+                        .attribute('value', items.choices[p])
+                        .attribute('name', items.name)
+                        .css('i_' + items.type)
+                    .insert('label')
+                        .css('lbl_' + items.type)
+                        .attribute('for', items.name + '_' + p)
+                        .inhtml(items.choices[p]);
+            
+        }
+    }
+
+    if('max_description' in items)
+    {
+        elItem.append('spen')
+                .css('max_description')
+                .inhtml(items.max_description);
+    }
+
+    cdom.getcss(elItems,'items',0).append(elItem.element);
+
 }
 
 function createQuestion(elPage, questions)
@@ -222,41 +268,35 @@ function createQuestion(elPage, questions)
     //Question Create
     for(var p in questions)
     {
-
         if(questions.hasOwnProperty(p))
         {
             var elQuestion = createQuestionSet();
             
-            //Page iD
+            // Page iD
             cdom.get(elQuestion).attribute('id',questions[p].name);
-            //Page Required
+            // Page Required
             if(('is_required' in questions[p]) && (questions[p].is_required == true))
                 cdom.getcss(elQuestion,'title',0).append('strong').text('*');
-            //Page title
+            // Page title
             cdom.getcss(elQuestion,'title',0).text(questions[p].title);            
-            //Page description
+            // Page description
             cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
 
-            // items
+            // items Setting
             // radio, check box
             if(questions[p].type === 'radio' || questions[p].type === 'checkbox')
                 createCheckRadio(elQuestion, questions[p]);
-            
-            //text, multi text
+            // text, multi text
             else if(questions[p].type === 'text' || questions[p].type === 'comment')
                 createTextBox(elQuestion, questions[p]);
             // rate
             else if(questions[p].type === 'rate')
                 createRate(elQuestion, questions[p]);
 
-
             cdom.getcss(elPage,'questions',0).append(elQuestion);
-
         }
     }
 }
-
-
 
 function domReady (){
     try
@@ -267,30 +307,30 @@ function domReady (){
 
         if( ('survey' in surveyJson) && ('pages' in surveyJson.survey) && ('title' in surveyJson.survey))
         {
-            //Create Survey 
+            // Create Survey 
             var elSurvey = createSurveySet();
 
-            //Survey Title
+            // Survey Title
             cdom.getcss(elSurvey,'title',0).text(surveyJson.survey.title);
             
-            //Survey Page
+            // Survey Page
             var pages  = surveyJson.survey.pages;
             
             for(var p in pages)
             {
                 if(pages.hasOwnProperty(p))
                 {
-                    //Page element 
+                    // Page element 
                     var elPage = createPageSet();
 
-                    //Page iD
+                    // Page iD
                     cdom.get(elPage).attribute('id',pages[p].name);
-                    //Page title
+                    // Page title
                     cdom.getcss(elPage,'title',0).text(pages[p].title);
-                    //Page description
+                    // Page description
                     cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
 
-                    //Page Question
+                    // Page Question
                     if(('elements') in pages[p])
                     {
                         createQuestion(elPage, pages[p].elements);
@@ -300,44 +340,22 @@ function domReady (){
                 }
             }
 
-
             surveyId.appendChild(elSurvey);
 
-            
-
-
-
-            
             //Page Set 생성
-
             
+            var btnTest = document.createElement('button');
+            btnTest.innerHTML = '아아아아';
+            btnTest.addEventListener('click',function(){
+                alert(1);
+            });
 
+            btnTest.addEventListener('click',function(){
+                alert(2);
+            });
+
+            surveyId.appendChild(btnTest);
         }
-
-
-        
-        //createQuestionSet();
-
-
-
-
-        // var aaa = document.createElement('div');
-        // aaa.setAttribute('class','page');
-
-        // var bbb = document.createElement('div');
-        // bbb.setAttribute('class','question');
-
-        // aaa.appendChild(bbb);
-        // console.log(aaa);
-
-        // aaa.setAttribute('id','cc');
-        // console.log(aaa);
-        // console.log(aaa.getElementsByClassName('question')[0]);
-
-        // surveyId.appendChild(aaa.getElementsByClassName('question')[0]);
-        
-        
-
     }
     catch(e){
         alert(e);

@@ -1,0 +1,69 @@
+
+.survey { }
+.survey .header { margin-left:7px;}
+.survey .header .title {font-weight: bold; font-size:3em;}
+
+
+.page-set {}
+.page {}
+.page .header { margin-left:7px;}
+.page .header .title {font-weight: bold; font-size:1.8em;}
+.page .header .description {font-size:1.2em;}
+
+.questions {}
+.questions .question {border:1px solid white; padding:15px; margin-bottom:10px; background-color: #eee}
+
+
+/* Question header */
+.question .header {font-weight: bold; padding-bottom: 5px;}
+.question .header .title { font-size: 1.3em; font-weight: bold; margin-bottom:0px;}
+.question .header .title strong { color: #FE0000; padding-right:2px;}
+.question .header .description { padding:4px; border:1px solid #C3C3C3; font-size: 0.9em; margin-left: 10px;}
+
+/* Question itmes */
+.question .items { margin-left:7px;}
+
+/* Text Box */
+.question .items .text_set {}
+.question .items .text_set .i_text {}
+
+/* Multi Text Box */
+.question .items .comment_set {}
+.question .items .comment_set .i_comment { resize: none; }
+
+/* Radio Box */
+.question .items .radio_set {}
+.question .items .radio_set .i_radio { margin-right:3px; }
+.question .items .radio_set .lbl_radio {}
+
+/* Other Radio Box */
+.question .items .radio_other {}
+.question .items .radio_other .i_radio_other { margin-right:3px; }
+.question .items .radio_other .lbl_radio_other { margin-right:3px; }
+.question .items .radio_other .txt_radio_other {}
+
+/* CheckBox Box */
+.question .items .checkbox_set {}
+.question .items .checkbox_set .i_checkbox { margin-right:3px; }
+.question .items .checkbox_set .lbl_checkbox {}
+
+/* Other CheckBox Box */
+.question .items .checkbox_other {}
+.question .items .checkbox_other .i_checkbox_other { margin-right:3px; }
+.question .items .checkbox_other .lbl_checkbox_other { margin-right:3px; }
+.question .items .checkbox_other .txt_checkbox_other {}
+
+/* Rate Radio Box */
+.question .items .rate_set {}
+.question .items .rate_set .min_description { padding-right: 3px; }
+.question .items .rate_set .max_description { padding-left: 3px; }
+.question .items .rate_set .i_rate { display: none;}
+.question .items .rate_set [type=radio]:checked + label {color: #333;background-color: #e6e6e6;border-color: #adadad;}
+.question .items .rate_set [type=radio]:hover + label{ color: #333;background-color: #e6e6e6;border-color: #adadad; }
+.question .items .rate_set .lbl_rate { min-width: 5em; background-color: #FFFFFF; border: 1px solid #ccc; cursor: pointer; text-align: center;}
+
+
+
+
+
+
