@@ -13,7 +13,7 @@ body, html{ height:102%; }
 /* page tab 처리 */
 .tabs {position: relative;clear: both;margin: 52px -27px 0px -11px;background: white;}
 .tab {float: left; }
-.tab fieldset {border:1px solid white; padding:20px; margin-bottom:10px; background-color: #eee; height: 100%}
+.tab fieldset {border:1px solid white; padding:20px 0px 20px 20px; margin-bottom:10px; background-color: #eee; height: 100%}
 .tab fieldset.setting {border:1px solid #87B2F1;}
 .tab fieldset .question { font-size: 1.2em; font-weight: bold; padding-left:2px}
 .tab fieldset .desc { border: 1px solid #c1c1c1; margin:0px 5px 10px; padding: 10px; }
@@ -22,9 +22,10 @@ body, html{ height:102%; }
 .tab .labelfor span.sel { color:#87B2F1 }
 .tab .labelfor span {color: #C1C1C1}
 .tab .plus {padding: 8px; border: 1px solid #eee; margin-left: -1px; position: relative;left: -2px; top: -39px;color:#87B2F1; }
-.tab label.setting {border:1px solid #87B2F1; background: white;color:#87B2F1;}
+.tab fieldset.setting {border:1px solid #87B2F1;}
 .tabgroup {display: none;}
 
+.up_down { -webkit-appearance: none;cursor: pointer;border: 0; }
 
 
 .tab-container {height:90vh;position: absolute;top:-1px;width:100%;right:0;padding:20px;border: 1px solid #ccc; overflow-y:scroll;display:none;} 

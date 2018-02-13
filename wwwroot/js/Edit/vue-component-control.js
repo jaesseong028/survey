@@ -1,6 +1,5 @@
 ﻿var methods = {
     col_style : function() {
-        //console.log(this.el.name);
         var style = { width : '', display : '' };
         if (this.el.col_count !== undefined && this.el.col_count !== 1) {
             style.width = (100 / this.el.col_count) + '%';
@@ -12,17 +11,16 @@
             if (this.el.max_num < this.el.min_num) {
                 return false;
             }else {
-                return this.el.value.length >= this.el.max_num && this.el.value.length >= this.el.min_num && this.el.value.indexOf(this.choice) === -1;
+                var v = this.choice || this.el.other_text;
+                return this.el.value.length >= this.el.max_num && this.el.value.length >= this.el.min_num && this.el.value.indexOf(v) === -1;
             }
         }
         return false;
     },
     uid : function() { 
-        //console.log(this.el.name);
         return this.el.name + "_" + this._uid;
     }, 
     readonly : function() {
-        //console.log(this.el.name);
         var is_readonly = false;
         if (this.el.value instanceof Array) {
             is_readonly = this.el.value.indexOf(this.el.other_text) === -1;
@@ -34,9 +32,12 @@
         }
         return is_readonly;  
     },
-    skipStyle : function() {
-        return { display : 'block'};
-        //return style;
+    textWidth : function() {
+        var style = { };
+        if (this.el.other_text_width) {
+            style.width = this.el.other_text_width + 'px';
+        } 
+        return style;
     }
   }
   
@@ -102,12 +103,13 @@ Vue.component('leftnav-com', {
     }
 });
 
+//
 Vue.component('controllayout-com', {
     template: '\
     <div>\
-            <div v-for="(el, index) in elements">\
+            <div v-for="(el, index) in elements" class="row">\
                 <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
-                    <div :style="skipStyle(el)">\
+                    <div style="width: 95%; float: left;" :style="skipStyle(el)">\
                         <label class="required" v-if="el.is_required">* </label><label class="question">{{el.title}}</label>\
                         <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
                         <choice-list-com v-if="el.type === GlobalValues.control.radio || el.type === GlobalValues.control.checkbox" :el=el></choice-list-com>\
@@ -115,6 +117,14 @@ Vue.component('controllayout-com', {
                         <comment-com v-else-if="el.type === GlobalValues.control.comment" :el=el></comment-com>\
                         <rate-list-com v-else-if="el.type === GlobalValues.control.rate" :el=el></rate-list-com>\
                         <template v-else/>\
+                    </div>\
+                    <div style="width: 5%; float: left; background-color: #eee;" v-if="el === settings">\
+                        <div style="min-height:4vh; text-align:center">\
+                            <button type="button" class="up_down" v-on:click="changeIndex(index, GlobalValues.Up)">↑</button>\
+                        </div>\
+                        <div style="text-align:center">\
+                            <button type="button" class="up_down" v-on:click="changeIndex(index, GlobalValues.Down)">↓</button>\
+                        </div>\
                     </div>\
                 </fieldset>\
             </div>\
@@ -140,6 +150,27 @@ Vue.component('controllayout-com', {
         }, 
         convertHtml : function(desc){            
             return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
+        }, 
+        changeIndex : function (index, UpDown) {
+            
+            if (index == 0 && UpDown == this.GlobalValues.Up){
+                return;
+            }
+
+            if (index == this.elements.length - 1 && UpDown == this.GlobalValues.Down){
+                return;
+            }
+
+            var to = 0;
+            if (UpDown == this.GlobalValues.Up) {
+                to = index - 1;
+            }else{
+                to = index + 1;
+            }
+
+            let cutOut = this.elements.splice(index, 1) [0];
+            this.elements.splice(to, 0, cutOut);      
+            
         }
     }
 })
@@ -152,7 +183,7 @@ Vue.component('choice-list-com', {
         </template>\<template>\<div v-if="el.is_other" :style="col_style">\
                 <input :type=el.type :name=el.name :id=uid :value=el.other_text :disabled=disabled v-model=el.value />\
                 <label :for="uid">{{el.other_text}}</label>\
-                <input type="text" :maxlength="el.other_text_len" v-model=el.other_text_value :readonly=readonly />\
+                <input type="text" :maxlength="el.other_text_len" :style="textWidth" v-model=el.other_text_value :readonly=readonly />\
             </div>\
         </template>\
     </div>',
@@ -162,7 +193,8 @@ Vue.component('choice-list-com', {
         disabled : this.methods.disabled,
         uid : this.methods.uid,
         col_style : this.methods.col_style,
-        readonly  : this.methods.readonly
+        readonly  : this.methods.readonly,
+        textWidth : this.methods.textWidth,
     }
 })
 
