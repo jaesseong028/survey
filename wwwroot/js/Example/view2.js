@@ -38,11 +38,10 @@ var cdom = {
         this.element.appendChild(document.createTextNode(t));
         return this;
     },
-    // html: function(t){
-    //     this.element.appendChild()
-    // }
-    
-    // ,
+    inhtml: function(t){
+        this.element.innerHTML = t;
+        return this;
+    },
     attribute: function(k, v){
         this.element.setAttribute(k,v);
         return this;
@@ -135,10 +134,87 @@ function createQuestionSet()
     return elQSet.element;
 }
 
-function createQuestionItems()
+//Check_Box Radio_Box Create
+function createCheckRadio( elItems, items )
 {
+    // col_count 체크
+    var width_percent = items.col_count <= 1 ? '100' : 100 / items.col_count;
+    var col_style = 'display: inline-block; width: ' + width_percent + '%;';
+
+    for(var p in items.choices)
+    {
+        if(items.choices.hasOwnProperty(p))
+        {
+            var elItem = cdom.get('div').attribute('style',col_style).css(items.type + '_set');
+            elItem.append('input')
+                        .attribute('type',items.type == 'radio' ? items.type : 'checkbox')
+                        .attribute('id',items.name + '_' + p)
+                        .attribute('value',items.choices[p])
+                        .attribute('name', items.name)
+                        .css('i_' + items.type)
+                    .insert('label')
+                        .css('lbl_' + items.type)
+                        .attribute('for', items.name + '_' + p)
+                        .inhtml(items.choices[p]);
+            
+            cdom.getcss(elItems,'items',0).append(elItem.element);
+        }
+    }
+
+    if(('is_other' in items) && (items.is_other == true))
+    {
+        var elOtherItem = cdom.get('div').attribute('style',col_style).css(items.type + '_other');
+        elOtherItem.append('input')
+                        .attribute('type',items.type == 'radio' ? items.type : 'checkbox')
+                        .attribute('id',items.name + '_other')
+                        .attribute('value',items.other_text)
+                        .attribute('name', items.name)
+                        .css('i_' + items.type)
+                    .insert('label')
+                        .css('lbl_' + items.type)
+                        .attribute('for', items.name + '_other')
+                        .inhtml(items.other_text)
+                    .insert('input')
+                        .attribute('type','text')
+                        .attribute('id',items.name + '_other')
+                        .attribute('maxLength',items.other_text_len);
+        
+        cdom.getcss(elItems,'items',0).append(elOtherItem.element);
+    }
+}
+
+//Text Box Create
+function createTextBox( elItems, items )
+{
+    var elItem = cdom.get('div').css(items.type + '_set');
+        
+    if(items.type === 'text')
+    {
+        elItem.append('input')
+                .attribute('type', items.type)
+                .css('i_' + items.type);
+    }
+    else if(items.type === 'comment')
+    {    
+        elItem.append('textarea')
+            .css('i_' + items.type)
+            .attribute('rows',items.rows);
+    }   
+
+    cdom.getcss(elItem.element,'i_' + items.type, 0)
+                .attribute('id',items.name)
+                
+                .attribute('maxLength',items.max_len)
+                .attribute('style','width:100%');
+    
+    cdom.getcss(elItems,'items',0).append(elItem.element);
+}
 
 
+//Rate Box Create
+function createRate( elItems, items )
+{
+    
 }
 
 function createQuestion(elPage, questions)
@@ -146,7 +222,6 @@ function createQuestion(elPage, questions)
     //Question Create
     for(var p in questions)
     {
-        console.log(questions[p]);
 
         if(questions.hasOwnProperty(p))
         {
@@ -154,15 +229,26 @@ function createQuestion(elPage, questions)
             
             //Page iD
             cdom.get(elQuestion).attribute('id',questions[p].name);
-            
+            //Page Required
             if(('is_required' in questions[p]) && (questions[p].is_required == true))
                 cdom.getcss(elQuestion,'title',0).append('strong').text('*');
-            
             //Page title
-            cdom.getcss(elQuestion,'title',0).text(questions[p].title);
-            
+            cdom.getcss(elQuestion,'title',0).text(questions[p].title);            
             //Page description
-            cdom.getcss(elQuestion,'description',0).text(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+            cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+
+            // items
+            // radio, check box
+            if(questions[p].type === 'radio' || questions[p].type === 'checkbox')
+                createCheckRadio(elQuestion, questions[p]);
+            
+            //text, multi text
+            else if(questions[p].type === 'text' || questions[p].type === 'comment')
+                createTextBox(elQuestion, questions[p]);
+            // rate
+            else if(questions[p].type === 'rate')
+                createRate(elQuestion, questions[p]);
+
 
             cdom.getcss(elPage,'questions',0).append(elQuestion);
 
@@ -202,13 +288,12 @@ function domReady (){
                     //Page title
                     cdom.getcss(elPage,'title',0).text(pages[p].title);
                     //Page description
-                    cdom.getcss(elPage,'description',0).text(pages[p].description);
+                    cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
 
                     //Page Question
                     if(('elements') in pages[p])
                     {
                         createQuestion(elPage, pages[p].elements);
-
                     }
 
                     cdom.getcss(elSurvey,'page-set',0).append(elPage);                    
