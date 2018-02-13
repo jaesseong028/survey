@@ -71,7 +71,7 @@ options = {
         is_required :  { ko : "필수", type : "Boolean", 필수 : true },
         items :  { ko : "선택항목", type : "itemsArray", 필수 : true },
         max_len :  { ko : "최대 글자수", type : "Int" , 필수 : true, min : 1,  max : 100 },
-        text_width :  { ko : "텍스트넓이", type : "Int" , 필수 : true, min : 1,  max : 100 },
+        text_width :  { ko : "텍스트넓이", type : "Int" , 필수 : true, min : 1 },
         col_count :  { ko : "열갯수", type : "ShortInt", min : 1, max : 5 },
     },
     types: {

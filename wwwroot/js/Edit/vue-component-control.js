@@ -266,7 +266,7 @@ Vue.component('comment-com', {
 Vue.component('text-com', {
     template: '\
     <div>\
-        <input type="text" :name="el.name" style="width:100%" :id="uid" :maxlength="el.max_len" v-model=el.value /></template>\
+        <input type="text" :name=el.name style="width:100%" :id="uid" :maxlength="el.max_len" v-model=el.value /></template>\
     </div>',    
     props: { el: { type: Object, required: true }},
     computed :{
@@ -281,7 +281,7 @@ Vue.component('multi-text-com', {
         <template v-for="(item, index) in el.items">\
             <div :style="col_style">\
                 <label>{{item.item}}</label>\
-                <input type="text" :maxlength="el.max_len" :style="textWidth" v-model=el.value[index] />\
+                <input type="text" :name=el.name :maxlength="el.max_len" :id="uid" :style="textWidth" v-model=el.value[index] />\
             </div>\
         </template>\
     </div>',
@@ -289,5 +289,6 @@ Vue.component('multi-text-com', {
     computed : {
         textWidth : this.methods.textWidth,
         col_style : this.methods.col_style,
+        uid : this.methods.uid,
     }
 })
