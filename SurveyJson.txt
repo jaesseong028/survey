@@ -16,8 +16,7 @@
 			"is_required" : true,
 			"title" : "질문타이틀1",
 			"max_len" : 20
-		}
-		,
+		},
 		{
 			"type":"radio",
 			"choices" : ["예","아니오"],
@@ -66,6 +65,16 @@
 			"title" : "질문타이틀5",
 			"rows":20,
 			"max_len":100
+		},
+		{
+			"type": "multiText",
+			"name": "question5",
+			"description" : "질문설명5",
+			"is_required" : true,
+			"items" : [{"item" : "인터넷", "is_required" = false}, {"item" : "인터넷", "is_required" =  false}, {"item" : "인터넷", "is_required" =  false}],
+			"text_width" : 100,
+			"title" : "질문타이틀5",
+			"max_len":100, 
 		}
 		]
 	},
