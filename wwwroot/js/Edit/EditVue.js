@@ -94,9 +94,6 @@ var vue = new Vue({
                 }
             }
         },
-        keywatch : function(evt) {
-
-        },
         addsurvey: function (type) {
             var questionName = this.emptyName(this.GlobalValues.question);
             var item = { name: questionName, type: type, title: questionName, description: "", is_required : true, value : null};
@@ -221,7 +218,6 @@ var vue = new Vue({
     },
     created : function() {
         EventBus.$on('edit', this.edit);
-        window.addEventListener('keyup', this.keywatch);
     }, 
     watch : {
         
