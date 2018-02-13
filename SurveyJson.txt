@@ -71,7 +71,7 @@
 			"name": "question5",
 			"description" : "질문설명5",
 			"is_required" : true,
-			"items" : [{"item" : "인터넷", "is_required" = false}, {"item" : "인터넷", "is_required" =  false}, {"item" : "인터넷", "is_required" =  false}],
+			"items" : [{"item" : "인터넷", "is_required" : false}, {"item" : "인터넷", "is_required" : false}, {"item" : "인터넷", "is_required" : false}],
 			"text_width" : 100,
 			"title" : "질문타이틀5",
 			"max_len":100, 
