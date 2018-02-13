@@ -57,10 +57,8 @@ var vue = new Vue({
             var surveyDeleteAction = "type" in this.settings && this.selectPage != null;
             var confirmFuc = function (type) { 
                 return confirm('해당 ' + type + ' 삭제 하시겠습니까?');
-            
             }
             if (pageDeleteAction) {
-
                 if(this.survey.pages.length == 1) {
                     alert('최소 한개의 페이지는 존재해야 합니다.');
                     return;
@@ -103,6 +101,11 @@ var vue = new Vue({
             }
 
             if (type == this.GlobalValues.control.checkbox) {
+                item.value = [];
+            }
+
+            if (type == this.GlobalValues.control.multiText) {
+                item.items = [{item : 'item1', is_required : true}, {item : 'item2', is_required : true}, {item : 'item3', is_required : true}];
                 item.value = [];
             }
 
@@ -173,7 +176,6 @@ var vue = new Vue({
     },
     computed : {
         skipQuestions : function (){ 
-            
             var s = this.$root.survey;
             var containVal = false;
             var skip_Questions = [];

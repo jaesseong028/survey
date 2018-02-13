@@ -1,5 +1,5 @@
 ﻿
-const globalVal = { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : "comment" }, Up : 'Up', Down : 'Down', question : 'question', page : 'page', maxCreatePage : 10, emptyString : "" }
+const globalVal = { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : 'comment', multiText : 'multiText' }, Up : 'Up', Down : 'Down', question : 'question', page : 'page', maxCreatePage : 10, emptyString : '' }
   
 
 options = {
@@ -64,7 +64,18 @@ options = {
         is_required :  { ko : "필수", type : "Boolean", 필수 : true },
         max_len :  { ko : "최대 글자수", type : "Int" , 필수 : true, min : 1,  max : 100 },
     },
+    multiText : {
+        name :  { ko : "이름", type : "String", 필수 : true  },
+        title :  { ko : "제목", type : "LongString", 필수 : true },
+        description :  { ko : "설명문구", type : "LongString" },
+        is_required :  { ko : "필수", type : "Boolean", 필수 : true },
+        items :  { ko : "선택항목", type : "itemsArray", 필수 : true },
+        max_len :  { ko : "최대 글자수", type : "Int" , 필수 : true, min : 1,  max : 100 },
+        text_width :  { ko : "텍스트넓이", type : "Int" , 필수 : true, min : 1,  max : 100 },
+        col_count :  { ko : "열갯수", type : "ShortInt", min : 1, max : 5 },
+    },
     types: {
+        itemsArray : "itemsArray",
         String : "String", 
         LongString : "LongString",
         Boolean : "Boolean", 
@@ -74,7 +85,6 @@ options = {
         ShortInt : "ShortInt", 
     }
 }
-
 
 globalVal.install = function() {
     Object.defineProperty(Vue.prototype, 'GlobalValues', {

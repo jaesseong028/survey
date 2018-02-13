@@ -37,6 +37,9 @@
         if (this.el.other_text_width) {
             style.width = this.el.other_text_width + 'px';
         } 
+        else if (this.el.text_width) {
+            style.width = this.el.text_width + 'px';
+        } 
         return style;
     }
   }
@@ -92,8 +95,9 @@ Vue.component('leftnav-com', {
         <p><label href="#" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>\
         <p><label href="#" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>\
         <p><label href="#" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>\
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-text-background"></span> 코멘트</label></p>\
+        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-superscript"></span> 코멘트</label></p>\
         <p><label href="#" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>\
+        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.multiText)><span class="glyphicon glyphicon-th-list"></span> 멀티텍스트</label></p>\
     </div>',
     methods : {
         addsurvey : function (type) {
@@ -110,12 +114,13 @@ Vue.component('controllayout-com', {
             <div v-for="(el, index) in elements" class="row">\
                 <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
                     <div style="width: 95%; float: left;" :style="skipStyle(el)">\
-                        <label class="required" v-if="el.is_required">* </label><label class="question">{{el.title}}</label>\
+                        <label class="required" v-if="el.is_required">＊</label><label class="question">{{el.title}}</label>\
                         <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
                         <choice-list-com v-if="el.type === GlobalValues.control.radio || el.type === GlobalValues.control.checkbox" :el=el></choice-list-com>\
                         <text-com v-else-if="el.type === GlobalValues.control.text" :el=el></text-com>\
                         <comment-com v-else-if="el.type === GlobalValues.control.comment" :el=el></comment-com>\
                         <rate-list-com v-else-if="el.type === GlobalValues.control.rate" :el=el></rate-list-com>\
+                        <multi-text-com v-else-if="el.type === GlobalValues.control.multiText" :el=el></multi-text-com>\
                         <template v-else/>\
                     </div>\
                     <div style="width: 5%; float: left; background-color: #eee;" v-if="el === settings">\
@@ -174,6 +179,8 @@ Vue.component('controllayout-com', {
         }
     }
 })
+
+
 
 Vue.component('choice-list-com', {
     template: '\
@@ -264,5 +271,23 @@ Vue.component('text-com', {
     props: { el: { type: Object, required: true }},
     computed :{
         uid : this.methods.uid,
+    }
+})
+
+
+Vue.component('multi-text-com', {
+    template: '\
+    <div>\
+        <template v-for="(item, index) in el.items">\
+            <div :style="col_style">\
+                <label>{{item.item}}</label>\
+                <input type="text" :maxlength="el.max_len" :style="textWidth" v-model=el.value[index] />\
+            </div>\
+        </template>\
+    </div>',
+    props: { el: { type: Object, required: true }},
+    computed : {
+        textWidth : this.methods.textWidth,
+        col_style : this.methods.col_style,
     }
 })

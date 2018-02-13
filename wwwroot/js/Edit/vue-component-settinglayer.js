@@ -9,7 +9,8 @@ Vue.component('settinglayout-com', {
                     <checkbox-setting-com v-else-if="option.type === Options.types.Boolean" :option=option :ko=option.ko :settings=settings :property=propertyName></checkbox-setting-com>\
                     <int-setting-com v-else-if="option.type === Options.types.Int" :option=option :ko=option.ko :settings=settings :property=propertyName></int-setting-com>\
                     <drop-setting-com v-else-if="option.type === Options.types.ShortInt" :option=option :ko=option.ko :settings=settings :property=propertyName></drop-setting-com>\
-                    <items-setting-com v-else-if="option.type === Options.types.ChoiesArray" :option=option :ko=option.ko :settings=settings :property=propertyName></items-setting-com>\
+                    <choice-setting-com v-else-if="option.type === Options.types.ChoiesArray" :option=option :ko=option.ko :settings=settings :property=propertyName></choice-setting-com>\
+                    <items-setting-com v-else-if="option.type === Options.types.itemsArray" :option=option :ko=option.ko :settings=settings :property=propertyName></items-setting-com>\
                     <skip-setting-com v-else-if="option.type === Options.types.SkipArray" :option=option :ko=option.ko :settings=settings :property=propertyName></skip-setting-com >\
                     <template v-else />\
             </template>\
@@ -157,6 +158,33 @@ Vue.component('skip-setting-com', {
     }
 })
 
+Vue.component('choice-setting-com', {
+    template: '\
+<span class="row">\
+    <div class="form-group text-left">\
+        <label class="col-sm-4">{{ko}}</label>\
+        <div class="col-sm-8">\
+            <a class="input-group" href="#" v-on:click=layerOpen>\
+                <input type="text" class="form-control" :placeholder=placeholder readonly>\
+                <span class="input-group-addon">항목</span>\
+            </a>\
+        </div>\
+    </div>\
+</span>',
+    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    methods : {
+        layerOpen : function () {
+            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, '아이템 편집');
+        }
+    },
+    computed : {
+        placeholder : function() { 
+            return 'items:' + this.settings[this.property].length;
+        }
+    }
+})
+
+
 Vue.component('items-setting-com', {
     template: '\
 <span class="row">\
@@ -241,7 +269,8 @@ Vue.component('modallayout-com', {
 <div class="modal-mask" v-show="opened">\
     <div id="modal" class="panel panel-primary layer" :style=style>\
         <div class="text-left header">{{header}}<button class="close" type="button" v-on:click=closedHeaderClick>×</button></div>\
-        <items-com v-if="opened && type === Options.types.ChoiesArray" :values=settings[property]></items-com>\
+        <choices-com v-if="opened && type === Options.types.ChoiesArray" :values=settings[property]></choices-com>\
+        <items-com v-if="opened && type === Options.types.itemsArray" :values=settings[property]></items-com>\
         <longstring-com v-else-if="opened && type === Options.types.LongString" :settingInfo=settings[property]></longstring-com>\
         <skip-com v-else-if="opened && type === Options.types.SkipArray" :settingInfo=settings[property] :settings=settings></skip-com>\
     </div>\
@@ -455,7 +484,70 @@ Vue.component('longstring-com', {
 })
 
 
+
 Vue.component('items-com', {
+    template: '\
+<div>\
+    <div class="modal-items">\
+        <span class="row">\
+            <div class="col-sm-2">필수입력</div>\
+            <div class="col-sm-9">항목</div>\
+        </span>\
+        <template v-for="(v, index) in copyData">\
+            <span class="row">\
+                <div class="form-group">\
+                    <div class="col-sm-2">\
+                        <input type="checkbox" v-model="v.is_required" />\
+                    </div>\
+                    <div class="col-sm-9">\
+                        <input type="text" class="form-control" v-model="v.item" />\
+                    </div>\
+                    <div class="col-sm-1">\
+                        <button class="btn btn-danger" v-on:click=deleteItem(index)>-</button>\
+                    </div>\
+                </div>\
+            </span>\
+        </template>\
+    </div>\
+    <div class="modal-bottom">\
+        <span class="row">\
+            <div class="form-group">\
+                <div class="col-sm-1">\
+                    <button class="btn btn-warning" v-on:click=appendItem>+</button>\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <div class="col-sm-12">\
+                        <button class="btn btn-info" v-on:click=regist>확인</button>\
+                        <button class="btn btn-secondary" v-on:click=layerClose>취소</button>\
+                </div>\
+            </div>\
+        </span>\
+    </div>\
+</div>',
+    data: function () { return { copyData : JSON.parse(JSON.stringify(this.values)) }},
+    props: { values : { type : Array }  },
+    methods : {
+        appendItem : function(){
+            this.copyData.push({item : '', is_required : true});
+            var modalItems = $(this.$el).find(".modal-items");
+            modalItems.animate({ scrollTop: modalItems.prop("scrollHeight")}, 100);
+        }, 
+        deleteItem : function (index){
+            this.copyData.splice(index, 1);
+        },
+        regist : function() {
+            var data = _.filter(this.copyData, function(item){ return item.item !== '' && item.item != null; });
+            EventBus.$emit('layerClose', data);
+        }, 
+        layerClose : function(){
+            EventBus.$emit('layerClose', null);
+        }
+    }
+})
+
+
+Vue.component('choices-com', {
     template: '\
 <div>\
     <div class="modal-items">\
@@ -488,7 +580,7 @@ Vue.component('items-com', {
         </span>\
     </div>\
 </div>',
-    data: function () { return { copyData : _.toArray(this.values) } },
+    data: function () { return { copyData : JSON.parse(JSON.stringify(this.values)) } },
     props: { values : { type : Array }  },
     methods : {
         appendItem : function(){
