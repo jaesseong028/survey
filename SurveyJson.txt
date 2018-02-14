@@ -1,6 +1,6 @@
 {
 "survey" :
-	[{
+	{
 	"title" : "의사랑 설문 조사 입니다.",
 	
 	"pages": [
@@ -74,7 +74,7 @@
 			"items" : [{"item" : "인터넷", "is_required" : false}, {"item" : "인터넷", "is_required" : false}, {"item" : "인터넷", "is_required" : false}],
 			"text_width" : 100,
 			"title" : "질문타이틀5",
-			"max_len":100, 
+			"max_len":100
 		}
 		]
 	},
@@ -92,5 +92,5 @@
 			"max_len" : 20
 		}]
 	}]
-	}]
+	}
 }
