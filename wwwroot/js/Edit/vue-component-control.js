@@ -102,7 +102,6 @@ Vue.component('leftnav-com', {
     methods : {
         addsurvey : function (type) {
             this.$parent.addsurvey(type);
-            //EventBus.$emit('addsurvey', type);
         }
     }
 });
@@ -141,13 +140,7 @@ Vue.component('controllayout-com', {
             if (this.skipQuestions.indexOf(el.name) > -1){
                 style.opacity = 0.3;
                 style.pointerEvents = 'none';
-                if(el.value instanceof Array) { 
-                    el.value = [];
-                } else {
-                    el.value = '';
-                }
             }
-            
             return style;
         },
         edit :  function (el) {
@@ -157,26 +150,24 @@ Vue.component('controllayout-com', {
             return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
         }, 
         changeIndex : function (index, UpDown) {
-            
             if (index == 0 && UpDown == this.GlobalValues.Up){
                 return;
             }
-
             if (index == this.elements.length - 1 && UpDown == this.GlobalValues.Down){
                 return;
             }
-
             var to = 0;
             if (UpDown == this.GlobalValues.Up) {
                 to = index - 1;
-            }else{
+            } else {
                 to = index + 1;
             }
-
             let cutOut = this.elements.splice(index, 1) [0];
             this.elements.splice(to, 0, cutOut);      
-            
         }
+    }, 
+    computed : {
+        
     }
 })
 

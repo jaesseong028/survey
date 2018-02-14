@@ -19,7 +19,7 @@ var vue = new Vue({
         </div>\
         <div class="col-sm-2 sidenav">\
             <settinglayout-com :settings=settings></settinglayout-com>\
-            <!--{{$data|pretty}}-->\
+            <!--{{survey|pretty}}-->\
         </div>\
     </div>\
     <modallayout-com></modallayout-com>\

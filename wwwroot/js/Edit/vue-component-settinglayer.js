@@ -87,7 +87,6 @@ Vue.component('string-setting-com', {
                             }
                         }
                         /// 동일한 이름 체크 ///
-                        
                         /// Skip 부분에 설문 이름이 변경 된것을 찾아 바꿔줌
                         if ('skip' in survery.pages[p].elements[e]) {
                             var idx = survery.pages[p].elements[e].skip.skipQuestionNames.indexOf(oldValue);
@@ -388,8 +387,14 @@ Vue.component('skip-com', {
         </span>\
     </div>\
 </div>',
-    data: function () { return { skip : this.settingInfo, choiceSelected : [], questionSelected : []} },
+    data: function () { return { skip : JSON.parse(JSON.stringify(this.settingInfo)), choiceSelected : [], questionSelected : []} },
     props: { settingInfo : { type : Object }, settings : { type : Array} },
+    created : function(){
+        // for(s in this.settingInfo){
+        //     console.log(s);
+        //     console.log(this.settingInfo[s]);
+        // }
+    },
     computed : {
         questions : function() {
             var survery = this.$root.survey;
