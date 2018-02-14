@@ -309,7 +309,7 @@ function isVisiblePage(elDivPage, isShow)
 function createPageBtn(elDivPage, totalPage, currPage )
 {
     // 페이지 별 이전, 다음 버튼 추가
-    if(totalPage == 1) // 페이지가 존재하지 않음 
+    if(totalPage == 1) // 페이지가 존재하지 않음
     {
         addBtnEvent(elDivPage,'Complete');
     }

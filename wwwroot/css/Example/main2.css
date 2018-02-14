@@ -6,6 +6,8 @@
 
 .page-set {}
 .page {}
+.page .hide { display: none; }
+.page .show{ display: inline; }
 .page .header { margin-left:7px;}
 .page .header .title {font-weight: bold; font-size:1.8em;}
 .page .header .description {font-size:1.2em;}

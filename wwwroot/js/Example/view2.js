@@ -227,8 +227,9 @@ function createCheckRadio( elItems, items )
                         .attr('type','text')
                         .attr('id',items.name + '_othertext')
                         .attr('maxLength',items.other_text_len)
+                        .attr('size',items.other_text_width)
                         .css('txt_' + items.type + '_other');
-                        
+
         cdom.getcss(elItems,'items',0).append(elOtherItem.element);
     }
 
@@ -346,6 +347,68 @@ function createQuestion(elPage, questions)
 }
 
 
+function addBtnEvent(elDivPage, btnType)
+{
+    var elBtn = document.createElement('button');
+    var nodeText = document.createTextNode(btnType);
+    //elBtn.setAttribute('id', 'btn' + btnType)
+    elBtn.appendChild(nodeText);
+    elBtn.addEventListener('click', function(){
+        var obj = this;
+        var pObj = obj.parentNode;
+        
+        // console.log('obj',obj);
+        // console.log('pObj',pObj);
+        
+        if(btnType == 'After')
+        {
+            isVisiblePage(pObj, false);
+
+            var nextPObj = pObj.nextSibling;
+            isVisiblePage(nextPObj, true);
+            
+
+        }else if (btnType == 'Pre')
+        {
+            isVisiblePage(pObj, false);
+
+            var prePObj = pObj.previousSibling;
+            isVisiblePage(prePObj, true);
+        }else if (btnType == 'Complete')
+        {
+            alert('완료');
+        }
+    });
+
+
+    elDivPage.appendChild(elBtn);
+}
+
+// 페이지 이동 및 완료 버튼
+function createPageBtn(elPage, totalPage, currPage )
+{
+    // 페이지 별 이전, 다음 버튼 추가
+    if(totalPage == 1) // 페이지가 존재하지 않음
+    {
+        addBtnEvent(elPage,'Complete');
+    }
+    else if(totalPage - 1 == currPage)  // 마지막 페이지 일 경우 이전 버튼과 완료 버튼
+    {
+        addBtnEvent(elPage,'Pre');
+        addBtnEvent(elPage,'Complete');
+    }
+    else if(totalPage > 1 && currPage == 0) // 페이지가 있으며 첫번째 페이지
+    {
+        addBtnEvent(elPage,'Next');
+    }
+    else if(totalPage > 1 && currPage > 0) // 페이지가 있으며 중간 페이지
+    {
+        addBtnEvent(elPage,'Pre');
+        addBtnEvent(elPage,'Next');
+    }
+}
+
+
 
 function domReady (){
     try
@@ -381,10 +444,18 @@ function domReady (){
 
                     // Page Question
                     if(('elements') in pages[p])
-                    {
                         createQuestion(elPage, pages[p].elements);
-                    }
+                    
+                    //first page Visible
+                    if(p == 0)   // 첫페이지는 무조건 보이기
+                        cdom.get(elPage).css('show');
+                    else
+                        cdom.get(elPage).css('hide');
 
+                    // Btn 생성     
+                    createPageBtn(elPage, pages.length, p);
+                    
+                    
                     cdom.getcss(elSurvey,'page-set',0).append(elPage);                    
                 }
             }
@@ -399,3 +470,5 @@ function domReady (){
         console.log(e);
     }
 }
+
+
