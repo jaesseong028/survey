@@ -56,3 +56,5 @@ textarea {resize: none;}
 .modal-items option {font-size : 17px}
 .modal-items option.disable {height: 10px;}
 .setting-layout .delete { color: red }
+
+.cur { cursor: pointer }

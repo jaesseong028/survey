@@ -51,10 +51,10 @@ Vue.component('tab-page-com', {
     <div class="tabs">\
         <div v-for="(page, index) in survey.pages">\
             <div class="tab">\
-                <label class="labelfor survey" v-if="index == 0" v-bind:class="{setting: survey === settings}"  v-on:click="surveyinfo">설문설정 <span v-bind:class="{sel: survey === settings}" class="glyphicon glyphicon-cog"></span></label>\
+                <label class="labelfor survey cur" v-if="index == 0" v-bind:class="{setting: survey === settings}"  v-on:click="surveyinfo">설문설정 <span v-bind:class="{sel: survey === settings}" class="glyphicon glyphicon-cog"></span></label>\
                 <input type="radio" :id="getPageID(page.name, index)" name="tabgroup" class="tabgroup" :checked="page == selectPage"  v-on:click="changedPage(index)">\
-                <label class="labelfor" v-bind:class="{setting: page === settings}" :for="getPageID(page.name, index)">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>\
-                <label class="plus" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>\
+                <label class="labelfor cur" v-bind:class="{setting: page === settings}" :for="getPageID(page.name, index)">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>\
+                <label class="plus cur" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>\
                 <div class="tab-container">\
                     <controllayout-com  :skipQuestions=skipQuestions :elements=page.elements :settings=settings></controllayout-com>\
                 </div>\
@@ -92,12 +92,12 @@ Vue.component('tab-page-com', {
 Vue.component('leftnav-com', {
     template : '\
     <div>\
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>\
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>\
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>\
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-superscript"></span> 코멘트</label></p>\
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>\
-        <p><label href="#" v-on:click=addsurvey(GlobalValues.control.multiText)><span class="glyphicon glyphicon-th-list"></span> 멀티텍스트</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-superscript"></span> 코멘트</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.multiText)><span class="glyphicon glyphicon-th-list"></span> 멀티텍스트</label></p>\
     </div>',
     methods : {
         addsurvey : function (type) {
@@ -110,8 +110,8 @@ Vue.component('leftnav-com', {
 Vue.component('controllayout-com', {
     template: '\
     <div>\
-            <div v-for="(el, index) in elements" class="row">\
-                <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
+            <div v-on:drag=drag v-for="(el, index) in elements" :idx=index class="row">\
+                <fieldset draggable="true" v-on:click="edit(el)" v-bind:class="{setting: el === settings}" :idx=index v-on:dragover=dragOver v-on:dragleave=dragLeave v-on:drop=drop>\
                     <div style="width: 95%; float: left;" :style="skipStyle(el)">\
                         <label class="required" v-if="el.is_required">＊</label><label class="question">{{el.title}}</label>\
                         <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
@@ -122,19 +122,50 @@ Vue.component('controllayout-com', {
                         <multi-text-com v-else-if="el.type === GlobalValues.control.multiText" :el=el></multi-text-com>\
                         <template v-else/>\
                     </div>\
-                    <div style="width: 5%; float: left; background-color: #eee;" v-if="el === settings">\
-                        <div style="min-height:4vh; text-align:center">\
-                            <button type="button" class="up_down" v-on:click="changeIndex(index, GlobalValues.Up)">↑</button>\
-                        </div>\
-                        <div style="text-align:center">\
-                            <button type="button" class="up_down" v-on:click="changeIndex(index, GlobalValues.Down)">↓</button>\
-                        </div>\
-                    </div>\
                 </fieldset>\
+                <div style="height: 5px;" :id="\'dragzone\'+ index" ></div>\
             </div>\
     </div>',
+    data: function () { return { dragedHeight : 0, from : 0  } },
     props: { elements: { type: Array, required: true }, settings : { type: Object }, skipQuestions : {type : Array}},
     methods :{
+        drag : function(event){
+            //console.log(event.currentTarget.clientHeight);
+            this.from = Number(event.currentTarget.getAttribute('idx'));
+            event.dataTransfer.effectAllowed = 'move';
+            if (this.dragedHeight == 0)
+                this.dragedHeight = event.currentTarget.clientHeight;
+            //console.log(this.dragedHeight);
+        },
+        dragOver : function(event) {
+            var to = Number(event.currentTarget.getAttribute('idx'));
+            //console.log(this.from);
+            //console.log(to);
+            if(this.from == to) return;
+            if((this.from + 1) == to) return;
+            console.log(this.from + 1);
+            console.log(to);
+            $('#dragzone' +  to).height(this.dragedHeight);
+            
+            event.dataTransfer.effectAllowed = 'move';
+            event.preventDefault();
+        }, 
+        dragLeave : function(event){
+            this.dragedHeight = 0;
+            this.dragedFrom = 0;
+            $('#dragzone' +  to).height(this.dragedHeight);
+            //console.log(event.target.nextSibling);
+            //event.target.nextSibling.style.height = '5px';
+        }, 
+        drop : function(event) {
+            this.dragedHeight = 0;
+            if (event.target.nextElementSibling != null){
+                event.target.nextElementSibling.style.height = '5px';
+            }
+            var to = Number(event.currentTarget.getAttribute('idx'));
+            this.changeIndex(this.from, to);
+            event.preventDefault();
+        }, 
         skipStyle : function (el) {
             var style = { "opacity": 1, "pointer-events": ''};
             if (this.skipQuestions.indexOf(el.name) > -1){
@@ -149,20 +180,20 @@ Vue.component('controllayout-com', {
         convertHtml : function(desc){            
             return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
         }, 
-        changeIndex : function (index, UpDown) {
-            if (index == 0 && UpDown == this.GlobalValues.Up){
-                return;
-            }
-            if (index == this.elements.length - 1 && UpDown == this.GlobalValues.Down){
-                return;
-            }
-            var to = 0;
-            if (UpDown == this.GlobalValues.Up) {
-                to = index - 1;
-            } else {
-                to = index + 1;
-            }
-            let cutOut = this.elements.splice(index, 1) [0];
+        changeIndex : function (from, to) {
+            // if (index == 0 && UpDown == this.GlobalValues.Up){
+            //     return;
+            // }
+            // if (index == this.elements.length - 1 && UpDown == this.GlobalValues.Down){
+            //     return;
+            // }
+            // var to = 0;
+            // if (UpDown == this.GlobalValues.Up) {
+            //     to = index - 1;
+            // } else {
+            //     to = index + 1;
+            // }
+            let cutOut = this.elements.splice(from, 1) [0];
             this.elements.splice(to, 0, cutOut);      
         }
     }, 

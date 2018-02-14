@@ -109,7 +109,7 @@ Vue.component('long-string-setting-com', {
         <label class="col-sm-4">{{ko}}</label>\
         <div class="col-sm-8">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control" :placeholder=placeholder readonly>\
+                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">수정</span>\
             </a>\
         </div>\
@@ -136,7 +136,7 @@ Vue.component('skip-setting-com', {
         <label class="col-sm-4">{{ko}}</label>\
         <div class="col-sm-8">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control" :placeholder=placeholder readonly>\
+                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">편집</span>\
             </a>\
         </div>\
@@ -164,7 +164,7 @@ Vue.component('choice-setting-com', {
         <label class="col-sm-4">{{ko}}</label>\
         <div class="col-sm-8">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control" :placeholder=placeholder readonly>\
+                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">항목</span>\
             </a>\
         </div>\
@@ -191,7 +191,7 @@ Vue.component('items-setting-com', {
         <label class="col-sm-4">{{ko}}</label>\
         <div class="col-sm-8">\
             <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control" :placeholder=placeholder readonly>\
+                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
                 <span class="input-group-addon">항목</span>\
             </a>\
         </div>\
@@ -241,7 +241,7 @@ Vue.component('drop-setting-com', {
     <div class="form-group text-left">\
         <label class="col-sm-4">{{ko}}</label>\
         <div class="col-sm-8">\
-            <select class="form-control" v-model="settings[property]">\
+            <select class="form-control cur" v-model="settings[property]">\
                 <option v-for="o in selectOptions" v-bind:value="o.value">\
                     {{ o.text }}\
                 </option>\

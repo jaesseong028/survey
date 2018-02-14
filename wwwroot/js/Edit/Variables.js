@@ -22,8 +22,8 @@ options = {
         skip : { ko : "건너뛰기", type : "SkipArray" },
         is_other : { ko : "기타선택여부", type : "Boolean", 필수 : true, default : false },
         other_text :  { ko : "기타텍스트", type : "String" },
-        other_text_width :  { ko : "기타텍스트넓이", type : "Int" },
-        other_text_len :  { ko : "최대글자수", type : "Int", max : 100},
+        other_text_width :  { ko : "기타텍스트넓이", type : "Int", min : 1 },
+        other_text_len :  { ko : "최대글자수", type : "Int", min : 1, max : 100},
         col_count :  { ko : "열갯수", type : "ShortInt",  min : 1, max : 5 },
     },
     checkbox : {
@@ -37,8 +37,8 @@ options = {
         skip : { ko : "건너뛰기", type : "SkipArray" },
         is_other : { ko : "기타선택여부", type : "Boolean", 필수 : true, default : false },
         other_text :  { ko : "기타텍스트", type : "String" },
-        other_text_width :  { ko : "기타텍스트넓이", type : "Int" },
-        other_text_len :  { ko : "글자제한수", type : "Int" },
+        other_text_width :  { ko : "기타텍스트넓이", type : "Int", min : 1 },
+        other_text_len :  { ko : "글자제한수", type : "Int", min : 1 },
         col_count :  { ko : "열갯수", type : "ShortInt", min : 1, max : 5 },
     },
     rate : {

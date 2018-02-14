@@ -185,20 +185,24 @@ var vue = new Vue({
                         if (s.pages[p].elements[e].value instanceof Array) {
                             for (var i = 0; i < s.pages[p].elements[e].value.length; i++) {
                                 if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value[i]) > -1) {
-                                    for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
-                                        if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
-                                            skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
-                                        }
-                                    }
+                                    //"skip" :[{"choice" : "예", "skipQuestionNames":["question3"]}, {"choice" : "아니오", "skipQuestionNames":["question4", "question5"]}],
+
+
+
+                                    // for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
+                                    //     if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
+                                    //         skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
+                                    //     }
+                                    // }
                                 }
                             }
                         } else {
                             if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value) > -1) {
-                                for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
-                                    if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
-                                        skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
-                                    }
-                                }
+                                // for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
+                                //     if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
+                                //         skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
+                                //     }
+                                // }
                             }
                         }
                     }
