@@ -1,11 +1,17 @@
+Vue.directive('sortable', {
+    inserted: function (el, binding) {
+        new Sortable(el, binding.value || {})
+    }
+})
+
 var EventBus = new Vue();
 var vue = new Vue({
     template : '\
 <div class="container-fluid text-center">\
     <div class="row logo-container">\
-        <h2><label class="col-sm-2 text-right">{{survey.logo_text}}</label></h2>\
+        <h2><label class="col-sm-1 text-right">{{survey.logo_text}}</label></h2>\
         <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
-        <div style="padding-top:20px; padding-left:-20px" class="col-sm-3 text-left">\
+        <div style="padding-top:20px; padding-left:-20px" class="col-sm-4 text-left">\
             <label class="btn btn-success"> 저장 </label>\
             <label class="btn btn-info" v-on:click=prev>미리보기</label>\
         </div>\
@@ -22,7 +28,7 @@ var vue = new Vue({
         </div>\
         <div class="col-sm-2 sidenav">\
             <settinglayout-com :settings=settings></settinglayout-com>\
-            <!--{{survey|pretty}}-->\
+            {{survey|pretty}}\
         </div>\
     </div>\
     <modallayout-com></modallayout-com>\
@@ -45,7 +51,7 @@ var vue = new Vue({
     methods: {
         prev : function(){
             window.open("", "popup_window", "width=800, height=900, scrollbars=no");
-            var s = {survey : this.survey};
+            var s = { survey : this.survey };
             $("#surveyJson").val(JSON.stringify(s));
             $("#myform").submit();
         },
