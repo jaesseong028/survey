@@ -391,7 +391,7 @@ function createQuestion(elPage, questions, questionNumber)
             if(('is_required' in questions[p]) && (questions[p].is_required == true))
                 cdom.getcss(elQuestion,'title',0).append('strong').text('*');
             // Questions title
-            if('title' in questions[p].title)
+            if('title' in questions[p])
                 cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);            
             // Questions description
             if('description' in questions[p])
@@ -519,7 +519,7 @@ function domReady (){
                     cdom.get(elPage).attr('id',pages[p].name);
                     
                     // Page title
-                    if('title' in pages[p].title)
+                    if('title' in pages[p])
                         cdom.getcss(elPage,'title',0).text(pages[p].title);
 
                     // Page description
