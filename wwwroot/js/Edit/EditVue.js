@@ -38,11 +38,6 @@ var vue = new Vue({
         survey: {
             title : '',
             description : '',
-            //background_color: '',
-            //font_color: '',
-            logo_text: '',
-            //logo_background_color: '',
-            //logo_font_color: '',
             pages: [ 
                 { name: "page1", elements: [] }
             ]
@@ -50,7 +45,7 @@ var vue = new Vue({
     },
     methods: {
         prev : function(){
-            window.open("", "popup_window", "width=500, height=300, scrollbars=no");
+            window.open("", "popup_window", "width=800, height=900, scrollbars=no");
             var s = {survey : this.survey};
             $("#surveyJson").val(JSON.stringify(s));
             $("#myform").submit();
