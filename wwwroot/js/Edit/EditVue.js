@@ -36,12 +36,13 @@ var vue = new Vue({
         layerPostObj : null,
         focusedQeustionName : '', // 
         survey: {
-            description : "",
-            background_color: "",
-            font_color: "",
-            logo_text: "",
-            logo_background_color: "",
-            logo_font_color: "",
+            title : '',
+            //description : '',
+            //background_color: '',
+            //font_color: '',
+            logo_text: '',
+            //logo_background_color: '',
+            //logo_font_color: '',
             pages: [ 
                 { name: "page1", elements: [] }
             ]
