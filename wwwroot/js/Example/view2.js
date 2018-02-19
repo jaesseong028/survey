@@ -220,8 +220,9 @@ function e_change_checkradio( obj, items )
 //Check_Box Radio_Box Create
 function createCheckRadio( elItems, items )
 {
-    // col_count 체크
-    var width_percent = items.col_count <= 1 ? '100' : 100 / items.col_count;
+    var width_percent = '100';
+    if( 'col_count' in items )
+        width_percent = items.col_count <= 1 ? '100' : 100 / items.col_count;
     var col_style = 'display: inline-block; width: ' + width_percent + '%;';
 
     for(var p in items.choices)
@@ -394,8 +395,10 @@ function createQuestion(elPage, questions, questionNumber)
             if('title' in questions[p])
                 cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);            
             // Questions description
-            if('description' in questions[p])
-                cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
+            if('description' in questions[p] && questions[p].description != '' )
+                cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+            else
+                cdom.getcss(elQuestion,'description',0).removecss('description');
 
             // items Setting
             // radio, check box
