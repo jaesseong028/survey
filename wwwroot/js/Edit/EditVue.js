@@ -37,7 +37,6 @@ var vue = new Vue({
         focusedQeustionName : '', // 
         survey: {
             title : '',
-            description : '',
             pages: [ 
                 { name: "page1", elements: [] }
             ]
