@@ -40,9 +40,7 @@
             return this.el.text_width;
         } 
     }
-  }
-  
-
+}
 
 Vue.component('tab-page-com', {
     template : '\
@@ -209,8 +207,6 @@ Vue.component('controllayout-com', {
     }
 })
 
-
-
 Vue.component('choice-list-com', {
     template: '\
     <div>\
@@ -233,7 +229,6 @@ Vue.component('choice-list-com', {
         textWidth : this.methods.textWidth,
     }
 })
-
 
 Vue.component('rate-list-com', {
     template: '\

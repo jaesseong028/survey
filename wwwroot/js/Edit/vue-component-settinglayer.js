@@ -182,7 +182,6 @@ Vue.component('choice-setting-com', {
     }
 })
 
-
 Vue.component('items-setting-com', {
     template: '\
 <span class="row">\
@@ -209,7 +208,6 @@ Vue.component('items-setting-com', {
     }
 })
 
-
 Vue.component('checkbox-setting-com', {
     template: '\
 <span class="row">\
@@ -221,7 +219,6 @@ Vue.component('checkbox-setting-com', {
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}}
 })
 
-
 Vue.component('int-setting-com', {
     template: '\
 <span class="row">\
@@ -232,7 +229,6 @@ Vue.component('int-setting-com', {
 </span>',
     props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
 })
-
 
 Vue.component('drop-setting-com', {
     template: '\
@@ -259,8 +255,6 @@ Vue.component('drop-setting-com', {
         }
     }
 })
-
-
 
 Vue.component('modallayout-com', {
     template: '\
