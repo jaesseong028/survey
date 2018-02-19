@@ -385,16 +385,17 @@ function createQuestion(elPage, questions, questionNumber)
         {
             var elQuestion = createQuestionSet();
             
-            // Page iD
+            // Questions iD
             cdom.get(elQuestion).attr('id',questions[p].name);
-            // Page Required
+            // Questions Required
             if(('is_required' in questions[p]) && (questions[p].is_required == true))
                 cdom.getcss(elQuestion,'title',0).append('strong').text('*');
-            // Page title
-            cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);            
-            // Page description
+            // Questions title
+            if('title' in questions[p].title)
+                cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);            
+            // Questions description
             if('description' in questions[p])
-                cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+                cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
 
             // items Setting
             // radio, check box
@@ -496,7 +497,12 @@ function domReady (){
             var elSurvey = createSurveySet();
 
             // Survey Title
-            cdom.getcss(elSurvey,'title',0).text(surveyJson.survey.title);
+            if('title' in surveyJson.survey)
+                cdom.getcss(elSurvey,'title',0).text(surveyJson.survey.title);
+
+            if('description' in surveyJson.survey)
+                cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');;
+
             
             // Survey Page
             var pages  = surveyJson.survey.pages;
@@ -511,11 +517,14 @@ function domReady (){
 
                     // Page iD
                     cdom.get(elPage).attr('id',pages[p].name);
+                    
                     // Page title
-                    cdom.getcss(elPage,'title',0).text(pages[p].title);
+                    if('title' in pages[p].title)
+                        cdom.getcss(elPage,'title',0).text(pages[p].title);
+
                     // Page description
                     if('description' in pages[p])
-                        cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+                        cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');;
 
                     //first page Visible
                     if(p == 0)   // 첫페이지는 무조건 보이기
