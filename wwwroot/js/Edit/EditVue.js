@@ -37,7 +37,7 @@ var vue = new Vue({
         focusedQeustionName : '', // 
         survey: {
             title : '',
-            //description : '',
+            description : '',
             //background_color: '',
             //font_color: '',
             logo_text: '',
