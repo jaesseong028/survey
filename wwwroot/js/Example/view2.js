@@ -501,7 +501,7 @@ function domReady (){
                 cdom.getcss(elSurvey,'title',0).text(surveyJson.survey.title);
 
             if('description' in surveyJson.survey)
-                cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');;
+                cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
 
             
             // Survey Page
