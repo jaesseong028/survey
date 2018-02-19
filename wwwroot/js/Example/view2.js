@@ -393,7 +393,8 @@ function createQuestion(elPage, questions, questionNumber)
             // Page title
             cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);            
             // Page description
-            cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+            if('description' in questions[p])
+                cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
 
             // items Setting
             // radio, check box
@@ -513,7 +514,8 @@ function domReady (){
                     // Page title
                     cdom.getcss(elPage,'title',0).text(pages[p].title);
                     // Page description
-                    cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+                    if('description' in pages[p])
+                        cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
 
                     //first page Visible
                     if(p == 0)   // 첫페이지는 무조건 보이기
