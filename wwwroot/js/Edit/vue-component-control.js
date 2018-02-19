@@ -111,7 +111,7 @@ Vue.component('controllayout-com', {
     template: '\
     <div>\
             <div v-on:drag=drag v-for="(el, index) in elements" :idx=index class="row">\
-                <fieldset draggable="true" v-on:click="edit(el)" v-bind:class="{setting: el === settings}" :idx=index v-on:dragover=dragOver v-on:dragleave=dragLeave v-on:drop=drop>\
+                <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}" :idx=index v-on:dragover=dragOver v-on:dragleave=dragLeave v-on:drop=drop>\
                     <div style="width: 95%; float: left;" :style="skipStyle(el)">\
                         <label class="required" v-if="el.is_required">＊</label><label class="question">{{el.title}}</label>\
                         <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
@@ -122,6 +122,14 @@ Vue.component('controllayout-com', {
                         <multi-text-com v-else-if="el.type === GlobalValues.control.multiText" :el=el></multi-text-com>\
                         <template v-else/>\
                     </div>\
+                    <div style="width: 5%; float: left; background-color: #eee;" v-if="el === settings">\
+                         <div style="min-height:4vh; text-align:center">\
+                             <button type="button" class="up_down" v-on:click="changeIndex(index, index - 1,GlobalValues.Up)">↑</button>\
+                         </div>\
+                         <div style="text-align:center">\
+                             <button type="button" class="up_down" v-on:click="changeIndex(index, index + 1, GlobalValues.Down)">↓</button>\
+                         </div>\
+                     </div>\
                 </fieldset>\
                 <div style="height: 5px;" :id="\'dragzone\'+ index" ></div>\
             </div>\
@@ -151,6 +159,7 @@ Vue.component('controllayout-com', {
             event.preventDefault();
         }, 
         dragLeave : function(event){
+            var to = Number(event.currentTarget.getAttribute('idx'));
             this.dragedHeight = 0;
             this.dragedFrom = 0;
             $('#dragzone' +  to).height(this.dragedHeight);
@@ -180,19 +189,19 @@ Vue.component('controllayout-com', {
         convertHtml : function(desc){            
             return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
         }, 
-        changeIndex : function (from, to) {
-            // if (index == 0 && UpDown == this.GlobalValues.Up){
-            //     return;
-            // }
-            // if (index == this.elements.length - 1 && UpDown == this.GlobalValues.Down){
-            //     return;
-            // }
-            // var to = 0;
-            // if (UpDown == this.GlobalValues.Up) {
-            //     to = index - 1;
-            // } else {
-            //     to = index + 1;
-            // }
+        changeIndex : function (from, to, UpDown) {
+            if (from == 0 && UpDown == this.GlobalValues.Up){
+                return;
+            }
+            if (from == this.elements.length - 1 && UpDown == this.GlobalValues.Down){
+                return;
+            }
+            var to = 0;
+            if (UpDown == this.GlobalValues.Up) {
+                to = from - 1;
+            } else {
+                to = from + 1;
+            }
             let cutOut = this.elements.splice(from, 1) [0];
             this.elements.splice(to, 0, cutOut);      
         }

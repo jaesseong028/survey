@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "M Index";
+    Layout = "~/Views/Shared/EditLayout/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/Example/main2.css" />
+<environment include="Development">
+    <script src="~/js/Example/view2.js"></script>
+</environment>
+<environment include="Production">    
+    <script src="~/js/Example/view2.js"></script>
+</environment>
+<script>
+    var survey = @Html.Raw(ViewData["survey"]);
+</script>
+
+
+<div id="ubSurvey"></div>

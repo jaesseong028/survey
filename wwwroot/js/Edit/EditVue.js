@@ -7,9 +7,12 @@ var vue = new Vue({
         <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
         <div style="padding-top:20px; padding-left:-20px" class="col-sm-3 text-left">\
             <label class="btn btn-success"> 저장 </label>\
-            <label class="btn btn-info">미리보기</label>\
+            <label class="btn btn-info" v-on:click=prev>미리보기</label>\
         </div>\
     </div>\
+    <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">\
+        <input type="hidden" id="surveyJson" name="survey" value="" />\
+    </form>\
     <div class="row content">\
         <div class="col-sm-1 sidenav leftnav">\
             <leftnav-com></leftnav-com>\
@@ -45,6 +48,12 @@ var vue = new Vue({
         },
     },
     methods: {
+        prev : function(){
+            window.open("", "popup_window", "width=500, height=300, scrollbars=no");
+            var s = {survey : this.survey};
+            $("#surveyJson").val(JSON.stringify(s));
+            $("#myform").submit();
+        },
         changedPage : function (index) {
             this.selectPage = this.survey.pages[index];
             this.settings = this.survey.pages[index];
@@ -186,9 +195,6 @@ var vue = new Vue({
                             for (var i = 0; i < s.pages[p].elements[e].value.length; i++) {
                                 if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value[i]) > -1) {
                                     //"skip" :[{"choice" : "예", "skipQuestionNames":["question3"]}, {"choice" : "아니오", "skipQuestionNames":["question4", "question5"]}],
-
-
-
                                     // for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
                                     //     if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
                                     //         skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);

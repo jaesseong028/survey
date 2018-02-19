@@ -13,5 +13,12 @@ namespace UBSurvey.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Prev(string survey)
+        {
+            ViewBag.survey = survey;
+            return View();
+        }
     }
 }
