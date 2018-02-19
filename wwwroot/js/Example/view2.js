@@ -483,7 +483,10 @@ function domReady (){
     try
     {
         var surveyId = document.getElementById('ubSurvey');
-        var surveyJson = JSON.parse(survey);
+        console.log(survey);
+        //var surveyJson = JSON.parse(survey);
+
+        var surveyJson = survey;
         console.log(surveyJson);
 
         if( ('survey' in surveyJson) && ('pages' in surveyJson.survey) && ('title' in surveyJson.survey))
