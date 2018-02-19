@@ -33,14 +33,12 @@
         return is_readonly;  
     },
     textWidth : function() {
-        var style = { };
         if (this.el.other_text_width) {
-            style.width = this.el.other_text_width + 'px';
+            return this.el.other_text_width;
         } 
         else if (this.el.text_width) {
-            style.width = this.el.text_width + 'px';
+            return this.el.text_width;
         } 
-        return style;
     }
   }
   
@@ -221,7 +219,7 @@ Vue.component('choice-list-com', {
         </template>\<template>\<div v-if="el.is_other" :style="col_style">\
                 <input :type=el.type :name=el.name :id=uid :value=el.other_text :disabled=disabled v-model=el.value />\
                 <label :for="uid">{{el.other_text}}</label>\
-                <input type="text" :maxlength="el.other_text_len" :style="textWidth" v-model=el.other_text_value :readonly=readonly />\
+                <input type="text" :maxlength="el.other_text_len" :size="textWidth" v-model=el.other_text_value :readonly=readonly class="form-control non-width"  />\
             </div>\
         </template>\
     </div>',
@@ -286,7 +284,7 @@ Vue.component('choice-com', {
 Vue.component('comment-com', {
     template: '\
     <div>\
-        <textarea type=text :name=el.name :rows=el.rows :id=uid v-model=el.value style="width:100%"></textarea>\
+        <textarea type=text :name=el.name :rows=el.rows :id=uid v-model=el.value class="form-control"></textarea>\
     </div>',
     props: { el: { type: Object, required: true }},
     computed : {
@@ -297,7 +295,7 @@ Vue.component('comment-com', {
 Vue.component('text-com', {
     template: '\
     <div>\
-        <input type="text" :name=el.name style="width:100%" :id="uid" :maxlength="el.max_len" v-model=el.value /></template>\
+        <input type="text" :name=el.name :id="uid" :maxlength="el.max_len" v-model=el.value class="form-control"/></template>\
     </div>',    
     props: { el: { type: Object, required: true }},
     computed :{
@@ -312,7 +310,7 @@ Vue.component('multi-text-com', {
         <template v-for="(item, index) in el.items">\
             <div :style="col_style">\
                 <label>{{item.item}}</label>\
-                <input type="text" :name=el.name :maxlength="el.max_len" :id="uid" :style="textWidth" v-model=el.value[index] />\
+                <input type="text" :name=el.name :maxlength="el.max_len" :id="uid" :size="textWidth" v-model=el.value[index] class="form-control non-width" />\
             </div>\
         </template>\
     </div>',

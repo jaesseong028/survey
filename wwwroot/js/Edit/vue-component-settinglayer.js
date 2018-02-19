@@ -78,7 +78,6 @@ Vue.component('string-setting-com', {
                     for (var e=0; e< survery.pages[p].elements.length; e++) {
                         /// 동일한 이름 체크 ///
                         if (survery.pages[p].elements[e] != this.settings) {
-                            console.log(survery.pages[p].elements[e].name);
                             if (survery.pages[p].elements[e].name == newValue) {
                                 newValue = this.$root.emptyName(this.GlobalValues.question);
                                 this.settings[this.property] = newValue;

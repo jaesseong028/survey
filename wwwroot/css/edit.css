@@ -58,3 +58,4 @@ textarea {resize: none;}
 .setting-layout .delete { color: red }
 
 .cur { cursor: pointer }
+.non-width { width:auto; display:inline; }
