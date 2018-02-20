@@ -1,4 +1,4 @@
-Vue.directive('sortable', {
+﻿Vue.directive('sortable', {
     inserted: function (el, binding) {
         new Sortable(el, binding.value || {})
     }
@@ -41,7 +41,7 @@ var vue = new Vue({
         layerPopupOpened : false,
         layerPostObj : null,
         focusedQeustionName : '', // 
-        survey: {
+        survey: { 
             title : '',
             pages: [ 
                 { name: "page1", elements: [] }
@@ -107,7 +107,7 @@ var vue = new Vue({
             var item = { name: questionName, type: type, title: questionName, description: "", is_required : true, value : null};
             if (type == this.GlobalValues.control.checkbox || type == this.GlobalValues.control.radio) {
                 item.choices = ["item1", "item2", "item3"];
-                item.skip = {"choices":[], "skipQuestionNames":[] };
+                item.skip = [];
             }
 
             if (type == this.GlobalValues.control.checkbox) {
@@ -194,23 +194,23 @@ var vue = new Vue({
                     if ('skip' in s.pages[p].elements[e]) {
                         if (s.pages[p].elements[e].value instanceof Array) {
                             for (var i = 0; i < s.pages[p].elements[e].value.length; i++) {
-                                if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value[i]) > -1) {
-                                    //"skip" :[{"choice" : "예", "skipQuestionNames":["question3"]}, {"choice" : "아니오", "skipQuestionNames":["question4", "question5"]}],
-                                    // for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
-                                    //     if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
-                                    //         skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
-                                    //     }
-                                    // }
-                                }
-                            }
-                        } else {
-                            if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value) > -1) {
-                                // for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
-                                //     if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
-                                //         skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
+                                // if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value[i]) > -1) {
+                                //     //"skip" :[{"choice" : "예", "skipQuestionNames":["question3"]}, {"choice" : "아니오", "skipQuestionNames":["question4", "question5"]}],
+                                //     for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
+                                //         if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
+                                //             skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
+                                //         }
                                 //     }
                                 // }
                             }
+                        } else {
+                            // if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value) > -1) {
+                            //     for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
+                            //         if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
+                            //             skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
+                            //         }
+                            //     }
+                            // }
                         }
                     }
                 }

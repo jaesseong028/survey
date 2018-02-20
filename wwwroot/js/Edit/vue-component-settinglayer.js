@@ -3,16 +3,24 @@ Vue.component('settinglayout-com', {
     template: '\
     <div>\
         <div class="setting-layout">\
-             <template v-for="(option, propertyName) in Options[optionType]">\
-                    <string-setting-com v-if="option.type === Options.types.String" :option=option :ko=option.ko :settings=settings :property=propertyName></string-setting-com>\
-                    <long-string-setting-com v-if="option.type === Options.types.LongString" :option=option :ko=option.ko :settings=settings :property=propertyName></long-string-setting-com>\
-                    <checkbox-setting-com v-else-if="option.type === Options.types.Boolean" :option=option :ko=option.ko :settings=settings :property=propertyName></checkbox-setting-com>\
-                    <int-setting-com v-else-if="option.type === Options.types.Int" :option=option :ko=option.ko :settings=settings :property=propertyName></int-setting-com>\
-                    <drop-setting-com v-else-if="option.type === Options.types.ShortInt" :option=option :ko=option.ko :settings=settings :property=propertyName></drop-setting-com>\
-                    <choice-setting-com v-else-if="option.type === Options.types.ChoiesArray" :option=option :ko=option.ko :settings=settings :property=propertyName></choice-setting-com>\
-                    <items-setting-com v-else-if="option.type === Options.types.itemsArray" :option=option :ko=option.ko :settings=settings :property=propertyName></items-setting-com>\
-                    <skip-setting-com v-else-if="option.type === Options.types.SkipArray" :option=option :ko=option.ko :settings=settings :property=propertyName></skip-setting-com >\
-                    <template v-else />\
+            <template v-for="(option, propertyName) in Options[optionType]">\
+                <span class="row">\
+                    <div class="form-group text-left">\
+                        <label class="col-md-5">{{option.ko}}</label>\
+                        <div class="col-md-7">\
+                            <string-setting-com v-if="option.type === Options.types.String" :option=option :settings=settings :property=propertyName></string-setting-com>\
+                            <long-string-setting-com v-if="option.type === Options.types.LongString" :option=option :settings=settings :property=propertyName></long-string-setting-com>\
+                            <checkbox-setting-com v-else-if="option.type === Options.types.Boolean" :option=option :settings=settings :property=propertyName></checkbox-setting-com>\
+                            <int-setting-com v-else-if="option.type === Options.types.Int" :option=option :settings=settings :property=propertyName></int-setting-com>\
+                            <drop-setting-com v-else-if="option.type === Options.types.ShortInt" :option=option :settings=settings :property=propertyName></drop-setting-com>\
+                            <choice-setting-com v-else-if="option.type === Options.types.ChoiesArray" :option=option :settings=settings :property=propertyName></choice-setting-com>\
+                            <items-setting-com v-else-if="option.type === Options.types.itemsArray" :option=option :settings=settings :property=propertyName></items-setting-com>\
+                            <skip-setting-com v-else-if="option.type === Options.types.SkipArray" :option=option :settings=settings :property=propertyName></skip-setting-com >\
+                            <readonly-string-setting-com v-else-if="option.type === Options.types.ReadOnlyString" :option=option :settings=settings :property=propertyName></readonly-string-setting-com >\
+                            <template v-else />\
+                        </div>\
+                    </div>\
+                </span>\
             </template>\
         </div>\
         <!--<div v-for="(value, propertyName) in settings">\
@@ -39,82 +47,73 @@ Vue.component('settinglayout-com', {
     }
 })
 
-Vue.component('string-setting-com', {
+Vue.component('readonly-string-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-md-4">{{ko}}</label>\
-        <div class="col-md-8">\
-            <template v-if="property == \'name\'">\
-                <a class="input-group" href="#">\
-                    <input class="form-control" v-on:focus=onfocus v-on:blur=onblur v-model="settings[property]">\
-                    <span class="input-group-addon delete" v-on:click=deleteSetting>X</span><!-- 페이지 또는 설문일 경우 삭제 하기 버튼 활성화 -->\
-                </a>\
-            </template>\
-            <template v-else="">\
-                <input class="form-control" v-model="settings[property]">\
-            </template>\
-        </div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    <div>\
+        <a class="input-group" href="#">\
+            <input class="form-control" v-model="settings[property]" readonly>\
+            <span class="input-group-addon delete" v-on:click=deleteSetting>X</span><!-- 페이지 또는 설문일 경우 삭제 하기 버튼 활성화 -->\
+        </a>\
+    </div>', 
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},
     methods : {
         deleteSetting : function(){
             this.$root.deleteSetting();
         }, 
-        onfocus : function() {
-            if (this.property == 'name') {
-                this.$root.focusedQeustionName = this.settings[this.property];
-            }
-        }, 
-        onblur : function() {
-            if (this.property == 'name') {
-
-                var newValue = this.settings[this.property];
-                var oldValue = this.$root.focusedQeustionName;
-
-                var survery = this.$root.survey;
-                for (var p=0; p < survery.pages.length; p++) {
-                    for (var e=0; e< survery.pages[p].elements.length; e++) {
-                        /// 동일한 이름 체크 ///
-                        if (survery.pages[p].elements[e] != this.settings) {
-                            if (survery.pages[p].elements[e].name == newValue) {
-                                newValue = this.$root.emptyName(this.GlobalValues.question);
-                                this.settings[this.property] = newValue;
-                                vue.$forceUpdate();
-                                alert('이미 다른 곳에 사용중인 이름입니다.');
-                            }
-                        }
-                        /// 동일한 이름 체크 ///
-                        /// Skip 부분에 설문 이름이 변경 된것을 찾아 바꿔줌
-                        if ('skip' in survery.pages[p].elements[e]) {
-                            var idx = survery.pages[p].elements[e].skip.skipQuestionNames.indexOf(oldValue);
-                            if (idx != -1) {
-                                survery.pages[p].elements[e].skip.skipQuestionNames[idx] = newValue;
-                            }
-                        }
-                        /// Skip 부분에 설문 이름이 변경 된것을 찾아 바꿔줌
-                    }
-                }
-            }
-        }
+        // onfocus : function() {
+        //     if (this.property == 'name') {
+        //         this.$root.focusedQeustionName = this.settings[this.property];
+        //     }
+        // }, 
+        // onblur : function() {
+        //     if (this.property == 'name') {
+        //         var newValue = this.settings[this.property];
+        //         var oldValue = this.$root.focusedQeustionName;
+        //         var survery = this.$root.survey;
+        //         for (var p=0; p < survery.pages.length; p++) {
+        //             for (var e=0; e< survery.pages[p].elements.length; e++) {
+        //                 /// 동일한 이름 체크 ///
+        //                 if (survery.pages[p].elements[e] != this.settings) {
+        //                     if (survery.pages[p].elements[e].name == newValue) {
+        //                         newValue = this.$root.emptyName(this.GlobalValues.question);
+        //                         this.settings[this.property] = newValue;
+        //                         vue.$forceUpdate();
+        //                         alert('이미 다른 곳에 사용중인 이름입니다.');
+        //                     }
+        //                 }
+        //                 /// 동일한 이름 체크 ///
+        //                 /// Skip 부분에 설문 이름이 변경 된것을 찾아 바꿔줌
+        //                 if ('skip' in survery.pages[p].elements[e]) {
+        //                     var idx = survery.pages[p].elements[e].skip.skipQuestionNames.indexOf(oldValue);
+        //                     if (idx != -1) {
+        //                         survery.pages[p].elements[e].skip.skipQuestionNames[idx] = newValue;
+        //                     }
+        //                 }
+        //                 /// Skip 부분에 설문 이름이 변경 된것을 찾아 바꿔줌
+        //             }
+        //         }
+        //     }
+        //}
     }
+});
+
+Vue.component('string-setting-com', {
+    template: '\
+    <div>\
+        <input class="form-control" v-model="settings[property]">\
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},
 })
 
 Vue.component('long-string-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-sm-4">{{ko}}</label>\
-        <div class="col-sm-8">\
-            <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
-                <span class="input-group-addon">수정</span>\
-            </a>\
-        </div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    <div>\
+        <a class="input-group" href="#" v-on:click=layerOpen>\
+            <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
+            <span class="input-group-addon">수정</span>\
+        </a>\
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},
     methods : {
         layerOpen : function () {
             EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, this.ko  + ' 수정');
@@ -130,18 +129,13 @@ Vue.component('long-string-setting-com', {
 
 Vue.component('skip-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-sm-4">{{ko}}</label>\
-        <div class="col-sm-8">\
-            <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
-                <span class="input-group-addon">편집</span>\
-            </a>\
-        </div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    <div>\
+        <a class="input-group" href="#" v-on:click=layerOpen>\
+            <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
+            <span class="input-group-addon">편집</span>\
+        </a>\
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},
     methods : {
         layerOpen : function () {
             EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, '건너뛰기 편집');
@@ -149,7 +143,7 @@ Vue.component('skip-setting-com', {
     },
     computed : {
         placeholder : function() { 
-            var qty = this.settings[this.property].skipQuestionNames.length;
+            var qty = this.settings[this.property].length;
             if (qty != 0)
                 return  'skips:' + qty;
         }
@@ -158,18 +152,13 @@ Vue.component('skip-setting-com', {
 
 Vue.component('choice-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-sm-4">{{ko}}</label>\
-        <div class="col-sm-8">\
-            <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
-                <span class="input-group-addon">항목</span>\
-            </a>\
-        </div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    <div>\
+        <a class="input-group" href="#" v-on:click=layerOpen>\
+            <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
+            <span class="input-group-addon">항목</span>\
+        </a>\
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},
     methods : {
         layerOpen : function () {
             EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, '아이템 편집');
@@ -184,18 +173,13 @@ Vue.component('choice-setting-com', {
 
 Vue.component('items-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-sm-4">{{ko}}</label>\
-        <div class="col-sm-8">\
-            <a class="input-group" href="#" v-on:click=layerOpen>\
-                <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
-                <span class="input-group-addon">항목</span>\
-            </a>\
-        </div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},
+    <div>\
+        <a class="input-group" href="#" v-on:click=layerOpen>\
+            <input type="text" class="form-control cur" :placeholder=placeholder readonly>\
+            <span class="input-group-addon">항목</span>\
+        </a>\
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},
     methods : {
         layerOpen : function () {
             EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, '아이템 편집');
@@ -210,41 +194,30 @@ Vue.component('items-setting-com', {
 
 Vue.component('checkbox-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-sm-4">{{ko}}</label>\
+    <div>\
         <div class="col-sm-8"><input type="checkbox" v-model="settings[property]"></div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}}
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}}
 })
 
 Vue.component('int-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-sm-4">{{ko}}</label>\
-        <div class="col-sm-8"><input class="form-control" v-model.number="settings[property]" :min="option.min" :max="option.max" type="number" /></div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
+    <div>\
+        <input class="form-control" v-model.number="settings[property]" :min="option.min" :max="option.max" type="number" />\
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},  
 })
 
 Vue.component('drop-setting-com', {
     template: '\
-<span class="row">\
-    <div class="form-group text-left">\
-        <label class="col-sm-4">{{ko}}</label>\
-        <div class="col-sm-8">\
-            <select class="form-control cur" v-model="settings[property]">\
-                <option v-for="o in selectOptions" v-bind:value="o.value">\
-                    {{ o.text }}\
-                </option>\
-            </select>\
-        </div>\
-    </div>\
-</span>',
-    props: { option : { type : Object }, ko : { type: String, required : true }, property: { type : String}, settings : { type: Object , required : true}},  
+    <div>\
+        <select class="form-control cur" v-model="settings[property]">\
+            <option v-for="o in selectOptions" v-bind:value="o.value">\
+                {{ o.text }}\
+            </option>\
+        </select>\
+    </div>',
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},  
     computed : {
         selectOptions : function() { 
             var data = [];

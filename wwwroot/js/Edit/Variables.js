@@ -9,12 +9,12 @@ options = {
         // logo_font_color : { ko : "로고 바탕색", type : "Color" }
     }, 
     page : {
-        //name :  { ko : "페이지명", type : "String" },
+        name :  { ko : "ID", type : "ReadOnlyString" },
         title : { ko : "제목", type : "LongString" }, 
         description : { ko : "설명", type : "LongString" },
     },
     radio : {
-        //name :  { ko : "이름", type : "String" },
+        name :  { ko : "ID", type : "ReadOnlyString" },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean" },
@@ -27,7 +27,7 @@ options = {
         col_count :  { ko : "열갯수", type : "ShortInt",  min : 1, max : 5 },
     },
     checkbox : {
-        name :  { ko : "이름", type : "String" },
+        name :  { ko : "ID", type : "ReadOnlyString" },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean" },
@@ -42,7 +42,7 @@ options = {
         col_count :  { ko : "열갯수", type : "ShortInt", min : 1, max : 5 },
     },
     rate : {
-        name :  { ko : "이름", type : "String" },
+        name :  { ko : "ID", type : "ReadOnlyString" },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean" },
@@ -51,21 +51,21 @@ options = {
         min_description :  { ko : "낮음표시", type : "String", default : "낮음" },
     },
     comment : {
-        name :  { ko : "이름", type : "String" },
+        name :  { ko : "ID", type : "ReadOnlyString" },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean" },
         rows :  { ko : "입력란 높이", type : "Int", min : 1,  max : 20 },
     },
     text : {
-        name :  { ko : "이름", type : "String"  },
+        name :  { ko : "ID", type : "ReadOnlyString"  },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean" },
         max_len :  { ko : "최대 글자수", type : "Int" , min : 1,  max : 100 },
     },
     multiText : {
-        name :  { ko : "이름", type : "String"  },
+        name :  { ko : "ID", type : "ReadOnlyString"  },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean" },
@@ -77,6 +77,7 @@ options = {
     types: {
         itemsArray : "itemsArray",
         String : "String", 
+        ReadOnlyString : "ReadOnlyString", 
         LongString : "LongString",
         Boolean : "Boolean", 
         Int : "Int", 

@@ -4,14 +4,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UBSurvey.Models;
 
 namespace UBSurvey.Controllers
 {
     public class EditController : Controller
     {
-        public IActionResult Index()
+        [HttpPost, HttpGet]
+        public IActionResult Index (SurveyParams p)
         {
-            return View();
+            return View(p);
         }
 
         [HttpPost]
@@ -20,5 +22,11 @@ namespace UBSurvey.Controllers
             ViewBag.survey = survey;
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Save(string survey)
+        {
+            return View();
+        }        
     }
 }

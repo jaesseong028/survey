@@ -264,7 +264,7 @@
 			disabled: false,
 			store: null,
 			handle: null,
-      scroll: true,
+      		scroll: true,
 			scrollSensitivity: 30,
 			scrollSpeed: 10,
 			draggable: /[uo]l/i.test(el.nodeName) ? 'li' : '>*',
