@@ -151,7 +151,7 @@ function createQuestionSet()
     return elQSet.element;
 }
 
-// check radio event
+// Check radio event
 function e_change_checkradio( obj, items )
 {
     var itemList = document.querySelectorAll('input[name='+ items.name +']');
@@ -506,7 +506,6 @@ function domReady (){
             // if('description' in surveyJson.survey)
             //     cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
 
-            
             // Survey Page
             var pages  = surveyJson.survey.pages;
             var questionNumber = 1;
@@ -526,8 +525,10 @@ function domReady (){
                         cdom.getcss(elPage,'title',0).text(pages[p].title);
 
                     // Page description
-                    if('description' in pages[p])
-                        cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');;
+                    if('description' in pages[p] && questions[p].description != '' )
+                        cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
+                    else
+                        cdom.getcss(elPage,'description',0).removecss('description');
 
                     //first page Visible
                     if(p == 0)   // 첫페이지는 무조건 보이기
