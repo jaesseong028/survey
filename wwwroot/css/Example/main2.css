@@ -30,7 +30,7 @@
 
 
 /* Question itmes */
-.question .items { margin-left:7px;}
+.question .items { margin-left:7px; }
 
 /* Text Box */
 .question .items .text_set {}
@@ -42,25 +42,25 @@
 
 /* Radio Box */
 .question .items .radio_set {}
-.question .items .radio_set .i_radio { margin-right:3px; }
-.question .items .radio_set .lbl_radio {}
+.question .items .radio_set .i_radio { margin-right:3px; cursor: pointer; }
+.question .items .radio_set .lbl_radio { cursor: pointer; }
 
 /* Other Radio Box */
 .question .items .radio_other {}
-.question .items .radio_other .i_radio_other { margin-right:3px; }
-.question .items .radio_other .lbl_radio_other { margin-right:3px; }
+.question .items .radio_other .i_radio_other { margin-right:3px; cursor: pointer; }
+.question .items .radio_other .lbl_radio_other { margin-right:3px; cursor: pointer; }
 .question .items .radio_other .txt_radio_other {}
 
 /* CheckBox Box */
 .question .items .checkbox_set {}
-.question .items .checkbox_set .i_checkbox { margin-right:3px; }
-.question .items .checkbox_set .lbl_checkbox {}
+.question .items .checkbox_set .i_checkbox { margin-right:3px; cursor: pointer; }
+.question .items .checkbox_set .lbl_checkbox { cursor: pointer; }
 
 /* Other CheckBox Box */
-.question .items .checkbox_other {}
-.question .items .checkbox_other .i_checkbox_other { margin-right:3px; }
-.question .items .checkbox_other .lbl_checkbox_other { margin-right:3px; }
-.question .items .checkbox_other .txt_checkbox_other {}
+.question .items .checkbox_other { }
+.question .items .checkbox_other .i_checkbox_other { margin-right:3px; cursor: pointer; }
+.question .items .checkbox_other .lbl_checkbox_other { margin-right:3px; cursor: pointer; }
+.question .items .checkbox_other .txt_checkbox_other { }
 
 /* Rate Radio Box */
 .question .items .rate_set {}

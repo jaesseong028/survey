@@ -210,7 +210,7 @@ function e_change_checkradio( obj, items )
             }
         }
 
-    } else if(items.type === 'radio')
+    } else if(items.type === 'radio' && obj.name === items.name + '_othertext')
     {
         var itemText = document.querySelector('input[id='+ items.name +'_othertext]');
         itemText.value = '';
