@@ -382,12 +382,6 @@ Vue.component('skip-com', {
 </div>',
     data: function () { return { skip : JSON.parse(JSON.stringify(this.settingInfo)), choiceSelected : [], questionSelected : []} },
     props: { settingInfo : { type : Object }, settings : { type : Array} },
-    created : function(){
-        // for(s in this.settingInfo){
-        //     console.log(s);
-        //     console.log(this.settingInfo[s]);
-        // }
-    },
     computed : {
         questions : function() {
             var survery = this.$root.survey;

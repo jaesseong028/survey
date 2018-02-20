@@ -9,12 +9,12 @@ options = {
         // logo_font_color : { ko : "로고 바탕색", type : "Color" }
     }, 
     page : {
-        name :  { ko : "페이지명", type : "String" },
+        //name :  { ko : "페이지명", type : "String" },
         title : { ko : "제목", type : "LongString" }, 
         description : { ko : "설명", type : "LongString" },
     },
     radio : {
-        name :  { ko : "이름", type : "String" },
+        //name :  { ko : "이름", type : "String" },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
         is_required :  { ko : "필수", type : "Boolean" },

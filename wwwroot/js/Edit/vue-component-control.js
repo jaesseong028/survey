@@ -90,7 +90,7 @@ Vue.component('leftnav-com', {
     <div>\
         <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>\
         <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>\
-        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>\
+        <p><abel class="cur" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>\
         <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-superscript"></span> 코멘트</label></p>\
         <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>\
         <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.multiText)><span class="glyphicon glyphicon-th-list"></span> 멀티텍스트</label></p>\
@@ -105,8 +105,8 @@ Vue.component('leftnav-com', {
 //
 Vue.component('controllayout-com', {
     template: '\
-    <div v-sortable="{ onUpdate: onUpdate, animation : 200 }">\
-        <div v-for="(el, index) in elements" class="row" :order="index">\
+    <div v-sortable="{onUpdate : onUpdate, animation : 200 }">\
+        <div v-for="(el, index) in elements" class="row" :key="el.name">\
             <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
                 <div style="width: 95%; float: left;" :style="skipStyle(el)">\
                     <label class="required" v-if="el.is_required">＊</label><label class="question">{{el.title}}</label>\
@@ -119,20 +119,13 @@ Vue.component('controllayout-com', {
                     <template v-else/>\
                 </div>\
             </fieldset>\
-        <div>\
+        </div>\
     </div>',
-    data: function () { return { dragedHeight : 0, from : 0,  els : this.elements } },
+    data : function () { return { dragedHeight : 0, from : 0,  els : [] } },
     props: { elements: { type: Array, required: true }, settings : { type: Object }, skipQuestions : {type : Array}},
     methods :{
         onUpdate: function (e) {
-            console.log('onUpdate');
-            console.log(e);
             this.elements.splice(e.newIndex, 0, this.elements.splice(e.oldIndex, 1)[0]);
-            
-            
-            this.elements.forEach(function(item, index){
-                item.index = index;
-            });
         },
         skipStyle : function (el) {
             var style = { "opacity": 1, "pointer-events": ''};
@@ -147,19 +140,7 @@ Vue.component('controllayout-com', {
         }, 
         convertHtml : function(desc){            
             return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
-        }, 
-        changeIndex : function (from, to) {
-            
-            console.log(from);
-            console.log(to);
-            let cutOut = this.elements.splice(from, 1);
-            //console.log('asdfasdf');
-            this.elements.splice(to, 0, cutOut[0]);      
-            //vue.$forceUpdate();
         }
-    }, 
-    computed : {
-        
     }
 })
 
