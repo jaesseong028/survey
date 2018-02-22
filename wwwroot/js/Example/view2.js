@@ -210,7 +210,7 @@ function e_change_checkradio( obj, items )
             }
         }
 
-    } else if(items.type === 'radio' && obj.name === items.name + '_othertext')
+    } else if(items.type === 'radio' )
     {
         var itemText = document.querySelector('input[id='+ items.name +'_othertext]');
         itemText.value = '';
@@ -220,6 +220,14 @@ function e_change_checkradio( obj, items )
 //Check_Box Radio_Box Create
 function createCheckRadio( elItems, items )
 {
+    if(items.type === 'checkbox')
+    { 
+        if ('max_num' in items)
+            cdom.getcss(elItems,'items',0).attr('max',items.max_num);
+        if ('min_num' in items)
+            cdom.getcss(elItems,'items',0).attr('min',items.min_num);
+    }
+
     var width_percent = '100';
     if( 'col_count' in items )
         width_percent = items.col_count <= 1 ? '100' : 100 / items.col_count;
@@ -369,6 +377,13 @@ function createMultiTextBox( elItems, txtItems )
                       .attr('size', txtItems.text_width)
                       .attr('maxLength',txtItems.max_len)
                       .addcss('i_' + txtItems.type);
+
+                if('is_required' in txtItems.items[p] && txtItems.items[p].is_required == true)
+                {
+                    cdom.getcss(elItem.element,'lbl_' + txtItems.type, 0)
+                            .append('strong')
+                            .addcss('required');
+                }
                 
                 cdom.getcss(elItems,'items',0).append(elItem.element);
             }
@@ -390,7 +405,7 @@ function createQuestion(elPage, questions, questionNumber)
             cdom.get(elQuestion).attr('id',questions[p].name);
             // Questions Required
             if(('is_required' in questions[p]) && (questions[p].is_required == true))
-                cdom.getcss(elQuestion,'title',0).append('strong').text('*');
+                cdom.getcss(elQuestion,'title',0).append('strong').addcss('required').text('*');
             // Questions title
             if('title' in questions[p])
                 cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);            
@@ -432,30 +447,298 @@ function addBtnEvent(elPage, btnType)
 
     elbtn.event('click', function(){
         var obj = this;
-        var pObj = obj.parentNode; //page
-        
-        if(btnType == 'Next')
-        {
-            isVisiblePage(pObj, false);
-
-            var nextPObj = pObj.nextSibling;
-            isVisiblePage(nextPObj, true);
-        }else if (btnType == 'Pre')
-        {
-            isVisiblePage(pObj, false);
-
-            var prePObj = pObj.previousSibling;
-            isVisiblePage(prePObj, true);
-        }else if (btnType == 'Complete')
-        {
-            alert('완료');
-        }
-
+        settingBtn(obj, btnType);
     });
 
-    cdom.get(elPage).append(elbtn.element);
+    cdom.getcss(elPage,'btn-set',0).append(elbtn.element)
+    //cdom.get(elPage).append(elbtn.element);
+}
+
+function validQuestion ( pageNode )
+{
+    var questionNodes = pageNode.getElementsByClassName('question');
+
+    for(p in questionNodes)
+    {
+        
+        if(questionNodes.hasOwnProperty(p) && questionNodes[p].getElementsByClassName('required').length > 0)
+        {
+            var itemNodes = questionNodes[p].getElementsByClassName('items')[0];
+            var alertMsg;
+
+            var itemSet = itemNodes.childNodes[0];
+
+            switch(itemSet.className)
+            {
+                case 'text_set':
+                    var elText = cdom.getcss(itemSet,'i_text',0);
+                    if(elText.element.value == '')
+                        alertMsg = '필수값 이지만 입력되지 않았습니다.';
+                    break;
+
+                case 'comment_set':    
+                    var elComment = cdom.getcss(itemSet,'i_comment',0);
+                    if(elComment.element.value == '')
+                        alertMsg = '필수값 이지만 입력되지 않았습니다.';
+                    break;
+                case 'radio_set':
+                    var elRadio = itemNodes.getElementsByTagName('input');
+                    
+                    var checkedItem = [].filter.call(elRadio, function( el ) {
+                        return el.checked;
+                    });
+
+                    if(checkedItem.length == 0)
+                        alertMsg = '필수값 이지만 입력되지 않았습니다.';
+                    else if(checkedItem.length > 0 && checkedItem[0].className == 'i_radio_other')
+                    {   
+                        var txtOther = cdom.getcss(itemNodes,'txt_radio_other',0);
+                        if(txtOther.element.value == '')
+                            alertMsg = '기타 내용이 입력되지 않았습니다.';
+                    }   
+                    
+                    break;
+                case 'checkbox_set':
+                    
+                    var elCheck = itemNodes.getElementsByTagName('input');
+                        
+                    var checkedItem = [].filter.call(elCheck, function( el ) {
+                        return el.checked;
+                    });
+
+                    var max_num = itemNodes.getAttribute('max');
+                    var min_num = itemNodes.getAttribute('min');
+
+                    max_num = max_num == undefined ? elCheck.length : max_num;
+                    min_num = min_num == undefined ? 0 : min_num;
+
+                    var checkedOther = [].filter.call(checkedItem, function( el ) {
+                        return el.className == 'i_checkbox_other';
+                    });
+
+                    if(checkedItem.length == 0)
+                        alertMsg = '필수값 이지만 입력되지 않았습니다.';
+                    else if(checkedItem.length < min_num || checkedItem.length > max_num)
+                        alertMsg = '최소 체크 수에 해당 하지 않습니다.';
+                    else if(checkedOther.length > 0)
+                    {
+                        var txtOther = cdom.getcss(itemNodes,'txt_checkbox_other',0);
+                        if(txtOther.element.value == '')
+                            alertMsg = '기타 내용이 입력되지 않았습니다.';
+                    }
+
+                    break;
+                case 'rate_set':
+                    var elRate = itemNodes.getElementsByTagName('input');    
+                    
+                    var checkedItem = [].filter.call(elRate, function( el ) {
+                        return el.checked;
+                    });
+
+                    if(checkedItem.length == 0)
+                        alertMsg = '필수값 이지만 입력되지 않았습니다.';
+
+                    break;
+                case 'multiText_set':
+                    var elRequireds = itemNodes.getElementsByClassName('required');    
+                    
+                    for(n in elRequireds)
+                    {
+                        if(elRequireds.hasOwnProperty(n))
+                        {   
+                            
+                            var multiText_set = elRequireds[n].parentNode.parentNode;
+                            
+                            if(multiText_set.getElementsByTagName('input')[0].value == '')    
+                            {    
+                                alertMsg = '필수값 이지만 입력되지 않았습니다.';
+                                break;
+                            }   
+                        }
+                    }
+
+
+
+                    break;
+            }
+
+            if(alertMsg != undefined)
+            {
+                var title = questionNodes[p].getElementsByClassName('title')[0].innerText
+                alert( title + '\n' + alertMsg);
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+function settingBtn( obj, btnType )
+{
+    var pageNode = obj.parentNode.parentNode;   //page
+
+    // console.log('obj',obj);         //btn
+    // console.log('pageNode',pageNode);   //page
+    // console.log('pageNode.nextSibling',pageNode.nextSibling);   //NextPage
+    // console.log('pageNode.previousSibling',pageNode.previousSibling);   //PrePage
+
+
+    // console.log(pageNode.getElementsByClassName('question'));
+    
+    
+    if(btnType == 'Next' && validQuestion(pageNode))
+    {
+        isVisiblePage(pageNode, false);
+
+        var nextPObj = pageNode.nextSibling;
+        isVisiblePage(nextPObj, true);
+    }else if (btnType == 'Pre')
+    {
+        isVisiblePage(pageNode, false);
+
+        var prePObj = pageNode.previousSibling;
+        isVisiblePage(prePObj, true);
+    }else if (btnType == 'Complete' && validQuestion(pageNode))
+    {
+        // 결과를 넣자..
+        var pageSetNode = pageNode.parentNode;
+        makeResultJson(pageSetNode);
+
+        console.log('완료');
+    }
     
 }
+
+function makeResultJson( pageSetNode ){
+
+    var questions = pageSetNode.getElementsByClassName('question');
+    var resultJson = {};
+    var answer = [];
+
+    for(p in questions)
+    {
+        if(questions.hasOwnProperty(p))
+        {
+            var itemNodes = questions[p].getElementsByClassName('items')[0];
+            var itemSet = itemNodes.childNodes[0];
+            var questionId = questions[p].getAttribute('id');
+            //console.log(questionId);
+
+            switch(itemSet.className)
+            {
+                case 'text_set':
+                
+                    var elText = cdom.getcss(itemSet,'i_text',0);
+                    if(elText.element.value != '')
+                    {
+                        var textResult = {};
+                        textResult[questionId] = elText.element.value;
+                        answer.push(textResult);
+                    }    
+                break;
+                case 'comment_set':
+                    var elComment = cdom.getcss(itemSet,'i_comment',0);
+                    if(elComment.element.value != '')
+                    {
+                        var textResult = {};
+                        textResult[questionId] = elComment.element.value;
+                        answer.push(textResult);
+                    }    
+                break;
+                case 'radio_set':
+                    var elRadio = itemNodes.getElementsByTagName('input');
+                            
+                    var checkedItem = [].filter.call(elRadio, function( el ) {
+                        return el.checked;
+                    });
+
+                    if(checkedItem.length == 1)
+                    {
+                        var radioResult = {};
+                        radioResult[questionId] = checkedItem[0].value;
+                        
+                        if(checkedItem[0].id == questionId + '_other' )
+                        {
+                            var oterhTextValue = itemNodes.getElementsByClassName('txt_radio_other')[0].value;
+                            radioResult[questionId + '_othertext'] = oterhTextValue;
+                        }
+                        answer.push(radioResult);
+                    }
+                break;
+
+                case 'checkbox_set':
+                    var elCheck = itemNodes.getElementsByTagName('input');
+                    var checkedItem = [].filter.call(elCheck, function( el ) {
+                        return el.checked;
+                    });
+                    
+                    var checkResult = {};
+                    var checkValue = [];
+                    for(var i = 0; checkedItem.length > i; i++ )
+                    {
+                        checkValue.push(checkedItem[i].value);
+                    }
+                    console.log(checkValue);
+                    checkResult[questionId] = checkValue;
+
+                    var checkedOther = [].filter.call(checkedItem, function( el ) {
+                        return el.id == questionId + '_other';
+                    });
+
+                    if(checkedOther.length > 0)
+                    {
+                        var oterhTextValue = itemNodes.getElementsByClassName('txt_checkbox_other')[0].value;
+                        checkResult[questionId + '_othertext'] = oterhTextValue;
+                    }
+
+                    answer.push(checkResult);
+                break;
+
+                case 'rate_set':
+                    var elRate = itemNodes.getElementsByTagName('input');
+                    var checkedItem = [].filter.call(elRate, function( el ) {
+                        return el.checked;
+                    });
+
+                    if(checkedItem.length > 0)
+                    {
+                        var rateResult = {};
+                        rateResult[questionId] = checkedItem[0].value;
+                        answer.push(rateResult);
+                    }
+                break;
+
+                case 'multiText_set':
+                    var elmultiText = itemNodes.getElementsByTagName('input');
+                    var textItem = [].filter.call(elmultiText, function( el ) {
+                        return el.value != '';
+                    });
+
+                    if(textItem.length > 0)
+                    {
+                        var multiTextResult = {};
+                        var textValue = {};
+                        console.log(textItem.length);
+                        for(var i = 0; textItem.length > i; i ++)
+                        {
+                            console.log('aaa');
+                            textValue[textItem[i].getAttribute('id')] = textItem[i].value;
+                        }
+                        multiTextResult[questionId] = textValue;
+                        answer.push(multiTextResult);
+                    }
+                break;
+            }
+        }
+    }
+    
+    resultJson.answer = answer;
+    alert(JSON.stringify(resultJson));
+}
+
+
+
 
 // 페이지 이동 및 완료 버튼
 function createPageBtn(elPage, totalPage, currPage )
