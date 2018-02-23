@@ -165,19 +165,17 @@ function e_change_checkradio( obj, items )
             {
                 for(n in skipList[p].skipQuestionNames)
                 {
-                    if(skipList[p].skipQuestionNames.hasOwnProperty(n))
+                    if(skipList[p].skipQuestionNames.hasOwnProperty(n) && skipList[p].choice == obj.value && obj.checked)
                     {
-                        if(skipList[p].choice == obj.value && obj.checked)
-                        {
-                            var elskip = document.getElementById(skipList[p].skipQuestionNames[n]);
-                            cdom.get(elskip).changecss('show','hide');
+                        var elskip = document.getElementById(skipList[p].skipQuestionNames[n]);
+                        cdom.get(elskip).changecss('show','hide');
 
-                        }else
-                        {
-                            var elskip = document.getElementById(skipList[p].skipQuestionNames[n]);
-                            cdom.get(elskip).changecss('hide','show');
-                        }
+                    }else
+                    {
+                        var elskip = document.getElementById(skipList[p].skipQuestionNames[n]);
+                        cdom.get(elskip).changecss('hide','show');
                     }
+                    
                 }
             }             
         }
@@ -269,9 +267,17 @@ function createCheckRadio( elItems, items )
                     .insert('input')
                         .attr('type','text')
                         .attr('id',items.name + '_othertext')
-                        .attr('maxLength',items.other_text_len)
-                        .attr('size',items.other_text_width)
                         .addcss('txt_' + items.type + '_other');
+
+        if('other_text_len' in items)
+        {
+            cdom.getcss(elOtherItem.element,'txt_' + items.type + '_other',0).attr('maxLength',items.other_text_len);
+        }
+
+        if('other_text_width' in items)
+        {
+            cdom.getcss(elOtherItem.element,'txt_' + items.type + '_other',0).attr('size',items.other_text_width);
+        }
 
         cdom.getcss(elItems,'items',0).append(elOtherItem.element);
     }
@@ -299,15 +305,17 @@ function createTextBox( elItems, items )
     else if(items.type === 'comment')
     {    
         elItem.append('textarea')
-            .addcss('i_' + items.type)
-            .attr('rows',items.rows);
+            .attr('rows',items.rows)
+            .addcss('i_' + items.type);
+            
     }   
 
     cdom.getcss(elItem.element,'i_' + items.type, 0)
                 .attr('id',items.name)
-                
-                .attr('maxLength',items.max_len)
                 .attr('style','width:100%');
+
+    if('max_len' in items)
+        cdom.getcss(elItem.element,'i_' + items.type, 0).attr('maxLength',items.max_len)
     
     cdom.getcss(elItems,'items',0).append(elItem.element);
 }
@@ -374,8 +382,6 @@ function createMultiTextBox( elItems, txtItems )
                       .insert('input')
                       .attr('id',txtItems.name + '_' + p)
                       .attr('type', 'text')
-                      .attr('size', txtItems.text_width)
-                      .attr('maxLength',txtItems.max_len)
                       .addcss('i_' + txtItems.type);
 
                 if('is_required' in txtItems.items[p] && txtItems.items[p].is_required == true)
@@ -384,6 +390,14 @@ function createMultiTextBox( elItems, txtItems )
                             .append('strong')
                             .addcss('required');
                 }
+
+                if('text_width' in txtItems)
+                {
+                    cdom.getcss(elItem.element,'i_' + txtItems.type,0).attr('size', txtItems.text_width);
+                }
+                
+                if('max_len' in txtItems)
+                    cdom.getcss(elItem.element,'i_' + txtItems.type,0).attr('maxLength', txtItems.max_len);
                 
                 cdom.getcss(elItems,'items',0).append(elItem.element);
             }
@@ -447,7 +461,7 @@ function addBtnEvent(elPage, btnType)
 
     elbtn.event('click', function(){
         var obj = this;
-        settingBtn(obj, btnType);
+        e_click_btn(obj, btnType);
     });
 
     cdom.getcss(elPage,'btn-set',0).append(elbtn.element)
@@ -546,7 +560,6 @@ function validQuestion ( pageNode )
                     {
                         if(elRequireds.hasOwnProperty(n))
                         {   
-                            
                             var multiText_set = elRequireds[n].parentNode.parentNode;
                             
                             if(multiText_set.getElementsByTagName('input')[0].value == '')    
@@ -556,9 +569,6 @@ function validQuestion ( pageNode )
                             }   
                         }
                     }
-
-
-
                     break;
             }
 
@@ -574,18 +584,9 @@ function validQuestion ( pageNode )
     return true;
 }
 
-function settingBtn( obj, btnType )
+function e_click_btn( obj, btnType )
 {
     var pageNode = obj.parentNode.parentNode;   //page
-
-    // console.log('obj',obj);         //btn
-    // console.log('pageNode',pageNode);   //page
-    // console.log('pageNode.nextSibling',pageNode.nextSibling);   //NextPage
-    // console.log('pageNode.previousSibling',pageNode.previousSibling);   //PrePage
-
-
-    // console.log(pageNode.getElementsByClassName('question'));
-    
     
     if(btnType == 'Next' && validQuestion(pageNode))
     {
@@ -607,11 +608,9 @@ function settingBtn( obj, btnType )
 
         console.log('완료');
     }
-    
 }
 
 function makeResultJson( pageSetNode ){
-
     var questions = pageSetNode.getElementsByClassName('question');
     var resultJson = {};
     var answer = [];
@@ -623,26 +622,17 @@ function makeResultJson( pageSetNode ){
             var itemNodes = questions[p].getElementsByClassName('items')[0];
             var itemSet = itemNodes.childNodes[0];
             var questionId = questions[p].getAttribute('id');
-            //console.log(questionId);
 
             switch(itemSet.className)
             {
                 case 'text_set':
-                
-                    var elText = cdom.getcss(itemSet,'i_text',0);
+                case 'comment_set':
+                    var textCss = itemsSet.className == 'text_set' ? 'i_text' : 'i_comment';
+                    var elText = cdom.getcss(itemSet, textCss ,0);
                     if(elText.element.value != '')
                     {
                         var textResult = {};
                         textResult[questionId] = elText.element.value;
-                        answer.push(textResult);
-                    }    
-                break;
-                case 'comment_set':
-                    var elComment = cdom.getcss(itemSet,'i_comment',0);
-                    if(elComment.element.value != '')
-                    {
-                        var textResult = {};
-                        textResult[questionId] = elComment.element.value;
                         answer.push(textResult);
                     }    
                 break;
@@ -679,7 +669,6 @@ function makeResultJson( pageSetNode ){
                     {
                         checkValue.push(checkedItem[i].value);
                     }
-                    console.log(checkValue);
                     checkResult[questionId] = checkValue;
 
                     var checkedOther = [].filter.call(checkedItem, function( el ) {
@@ -719,10 +708,8 @@ function makeResultJson( pageSetNode ){
                     {
                         var multiTextResult = {};
                         var textValue = {};
-                        console.log(textItem.length);
                         for(var i = 0; textItem.length > i; i ++)
                         {
-                            console.log('aaa');
                             textValue[textItem[i].getAttribute('id')] = textItem[i].value;
                         }
                         multiTextResult[questionId] = textValue;
@@ -736,9 +723,6 @@ function makeResultJson( pageSetNode ){
     resultJson.answer = answer;
     alert(JSON.stringify(resultJson));
 }
-
-
-
 
 // 페이지 이동 및 완료 버튼
 function createPageBtn(elPage, totalPage, currPage )
@@ -829,13 +813,11 @@ function domReady (){
                     // Btn 생성     
                     createPageBtn(elPage, pages.length, p);
                     
-                    
                     cdom.getcss(elSurvey,'page-set',0).append(elPage);                    
                 }
             }
 
             surveyId.appendChild(elSurvey);
-
             //Page Set 생성
         }
     }
