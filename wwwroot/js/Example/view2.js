@@ -650,8 +650,8 @@ function makeResultJson( pageSetNode ){
                         
                         if(checkedItem[0].id == questionId + '_other' )
                         {
-                            var oterhTextValue = itemNodes.getElementsByClassName('txt_radio_other')[0].value;
-                            radioResult[questionId + '_othertext'] = oterhTextValue;
+                            var otherTextValue = itemNodes.getElementsByClassName('txt_radio_other')[0].value;
+                            radioResult[checkedItem[0].value] = otherTextValue;
                         }
                         answer.push(radioResult);
                     }
@@ -677,8 +677,8 @@ function makeResultJson( pageSetNode ){
 
                     if(checkedOther.length > 0)
                     {
-                        var oterhTextValue = itemNodes.getElementsByClassName('txt_checkbox_other')[0].value;
-                        checkResult[questionId + '_othertext'] = oterhTextValue;
+                        var otherText = itemNodes.getElementsByClassName('txt_checkbox_other')[0];
+                        checkResult[checkedOther[0].value] = otherText.value;
                     }
 
                     answer.push(checkResult);
