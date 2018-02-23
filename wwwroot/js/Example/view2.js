@@ -749,8 +749,6 @@ function createPageBtn(elPage, totalPage, currPage )
     }
 }
 
-
-
 function domReady (){
     try
     {
