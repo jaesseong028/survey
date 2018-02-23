@@ -1,5 +1,4 @@
-﻿@model UBSurvey.Models.SurveyParams
-@{
+﻿@{
     ViewData["Title"] = "M Index";
     Layout = "~/Views/Shared/EditLayout/_Layout.cshtml";
 }
@@ -12,10 +11,10 @@
     <script src="~/js/vue.min.js"></script>
     <script src="~/js/Sortable.min.js"></script>
 </environment>
+<script src="~/js/axios.min.js"></script>
 <script src="~/js/edit/Variables.js"></script>
 <script src="~/js/edit/vue-component-control.js"></script>
 <script src="~/js/edit/vue-component-settinglayer.js"></script>
-<script>var p = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model)); </script>
 }
 
 <div id="container">

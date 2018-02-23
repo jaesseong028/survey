@@ -12,7 +12,7 @@ var vue = new Vue({
         <h2><label class="col-sm-1 text-right">{{survey.logo_text}}</label></h2>\
         <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
         <div style="padding-top:20px; padding-left:-20px" class="col-sm-4 text-left">\
-            <label class="btn btn-success"> 저장 </label>\
+            <label class="btn btn-success" v-on:click=save> 저장 </label>\
             <label class="btn btn-info" v-on:click=prev>미리보기</label>\
         </div>\
     </div>\
@@ -54,6 +54,16 @@ var vue = new Vue({
             var s = { survey : this.survey };
             $("#surveyJson").val(JSON.stringify(s));
             $("#myform").submit();
+        },
+        save : function(){
+            console.log('dd');
+            axios.post('/api/survey/save', this.survey)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
         changedPage : function (index) {
             this.selectPage = this.survey.pages[index];

@@ -6,6 +6,7 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    padding-top : 60px;
 }
 
 /* Carousel */
@@ -17,11 +18,6 @@
 /* Make .svg files in the carousel display properly in older browsers */
 .carousel-inner .item img[src$=".svg"] {
     width: 100%;
-}
-
-/* QR code generator */
-#qrCode {
-    margin: 15px;
 }
 
 /* Hide/rearrange for smaller screens */
