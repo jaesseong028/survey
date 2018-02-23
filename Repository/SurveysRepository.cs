@@ -34,7 +34,7 @@ namespace UBSurvey.Repository
         
         public IEnumerable<SurveyInfo> List(string jsonFilter, string chanelID, int currentPage, int pageSize)
         {
-            return  _context.Surveys.AsQueryable().Where().Skip((currentPage - 1) * pageSize).Take(pageSize).ToArray();
+            return  _context.Surveys.AsQueryable().Where("_bizData != null AND _limit = 0").Skip((currentPage - 1) * pageSize).Take(pageSize).ToArray();
         }
 
         public async Task InsertSurvey(SurveyInfo contact)
