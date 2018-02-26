@@ -8,7 +8,7 @@ using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
 
-namespace UBSurvey.Controllers
+namespace UBSurvey.Controllers.Api
 {
     [Route("api/[controller]/[action]")]
     public class UBSurveyController : Controller
