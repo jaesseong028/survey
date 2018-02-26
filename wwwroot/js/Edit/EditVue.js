@@ -56,7 +56,7 @@ var vue = new Vue({
             $("#myform").submit();
         },
         save : function(){
-            console.log('dd');
+            //console.log('dd');
             axios.post('/api/survey/save', this.survey)
             .then(function (response) {
                 console.log(response);

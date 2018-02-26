@@ -38,16 +38,22 @@ namespace UBSurvey
             });
 
             services.AddOptions();
-            services.Configure<Settings>(options =>
+            services.Configure<DBSettings>(options =>
             {
                 options.ConnectionString = Configuration.GetSection("Settings:ConnectionString").Value;
-                options.Database = Configuration.GetSection("Settings:Database").Value;
+                options.SurveyDatabase = Configuration.GetSection("Settings:SurveyDatabase").Value;
+                options.UbSurveyDatabase = Configuration.GetSection("Settings:UbSurveyDatabase").Value;
+            });
+
+            services.Configure<GlobalVariable>(options =>
+            {
                 options.ChanelID = Configuration.GetSection("Settings:ChanelID").Value;
                 options.PageSize = int.Parse(Configuration.GetSection("Settings:PageSize").Value);
             });
 
 
-            services.AddTransient<ISurveysRepository, SurveysRepository>();
+            services.AddTransient<ISurveyRepository, SurveyRepository>();
+            services.AddTransient<IUBSurveyRepository, UBSurveyRepository>();
 
             services.Configure<WebEncoderOptions>(options =>
             {
@@ -79,12 +85,12 @@ namespace UBSurvey
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "Survey",
-                    template: "api/{controller=Survey}/{action=Index}");
-
-                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "Survey",
+                    template: "api/{controller=Survey}/{action=Index}");
             });
         }
     }

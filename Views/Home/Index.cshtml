@@ -1,40 +1,81 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<table class="table table-bordered table-striped table-hover">
-  <tr class="info">
-      <th>설문명</th>
-      <th></th>
-      <th>Product Quality</th>
-      <th>Product Quantity</th>
-  </tr>
-  <tr class="info">
-      <td>1</td>
-      <td>Wheat</td>
-      <td>Good</td>
-      <td>200 Bags</td>
-  </tr>
-  <tr class="warning">
-      <td>2</td>
-      <td>Rice</td>
-      <td>Good</td>
-      <td>250 Bags</td>
-  <tr class="info">
-      <td>3</td>
-      <td>Sugar</td>
-      <td>Good</td>
-      <td>200 Bags</td>
-  </tr>  
-  <tr class="warning">
-      <td>3</td>
-      <td>Sugar</td>
-      <td>Good</td>
-      <td>200 Bags</td>
-  </tr> 
-  <tr class="info">
-      <td>3</td>
-      <td>Sugar</td>
-      <td>Good</td>
-      <td>200 Bags</td>
-  </tr>     
-</table>
+
+@section Scripts {
+<environment include="Development">
+    <script src="~/js/vue.min.js"></script>
+</environment>
+<environment include="Production">    
+    <script src="~/js/vue.min.js"></script>
+</environment>
+<script src="~/js/axios.min.js"></script>
+}
+
+<div id="container"> 
+    <table class="table table-bordered text-center">
+        <tr>
+            <td class="info">제목</td>
+            <td><input type="text" class="form-control" v-model="searchData.Title"></td>
+            <td class="info">상태</td>
+            <td><input type="text" class="form-control" v-model="searchData.approve"></td>
+        </tr>
+        <tr>
+            <td class="info">서비스명</td>
+            <td><input type="text" class="form-control" v-model="searchData.service"></td>
+            <td class="info" >설문기간</td>
+            <td><input type="text" class="form-control" v-model="searchData.startDate"></td>
+        </tr>
+    </table>
+    <div style="margin-bottom:15px"><button class="btn btn-success">설문등록</button> <button class="btn btn-info pull-right">검색</button></div>
+    <table class="table table-bordered table-hover">
+    <tr class="info">
+        <th>NO</th>
+        <th>설문제목</th>
+        <th>기간</th>
+        <th>상태</th>
+        <th>참여인원</th>
+        <th>삭제</th>
+    </tr>
+    <tr v-for="s in surveys">
+        <td>1</td>
+        <td>{{s.title}}</td>
+        <td>{{s.startDate}}~{{s.endDate}}</td>
+        <td>{{s.approveStatus}}</td>
+        <td>{{s.limitPersons}}</td>
+        <td><button class="btn btn-danger" v-on:click="deletesu(s._id)" >삭제</button> </td>
+    </tr>     
+    </table>
+    {{surveys}}
+</div>
+<script>
+var vue = new Vue({
+    el: '#container',
+    data: {
+        surveys : [],
+        searchData : {title : '', approve : 1, startDate : '2017-01-01', endDate : '2017-01-01'}
+    },
+    created : function(){
+         axios.get('/api/UBSurvey/list', this.survey)
+        .then(function (response) {
+            vue.surveys = response.data.data;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }, 
+    methods : {
+        deletesu : function(_id){
+        console.log(_id);
+        headers = {'Content-Type': 'application/json; charset=UTF-8'};
+        axios.post('/api/UBSurvey/delete', {id : _id}, headers)
+        .then(function (response) {
+            
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+        }
+    }
+})
+</script>
