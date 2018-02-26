@@ -43,7 +43,7 @@
         <td>{{s.startDate}}~{{s.endDate}}</td>
         <td>{{s.approveStatus}}</td>
         <td>{{s.limitPersons}}</td>
-        <td><button class="btn btn-danger" v-on:click="deletesu(s._id)" >삭제</button> </td>
+        <td><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
     </tr>     
     </table>
     {{surveys}}
@@ -56,21 +56,24 @@ var vue = new Vue({
         searchData : {title : '', approve : 1, startDate : '2017-01-01', endDate : '2017-01-01'}
     },
     created : function(){
-         axios.get('/api/UBSurvey/list', this.survey)
-        .then(function (response) {
-            vue.surveys = response.data.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        this.selectSurvey();
     }, 
     methods : {
-        deletesu : function(_id){
+        selectSurvey :  function() {
+            axios.get('/api/UBSurvey/list', this.survey)
+            .then(function (response) {
+                vue.surveys = response.data.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        deletesurvey : function(_id){
         console.log(_id);
-        headers = {'Content-Type': 'application/json; charset=UTF-8'};
-        axios.post('/api/UBSurvey/delete', {id : _id}, headers)
+        //headers = {'Content-Type': 'application/json; charset=UTF-8'};
+        axios.post('/api/UBSurvey/delete', {id : _id})
         .then(function (response) {
-            
+            vue.selectSurvey();
         })
         .catch(function (error) {
             console.log(error);

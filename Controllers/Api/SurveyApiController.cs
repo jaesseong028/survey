@@ -17,13 +17,13 @@ using UBSurvey.Repository;
 
 namespace UBSurvey.Controllers.Api
 {
-    [Route("api/[controller]/[action]")]
-    public class SurveyController : Controller
+    [Route("api/survey/[action]")]
+    public class SurveyApiController : Controller
     {
         private readonly ISurveyRepository _repository;
 
         private readonly IOptions<GlobalVariable> _globalVariable;
-        public SurveyController(ISurveyRepository repository, IOptions<GlobalVariable> globalVariable)
+        public SurveyApiController(ISurveyRepository repository, IOptions<GlobalVariable> globalVariable)
         {
             _repository = repository;
             _globalVariable =  globalVariable;

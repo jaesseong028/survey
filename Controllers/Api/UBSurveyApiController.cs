@@ -10,14 +10,14 @@ using UBSurvey.Repository;
 
 namespace UBSurvey.Controllers.Api
 {
-    [Route("api/[controller]/[action]")]
-    public class UBSurveyController : Controller
+    [Route("api/ubsurvey/[action]")]
+    public class UBSurveyApiController : Controller
     {
         private readonly IUBSurveyRepository _repository;
 
         private readonly IOptions<GlobalVariable> _globalVariable;
 
-        public UBSurveyController(IUBSurveyRepository repository, IOptions<GlobalVariable> globalVariable)
+        public UBSurveyApiController(IUBSurveyRepository repository, IOptions<GlobalVariable> globalVariable)
         {
             _repository = repository;
             _globalVariable =  globalVariable;
@@ -34,7 +34,7 @@ namespace UBSurvey.Controllers.Api
             
             IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, sDate, eDate, approveStatus);
 
-            _repository.InsertUBSurvey(new UBSurveyInfo(){ Title = "유비케어2", StartDate = new DateTime(2017, 9, 10), EndDate = new DateTime(2017, 12, 31), ApproveStatus = 1, LimitPersons = 10 });
+            //_repository.InsertUBSurvey(new UBSurveyInfo(){ Title = "유비케어2", StartDate = new DateTime(2017, 9, 10), EndDate = new DateTime(2017, 12, 31), ApproveStatus = 1, //LimitPersons = 10 });
 
             return Json(new {success = true, data = surveys });
 
@@ -53,8 +53,10 @@ namespace UBSurvey.Controllers.Api
         } 
 
         [HttpPost]
-        public JsonResult Delete(string id)
+        public JsonResult Delete([FromBody]JObject data)
         {
+            _repository.RemoveUBSurvey(data["id"].ToString());
+            
             return Json(new {success = true});
         }
     }
