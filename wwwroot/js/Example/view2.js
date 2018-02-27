@@ -627,7 +627,7 @@ function makeResultJson( pageSetNode ){
             {
                 case 'text_set':
                 case 'comment_set':
-                    var textCss = itemsSet.className == 'text_set' ? 'i_text' : 'i_comment';
+                    var textCss = itemSet.className == 'text_set' ? 'i_text' : 'i_comment';
                     var elText = cdom.getcss(itemSet, textCss ,0);
                     if(elText.element.value != '')
                     {
@@ -721,7 +721,18 @@ function makeResultJson( pageSetNode ){
     }
     
     resultJson.answer = answer;
-    alert(JSON.stringify(resultJson));
+    var link = document.location.pathname; 
+
+    if(link == '/survey/Progress')
+    {
+        alert("Save");
+    }else
+    {
+        alert(JSON.stringify(resultJson));
+    }
+
+    
+    
 }
 
 // 페이지 이동 및 완료 버튼
@@ -754,18 +765,8 @@ function domReady (){
     {
         var surveyId = document.getElementById('ubSurvey');
         console.log(strSurvey);
-        //var surveyJson = JSON.parse(survey);
 
         var surveyJson = strSurvey.survey == undefined ? strSurvey : strSurvey.survey;
-        console.log(surveyJson);
-        // console.log(surveyJson.survey);
-        // console.log(surveyJson.pages);
-        // console.log(surveyJson.title);
-        
-        //View 
-        //Progress
-
-
 
         if(('pages' in surveyJson) && ('title' in surveyJson))
         {

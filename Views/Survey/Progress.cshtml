@@ -1,7 +1,7 @@
 @model UBSurvey.Models.SurveyInfo;
 
 @{
-    ViewData["Title"] = "M Index";
+    ViewData["Title"] = "Progress";
     Layout = "~/Views/Shared/Survey/_Layout.cshtml";
     
 }
@@ -15,6 +15,11 @@
 </environment>
 <script>
     var strSurvey = @Html.Raw(Model.Survey);
+    
+    // var link = document.location.pathname; 
+    // console.log(link);
+
+
 </script>
 
 

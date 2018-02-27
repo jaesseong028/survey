@@ -20,13 +20,17 @@ namespace UBSurvey.Controllers
             _globalVariable =  globalVariable;
         }
 
-        public IActionResult Progress(string val)
+        public IActionResult Progress(string channel, string val)
         {
+            // ///////////////////////////////
+            // 임시 파라미터
+            val = "CreateDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a8fccc17622f83fe899c6ec&UserID=CCCC";
+            channel = "5a8fb4200ad8963fa4242cb2";
+            // ///////////////////////////////
 
-            val = "CreateDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a8fccc17622f83fe899c6ec&ChannelID=5a8fb4200ad8963fa4242cb2&UserID=CCCC";
 
             // Confirm Parameter 
-            NameValueCollection qscoll = Validation.ConfirmParam(val);
+            NameValueCollection qscoll = Validation.ConfirmParam(channel, val);
 
             var surveyInfo = _repository.GetSurvey(qscoll["ChannelID"],qscoll["SurveyID"]);
 
