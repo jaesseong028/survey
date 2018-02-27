@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,6 +12,7 @@ namespace UBSurvey.Common
 {
     public static class Helpers
     {
+
         public static string GetEnumDescription(this Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
@@ -26,6 +28,16 @@ namespace UBSurvey.Common
             else
                 return value.ToString();
         }
+
+
+
+        public static string GenerateKey(int iKeySize)
+        {
+            Random rand = new Random(); 
+            string input = "abcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+"; 
+            var chars = Enumerable.Range(0, 16).Select(x => input[rand.Next(0, input.Length)]);
+            return new string(chars.ToArray());
+        }  
 
         public static string AESEncrypt256(string Input, string key)
         {

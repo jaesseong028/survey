@@ -49,6 +49,7 @@ namespace UBSurvey
             {
                 options.ChanelID = Configuration.GetSection("Settings:ChanelID").Value;
                 options.PageSize = int.Parse(Configuration.GetSection("Settings:PageSize").Value);
+                //options.SurveyEnKey = int.Parse(Configuration.GetSection("Settings:PageSize").Value);
             });
 
 

@@ -35,6 +35,17 @@ namespace UBSurvey.Common
             }
 
             var div = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); 
+
+            if (div / current == 1)
+            {
+                p.Next = null;
+                p.Last = null;
+            }
+            else
+            {
+                p.Next = div;
+                p.Last = div;
+            }
             p.Last = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); //525 / 10
             //Next
 
