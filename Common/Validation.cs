@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Web;
 
 namespace UBSurvey.Common
 {
@@ -9,40 +10,23 @@ namespace UBSurvey.Common
         public static void ConfirmParam(string val)
         {
             if(string.IsNullOrEmpty(val))
-            {
-                // Pameter Check IsNullOrEmpty
-            }
+                throw new ArgumentNullException("Argument 가 존재하지 않습니다. Argument : Null " );
 
             // Parameter Descrypt
             // val : CreateDate=20180227&SurveyID=AAAAAA&ChannelID=BBBBB&UserID=CCCCCC
-            string[] splitValue = val.Split('&');
- 
-            NameValueCollection paramCol = new NameValueCollection();
-            foreach(var value in splitValue)
+            NameValueCollection qscoll = HttpUtility.ParseQueryString(val);
+
+            // CreateDate
+            if(!string.IsNullOrEmpty(qscoll["CreateDate"]) && Helpers.IsDate(qscoll["CreateDate"],"yyyyMMddHHmmss"))
             {
-                string[] item = value.Split('=');
-                if(item.Length == 2)
-                {
-                    paramCol.Add(item[0],item[1]);
-                }
+                var nowDate = DateTime.Now;
+                TimeSpan ts = nowDate - DateTime.ParseExact(qscoll["CreateDate"], "yyyyMMddHHmmss", CultureInfo.CurrentCulture);
+                
+                if( ts.TotalSeconds > 60)
+                    throw new ArgumentException("시간 초과 하였습니다. Argument : CreateDate ");
             }
 
-            // Parameter Validation
-            if(!string.IsNullOrEmpty(paramCol["CreateDate"]) && Helpers.IsDate(paramCol["CreateDate"]))
-            {
-                var nowDate = DateTime.Now; //.ToString("yyyyMMddHHmmss");
-                TimeSpan ts = nowDate - DateTime.ParseExact(paramCol["CreateDate"], "yyyyMMddHHmmss", CultureInfo.InvariantCulture); ;
-            }
             
-
-            
-
-            //cparam.Add(splitValue[0].Split('=')[0],splitValue[0].Split('=')[1]);
-
-            //cparam.Add(,splitValue[0].Split['=']);
-
-
-
 
 
         }
