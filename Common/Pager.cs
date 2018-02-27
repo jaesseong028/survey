@@ -7,6 +7,7 @@ namespace UBSurvey.Common
 {
     public class PagerModel
     {
+        public int Current  {get;set;}
         public int? First {get;set;}
         public int? Prev {get;set;}
         public IEnumerable<int> Pages {get;set;}
@@ -44,6 +45,10 @@ namespace UBSurvey.Common
                 p.Next = currentFirstPage + 10;
                 p.Last = lastPage;
             }
+
+            p.Last = 10;
+
+            p.Current = current;
 
             p.Pages = Enumerable.Range(currentFirstPage, 10);
 

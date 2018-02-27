@@ -47,13 +47,22 @@
     </tr>     
     </table>
     {{surveys}}
+    <ul class="pagination">
+        <li v-if="pager.first != null"><a v-href="pager.first"><<</a></li>
+        <li v-if="pager.prev != null"><a v-href="pager.prev"><</a></li>
+        <li v-for="page in pager.pages"><a v-href="pager.pages[page]">{{page}}</a></li>
+        <li v-if="pager.next != null"><a v-href="pager.next">></a></li>
+        <li v-if="pager.last != null"><a v-href="pager.last">>></a></li>
+    </ul>
 </div>
+
 <script>
 var vue = new Vue({
     el: '#container',
     data: {
         surveys : [],
-        searchData : {title : '', approve : 1, startDate : '2017-01-01', endDate : '2017-01-01'}
+        searchData : {title : '', approve : 1, startDate : '2017-01-01', endDate : '2017-01-01'},
+        pager : []
     },
     created : function(){
         this.selectSurvey();
@@ -64,6 +73,7 @@ var vue = new Vue({
             .then(function (response) {
                 console.log(response.data);
                 vue.surveys = response.data.data;
+                vue.pager = response.data.pager;
             })
             .catch(function (error) {
                 console.log(error);

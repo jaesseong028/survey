@@ -33,7 +33,7 @@ namespace UBSurvey.Controllers.Api
         public JsonResult Save([FromBody]JObject survey)
         {
             Models.SurveyInfo s = new SurveyInfo();
-            s._chanelID = _globalVariable.Value.ChanelID;
+            s._channelID = _globalVariable.Value.ChanelID;
             s.Survey = BsonDocument.Parse(survey.ToString());
             _repository.InsertSurvey(s);
              return Json(new {success = true});
