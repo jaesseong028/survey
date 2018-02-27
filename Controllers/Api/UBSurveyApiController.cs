@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using UBSurvey.Common;
 using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
@@ -35,9 +36,11 @@ namespace UBSurvey.Controllers.Api
             
             IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, sDate, eDate, approveStatus, out totalCount);
 
+            var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, totalCount);
+
             //_repository.InsertUBSurvey(new UBSurveyInfo(){ Title = "유비케어2", StartDate = new DateTime(2017, 9, 10), EndDate = new DateTime(2017, 12, 31), ApproveStatus = 1, //LimitPersons = 10 });
 
-            return Json(new {success = true, data = surveys, totalCount = totalCount  });
+            return Json(new {success = true, data = surveys, pager = pager  });
 
             // IEnumerable<SurveyInfo> surveys = _repository.List(null, _settings.Value.ChanelID, 1, 10);
             // int dd = surveys.Count();

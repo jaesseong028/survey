@@ -13,7 +13,7 @@ namespace UBSurvey.Controllers
     {   
         public IActionResult Index()
         {
-            var dd = Pager.GetPageModel(12, 10, 110);
+            
 
             return View();
         }
