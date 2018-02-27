@@ -12,7 +12,8 @@ namespace UBSurvey.Controllers
             // Parameter Split
 
 
-            //var 
+            val = "CreateDate=20180227132122&SurveyID=AAAAAA&ChannelID=BBBBB&UserID=CCCC";
+
             Validation.ConfirmParam(val);
 
             // confirm Date 

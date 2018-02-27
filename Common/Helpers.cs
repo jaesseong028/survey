@@ -121,5 +121,22 @@ namespace UBSurvey.Common
             }
             return stringBuilder.ToString();
         }
+
+
+        // ////////////////////////////
+        // Description : Date Check
+        // ////////////////////////////
+        public static bool isDate(string date)
+        {
+            try
+            {
+                DateTime dt = DateTime.Parse(date);
+                return true;
+                
+            }catch
+            {
+                return false;
+            }
+        }
     }
 }
