@@ -36,7 +36,8 @@ namespace UBSurvey.Controllers.Api
             s._channelID = _globalVariable.Value.ChanelID;
             s.Survey = BsonDocument.Parse(survey.ToString());
             _repository.InsertSurvey(s);
-             return Json(new {success = true});
+            var dd = _repository.GetSurvey("5a8fb4200ad8963fa4242cb2", "5a8fccc17622f83fe899c6ec");
+            return Json(new {success = true});
 
             // IEnumerable<SurveyInfo> surveys = _repository.List(null, _settings.Value.ChanelID, 1, 10);
             // int dd = surveys.Count();

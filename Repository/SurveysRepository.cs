@@ -16,7 +16,7 @@ namespace UBSurvey.Repository
     public interface ISurveyRepository
     {
         void InsertSurvey(SurveyInfo contact);
-        SurveyInfo GetSurvey(ObjectId Id);
+        SurveyInfo GetSurvey(string channelID, string surveyID);
         bool UpdateSurvey(ObjectId Id, SurveyInfo item);
         bool RemoveSurvey(ObjectId Id);
     } 
@@ -37,10 +37,10 @@ namespace UBSurvey.Repository
             _context.Surveys.InsertOne(contact);
         }
 
-        public SurveyInfo GetSurvey(ObjectId Id)
+        public SurveyInfo GetSurvey(string channelID, string surveyID)
         {
-            var filter = Builders<SurveyInfo>.Filter.Eq("Id", Id);
-            return _context.Surveys.Find(filter).FirstOrDefault();
+            return _context.Surveys.AsQueryable()
+                .Where(p => p._id == new ObjectId(surveyID) && p._channelID == channelID).FirstOrDefault();
         }
 
         public bool RemoveSurvey(ObjectId Id)

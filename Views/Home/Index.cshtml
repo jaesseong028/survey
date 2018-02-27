@@ -48,11 +48,11 @@
     </table>
     {{surveys}}
     <ul class="pagination">
-        <li v-if="pager.first != null"><a v-href="pager.first"><<</a></li>
-        <li v-if="pager.prev != null"><a v-href="pager.prev"><</a></li>
-        <li v-for="page in pager.pages"><a v-href="pager.pages[page]">{{page}}</a></li>
-        <li v-if="pager.next != null"><a v-href="pager.next">></a></li>
-        <li v-if="pager.last != null"><a v-href="pager.last">>></a></li>
+        <li v-if="pager.first != null"><a v-bind:href="pager.first"><<</a></li>
+        <li v-if="pager.prev != null"><a v-bind:href="pager.prev"><</a></li>
+        <li v-for="page in pager.pages"><a v-bind:href="page">{{page}}</a></li>
+        <li v-if="pager.next != null"><a v-bind:href="pager.next">></a></li>
+        <li v-if="pager.last != null"><a v-bind:href="pager.last">>></a></li>
     </ul>
 </div>
 
