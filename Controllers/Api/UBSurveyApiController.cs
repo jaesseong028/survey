@@ -31,12 +31,13 @@ namespace UBSurvey.Controllers.Api
         {
             DateTime sDate = startDate.HasValue ? startDate.Value : new DateTime(1900, 1, 1);
             DateTime eDate = endDate.HasValue ? endDate.Value : DateTime.MaxValue;
+            int totalCount = 0;
             
-            IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, sDate, eDate, approveStatus);
+            IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, sDate, eDate, approveStatus, out totalCount);
 
             //_repository.InsertUBSurvey(new UBSurveyInfo(){ Title = "유비케어2", StartDate = new DateTime(2017, 9, 10), EndDate = new DateTime(2017, 12, 31), ApproveStatus = 1, //LimitPersons = 10 });
 
-            return Json(new {success = true, data = surveys });
+            return Json(new {success = true, data = surveys, totalCount = totalCount  });
 
             // IEnumerable<SurveyInfo> surveys = _repository.List(null, _settings.Value.ChanelID, 1, 10);
             // int dd = surveys.Count();

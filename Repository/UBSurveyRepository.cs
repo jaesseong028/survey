@@ -13,7 +13,7 @@ namespace UBSurvey.Repository
 {
     public interface IUBSurveyRepository
     {
-        IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, DateTime startDate, DateTime endDate, int approveStatus);
+        IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, DateTime startDate, DateTime endDate, int approveStatus, out int totalCount);
         void InsertUBSurvey(UBSurveyInfo contact);
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
@@ -36,16 +36,17 @@ namespace UBSurvey.Repository
             _context.UBSurveys.InsertOne(contact);
         }
 
-        public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, DateTime startDate, DateTime endDate, int approveStatus)
+        public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, DateTime startDate, DateTime endDate, int approveStatus, out int totalCount)
         {
             //string filter = "StartDate >= DateTime.Parse(\"" + new BsonDateTime(start) + "\") AND EndDate <= DateTime.Parse(\"" + endDate + "\") AND ApproveStatus = " + approveStatus;
+            totalCount = _context.UBSurveys.AsQueryable()
+                .Where(p => p.StartDate >= startDate && p.EndDate <= endDate && p.ApproveStatus == approveStatus).Count();
 
             return _context.UBSurveys.AsQueryable()
                 .Where(p => p.StartDate >= startDate && p.EndDate <= endDate && p.ApproveStatus == approveStatus)
                 .Skip((currentPage - 1) * pageSize)
                 .Take(pageSize)
                 .Select(s=> s).ToArray();
-
 
             //var filterBuilder = Builders<UBSurveyInfo>.Filter;
             //var filter = filterBuilder.Gte(s=> s.StartDate, startDate) & filterBuilder.Lt(s=> s.EndDate, endDate) & filterBuilder.Eq(s=> s.ApproveStatus, approveStatus);

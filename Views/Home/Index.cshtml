@@ -40,9 +40,9 @@
     <tr v-for="s in surveys">
         <td>1</td>
         <td>{{s.title}}</td>
-        <td>{{s.startDate}}~{{s.endDate}}</td>
-        <td>{{s.approveStatus}}</td>
-        <td>{{s.limitPersons}}</td>
+        <td>{{s.startDateAndEndDate}}</td>
+        <td>{{s.approveStatusStr}}</td>
+        <td>{{s.limitPersonsStr}}</td>
         <td><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
     </tr>     
     </table>
@@ -62,6 +62,7 @@ var vue = new Vue({
         selectSurvey :  function() {
             axios.get('/api/UBSurvey/list', this.survey)
             .then(function (response) {
+                console.log(response.data);
                 vue.surveys = response.data.data;
             })
             .catch(function (error) {
