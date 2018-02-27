@@ -1,6 +1,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,8 +13,7 @@ namespace UBSurvey.Common
 {
     public static class Helpers
     {
-
-        public static string GetEnumDescription(this Enum value)
+        public static string getEnumDescription(this Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
 
@@ -39,7 +39,7 @@ namespace UBSurvey.Common
             return new string(chars.ToArray());
         }  
 
-        public static string AESEncrypt256(string Input, string key)
+        public static string AesEncrypt256(string Input, string key)
         {
             
             RijndaelManaged aes = new RijndaelManaged();
@@ -68,7 +68,7 @@ namespace UBSurvey.Common
             return Output;
         }
 
-        public static string AESDecrypt256(string Input, string key)
+        public static string AesDecrypt256(string Input, string key)
         {
             Input = HttpUtility.UrlDecode(Input);
             RijndaelManaged aes = new RijndaelManaged();
@@ -126,17 +126,10 @@ namespace UBSurvey.Common
         // ////////////////////////////
         // Description : Date Check
         // ////////////////////////////
-        public static bool isDate(string date)
+        public static bool IsDate(string date, string format = "yyyy-MM-dd")
         {
-            try
-            {
-                DateTime dt = DateTime.Parse(date);
-                return true;
-                
-            }catch
-            {
-                return false;
-            }
+            DateTime dt;
+            return DateTime.TryParseExact(date, format, CultureInfo.CurrentCulture, DateTimeStyles.None, out dt);
         }
     }
 }

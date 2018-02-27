@@ -1,5 +1,7 @@
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UBSurvey.Common
 {
@@ -7,11 +9,11 @@ namespace UBSurvey.Common
     {
         public int? First {get;set;}
         public int? Prev {get;set;}
-        public int[] Pages {get;set;}
+        public IEnumerable<int> Pages {get;set;}
         public int? Next {get;set;}
         public int? Last {get;set;}
     }
-    public class Pager
+    public static class Pager
     {
         public static PagerModel GetPageModel(int current, int pageSize, int totalCount)
         {
@@ -23,32 +25,27 @@ namespace UBSurvey.Common
                 throw new ArgumentException($"잘못된 파라미터 입니다. Argument : totalCount");
 
             PagerModel p = new PagerModel();
-            if(current == 1)
-            {
-                p.First = null;
-                p.Prev = null;
-            }
-            else
+            if (current > 1)
             {
                 p.First = 1;
                 p.Prev = (((current / pageSize) - 1) * pageSize) + 1;
             }
 
-            var div = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); 
+            var lastPage = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); 
 
-            if (div / current == 1)
-            {
-                p.Next = null;
-                p.Last = null;
-            }
-            else
-            {
-                p.Next = div;
-                p.Last = div;
-            }
-            p.Last = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); //525 / 10
-            //Next
+            var currentFirstPage = (int)(Math.Floor((current - 1) / 10.0) * 10) + 1;
+            var lastFirstPage = (int)(Math.Floor((lastPage - 1) / 10.0) * 10) + 1;
 
+            if (current > lastPage)
+                throw new ArgumentException($"잘못된 파라미터 입니다. 전체 페이지 수 보다 높습니다.");
+
+            if (currentFirstPage != lastFirstPage)
+            {
+                p.Next = currentFirstPage + 10;
+                p.Last = lastPage;
+            }
+
+            p.Pages = Enumerable.Range(currentFirstPage, 10);
 
             return p;
         }
