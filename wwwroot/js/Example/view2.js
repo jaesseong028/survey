@@ -753,26 +753,34 @@ function domReady (){
     try
     {
         var surveyId = document.getElementById('ubSurvey');
-        console.log(survey);
+        console.log(strSurvey);
         //var surveyJson = JSON.parse(survey);
 
-        var surveyJson = survey;
+        var surveyJson = strSurvey.survey == undefined ? strSurvey : strSurvey.survey;
         console.log(surveyJson);
+        // console.log(surveyJson.survey);
+        // console.log(surveyJson.pages);
+        // console.log(surveyJson.title);
+        
+        //View 
+        //Progress
 
-        if( ('survey' in surveyJson) && ('pages' in surveyJson.survey) && ('title' in surveyJson.survey))
+
+
+        if(('pages' in surveyJson) && ('title' in surveyJson))
         {
             // Create Survey 
             var elSurvey = createSurveySet();
 
             // Survey Title
-            if('title' in surveyJson.survey)
-                cdom.getcss(elSurvey,'title',0).text(surveyJson.survey.title);
+            if('title' in surveyJson)
+                cdom.getcss(elSurvey,'title',0).text(surveyJson.title);
 
             // if('description' in surveyJson.survey)
             //     cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
 
             // Survey Page
-            var pages  = surveyJson.survey.pages;
+            var pages  = surveyJson.pages;
             var questionNumber = 1;
 
             for(var p in pages)
