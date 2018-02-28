@@ -23,4 +23,13 @@ namespace UBSurvey.Models
         public string UserToken { get; set; }
         public dynamic Values { get; set;}
     }
+
+    public class V_ProgressInfo
+    {
+        public string _info { get; set; }   // SurveyID + channelID : Encrypt
+
+        public dynamic Survey{ get; set; }
+
+        public dynamic _surveyResult { get; set; }
+    }
 }
