@@ -17,12 +17,12 @@ namespace UBSurvey.Repository
     {
         void InsertSurvey(SurveyInfo contact);
         SurveyInfo GetSurvey(string channelID, string surveyID);
-        bool UpdateSurvey(ObjectId Id, SurveyInfo item);
-        bool RemoveSurvey(ObjectId Id);
-        bool UpdateSurveyResult (string suerveyID, SurveyResult result);
-        string GetChannelEncryptKey (string channelId);
-        int GetSurveyResultCount (string suerveyID);
-        bool ExistsUserToken (string suerveyID, string userToken);
+        bool UpdateSurvey(string channelID, string surveyID, SurveyInfo item);
+        bool RemoveSurvey(string channelID, string surveyID);
+        bool InsertSurveyResult (string channelID, string suerveyID, SurveyResult result);
+        string GetChannelEncryptKey (string channelID);
+        int GetSurveyResultCount (string channelID, string suerveyID);
+        bool ExistsUserToken (string channelID, string suerveyID, string userToken);
     } 
     
 
@@ -37,6 +37,8 @@ namespace UBSurvey.Repository
 
         public void InsertSurvey(SurveyInfo contact)
         {
+            if(string.IsNullOrEmpty(contact._channelID))
+                throw new Exception("_channelID 가 존재 하지 않습니다.");
             _context.Surveys.InsertOne(contact);
         }
 
@@ -46,22 +48,23 @@ namespace UBSurvey.Repository
                 .Where(p => p._id == new ObjectId(surveyID) && p._channelID == channelID).FirstOrDefault();
         }
 
-        public bool RemoveSurvey(ObjectId Id)
+        public bool RemoveSurvey(string channelID, string surveyID)
         {
-            DeleteResult actionResult = _context.Surveys.DeleteOne(Builders<SurveyInfo>.Filter.Eq("Id", Id));
+            DeleteResult actionResult = _context.Surveys.DeleteOne(p=> p._channelID == channelID && p._id.Equals(new ObjectId(surveyID)));
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
-         }   
+        }   
 
-        public bool UpdateSurvey(ObjectId Id, SurveyInfo item)
+        public bool UpdateSurvey(string channelID, string surveyID, SurveyInfo item)
         {
             ReplaceOneResult actionResult 
-                = _context.Surveys.ReplaceOne(n => n._id.Equals(Id), item, new UpdateOptions { IsUpsert = true });
+                = _context.Surveys.ReplaceOne(p => p._channelID == channelID && p._id.Equals(new ObjectId(surveyID)), item, new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
                 && actionResult.ModifiedCount > 0;
         }
 
-        public bool UpdateSurveyResult (string suerveyID, SurveyResult result)
+        /// API 로 연결 하지 말것
+        public bool InsertSurveyResult (string channelID, string suerveyID, SurveyResult result)
         {
             var data = _context.Surveys.AsQueryable().Where(p => p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
 
@@ -77,17 +80,18 @@ namespace UBSurvey.Repository
                 && actionResult.ModifiedCount > 0;
         }
 
-        public string GetChannelEncryptKey (string channelId)
+        /// API 로 연결 하지 말것
+        public string GetChannelEncryptKey(string channelID)
         {
-            var data = _context.Channels.AsQueryable().Where(p => p._id.Equals(new ObjectId(channelId))).FirstOrDefault();
+            var data = _context.Channels.AsQueryable().Where(p => p._id.Equals(new ObjectId(channelID))).FirstOrDefault();
             if(data == null)
                 return null;
 
             return data.EncryptKey;
         }
-        public int GetSurveyResultCount (string suerveyID)
+        public int GetSurveyResultCount (string channelID, string suerveyID)
         {
-            var data = _context.Surveys.AsQueryable().Where(p => p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
+            var data = _context.Surveys.AsQueryable().Where(p => p._channelID == channelID && p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
 
             if (data == null)
                 return 0;
@@ -95,9 +99,9 @@ namespace UBSurvey.Repository
             return data._surveyResult.Count();
         }
 
-        public bool ExistsUserToken (string suerveyID, string userToken)
+        public bool ExistsUserToken (string channelID, string suerveyID, string userToken)
         {
-            var data = _context.Surveys.AsQueryable().Where(p => p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
+            var data = _context.Surveys.AsQueryable().Where(p => p._channelID == channelID && p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
 
             if (data == null)
                 return false;

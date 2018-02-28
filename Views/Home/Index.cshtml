@@ -32,7 +32,12 @@
                 유비케어 설문
             </td>
             <td class="info" >설문기간</td>
-            <td><input  type="date" class="form-control" v-model="searchData.startDate">~<input  type="date" class="form-control" v-model="searchData.endDate"></td>
+            <td>
+                <div class="form-inline">
+                    <input class="form-control" v-model="searchData.startDate">
+                    ~ <input  class="form-control" v-model="searchData.endDate">
+                </div>
+            </td>
         </tr>
     </table>
     <div style="margin-bottom:15px"><button class="btn btn-success">설문등록</button> <button class="btn btn-info pull-right" v-on:click=search>검색</button></div>
@@ -56,11 +61,11 @@
     </table>
     <center>
     <ul class="pagination text-center">
-        <li v-if="pager.First != null"><a v-bind:href="pager.First"><<</a></li>
-        <li v-if="pager.Prev != null"><a v-bind:href="pager.Prev"><</a></li>
-        <li v-for="page in pager.Pages"><a v-bind:href="page">{{page}}</a></li>
-        <li v-if="pager.Next != null"><a v-bind:href="pager.Next">></a></li>
-        <li v-if="pager.Last != null"><a v-bind:href="pager.Last">>></a></li>
+        <li v-if="pager.First != null"><a v-bind:href="createActionUrl(pager.First)"><<</a></li>
+        <li v-if="pager.Prev != null"><a v-bind:href="createActionUrl(pager.Prev)"><</a></li>
+        <li v-for="page in pager.Pages"><a v-bind:href="createActionUrl(page)">{{page}}</a></li>
+        <li v-if="pager.Next != null"><a v-bind:href="createActionUrl(pager.Next)">></a></li>
+        <li v-if="pager.Last != null"><a v-bind:href="createActionUrl(pager.Last)">>></a></li>
     </ul>
     </center>
     {{surveys}}
@@ -76,17 +81,16 @@ var vue = new Vue({
     },
     created : function(){
         
-        
     }, 
     methods : {
         search : function(){
             var params = $.param(this.searchData);
-            //console.log(params);
             var actionUrl = '/?' + params;
             location.href = actionUrl;
         },
         createActionUrl : function(pid){
-            
+            var params = $.param(this.searchData);
+            return '/?' + params + '&pageindex=' + pid;
         },
         deletesurvey : function(_id){
         console.log(_id);

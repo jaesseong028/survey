@@ -42,9 +42,9 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult Delete([FromBody]JObject data)
         {
-            _repository.RemoveUBSurvey(data["id"].ToString());
+            var result = _repository.RemoveUBSurvey(data["id"].ToString());
             
-            return Json(new {success = true});
+            return Json(new {success = true, data = result});
         }
     }
 }

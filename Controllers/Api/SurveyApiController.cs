@@ -36,7 +36,36 @@ namespace UBSurvey.Controllers.Api
             s._channelID = _globalVariable.Value.ChanelID;
             s.Survey = BsonDocument.Parse(survey.ToString());
             _repository.InsertSurvey(s);
-            return Json(new {success = true});
+            return Json(new { success = true});
         } 
+
+        [HttpGet]
+        public JsonResult GetSurvey(string channelID, string surveyID)
+        {
+            var data = _repository.GetSurvey(channelID, surveyID);
+            return Json(new { success = true, data = data});
+        } 
+
+        [HttpGet]
+        public JsonResult RemoveSurvey(string channelID, string surveyID)
+        {
+            var result = _repository.RemoveSurvey(channelID, surveyID);
+            return Json(new { success = true, data = result });
+        } 
+
+        [HttpGet]
+        public JsonResult GetSurveyResultCount(string channelID, string surveyID)
+        {
+            var result = _repository.GetSurveyResultCount(channelID, surveyID);
+            return Json(new { success = true, data = result });
+        } 
+
+          [HttpGet]
+        public JsonResult ExistsUserToken(string channelID, string surveyID, string userToken)
+        {
+            var result = _repository.ExistsUserToken(channelID, surveyID, userToken);
+            return Json(new { success = true, data = result });
+        } 
+        
     }
 }

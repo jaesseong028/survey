@@ -24,7 +24,7 @@ namespace UBSurvey.Controllers
         public IActionResult Index(int pageIndex = 1/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
 
-            var r = Helpers.HttpPost($"http://192.168.245.101:5000/api/ubsurvey/list{Request.QueryString.ToString()}");
+            var r = Helpers.HttpGet($"http://192.168.245.101:5000/api/ubsurvey/list{Request.QueryString.ToString()}");
             dynamic d = JsonConvert.DeserializeObject(r.Result);
 
             var searchData = Helpers.GetQueryStringToDictionary(Request.QueryString.ToString(), "title", "startDate", "endDate", "approveStatus");
