@@ -36,6 +36,12 @@ namespace UBSurvey.Controllers
             return View(tuple);
         }
 
-        // ////////////////////////////////////////////////////////
+
+        // //////////////////////////////////// ///
+        public IActionResult DetailSurvey()
+        {
+
+            return View();
+        }
     }
 }
