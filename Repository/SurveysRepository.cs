@@ -66,7 +66,7 @@ namespace UBSurvey.Repository
         /// API 로 연결 하지 말것
         public bool InsertSurveyResult (string channelID, string suerveyID, SurveyResult result)
         {
-            var data = _context.Surveys.AsQueryable().Where(p => p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
+            var data = _context.Surveys.AsQueryable().Where(p => p._channelID == channelID && p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
 
             if (result == null || data == null)
                 return false;
