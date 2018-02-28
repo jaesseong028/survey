@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -7,6 +8,10 @@ namespace UBSurvey.Models
 {
     public class SurveyInfo
     {
+        public SurveyInfo()
+        {
+            _surveyResult = Enumerable.Empty<SurveyResult>();
+        }
         public ObjectId _id { get; set; }
         public string _channelID { get; set;}
         public dynamic Survey { get; set;}

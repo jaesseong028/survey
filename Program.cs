@@ -9,6 +9,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using UBSurvey.Common;
 
 namespace UBSurvey
 {
@@ -19,22 +20,9 @@ namespace UBSurvey
             BuildWebHost(args).Run();
         }
 
-        private static string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
-        }
-
 
         public static IWebHost BuildWebHost(string[] args) {
-            string myIP = GetLocalIPAddress();
+            string myIP = Helpers.GetMyIp();
             return WebHost.CreateDefaultBuilder(args)
             .UseStartup<Startup>()
             .UseUrls($"http://{myIP}:5000/")

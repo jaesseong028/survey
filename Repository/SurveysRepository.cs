@@ -74,7 +74,7 @@ namespace UBSurvey.Repository
             data._surveyResult.Append(result);
 
             ReplaceOneResult actionResult 
-                = _context.Surveys.ReplaceOne(p => p._id.Equals(new ObjectId(suerveyID)), data, new UpdateOptions { IsUpsert = true });
+                = _context.Surveys.ReplaceOne(p => p._channelID == channelID && p._id.Equals(new ObjectId(suerveyID)), data, new UpdateOptions { IsUpsert = true });
 
             return actionResult.IsAcknowledged
                 && actionResult.ModifiedCount > 0;

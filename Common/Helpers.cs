@@ -6,8 +6,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
@@ -20,6 +22,18 @@ namespace UBSurvey.Common
 {
     public static class Helpers
     {
+        public static string GetMyIp()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
         public static string getEnumDescription(this Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());

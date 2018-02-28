@@ -24,6 +24,7 @@ namespace UBSurvey.Controllers
         public IActionResult Index(int pageIndex = 1/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
             //string ss =Helpers.GenerateKey(16);
+            var site = Helpers.GetMyIp() + ":5000";
             // for(int i =0; i < 100; i++)
             // {
             //     UBSurveyInfo s = new UBSurveyInfo();
@@ -33,10 +34,10 @@ namespace UBSurvey.Controllers
             //     s.StartDate = DateTime.Now.AddDays((new Random()).Next(-100, 100));
             //     s.EndDate = s.StartDate.AddDays((new Random()).Next(0, 100));
             //     s.LimitPersons = (new Random()).Next(0, 1000);
-            //     var r1 = Helpers.HttpPost("http://192.168.245.101:5000/api/ubsurvey/save", s);  
+            //     var r1 = Helpers.HttpPost($"http://{site}/api/ubsurvey/save", s);  
             // }
-
-            var r = Helpers.HttpGet($"http://192.168.245.101:5000/api/ubsurvey/list{Request.QueryString.ToString()}");
+            //string ss = Url.Action("/api/ubsurvey/list");
+            var r = Helpers.HttpGet($"http://{site}/api/ubsurvey/list{Request.QueryString.ToString()}");
             dynamic d = JsonConvert.DeserializeObject(r.Result);
 
             var searchData = Helpers.GetQueryStringToDictionary(Request.QueryString.ToString(), "title", "startDate", "endDate", "approveStatus");
