@@ -29,9 +29,10 @@
         <tr>
             <td class="info">서비스명</td>
             <td>
+                유비케어 설문
             </td>
             <td class="info" >설문기간</td>
-            <td><input type="text" class="form-control" v-model="searchData.startDate"></td>
+            <td><input  type="date" class="form-control" v-model="searchData.startDate">~<input  type="date" class="form-control" v-model="searchData.endDate"></td>
         </tr>
     </table>
     <div style="margin-bottom:15px"><button class="btn btn-success">설문등록</button> <button class="btn btn-info pull-right" v-on:click=search>검색</button></div>
