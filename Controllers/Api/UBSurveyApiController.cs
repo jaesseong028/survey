@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -28,32 +29,14 @@ namespace UBSurvey.Controllers.Api
         const string PAGEINDEXKEY = "pageIndex";
         const string PAGESIZEKEY = "pageSize";
         [HttpGet]
-        public JsonResult List(int pageIndex = 1, DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1)
+        public JsonResult List(int pageIndex = 1, string title = null, DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1)
         {
             DateTime sDate = startDate.HasValue ? startDate.Value : new DateTime(1900, 1, 1);
             DateTime eDate = endDate.HasValue ? endDate.Value : DateTime.MaxValue;
-            int totalCount = 0;
+            long totalCount = 0;
             
-            IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, sDate, eDate, approveStatus, out totalCount);
-
-            var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, totalCount);
-
-            //_repository.InsertUBSurvey(new UBSurveyInfo(){ Title = "유비케어2", StartDate = new DateTime(2017, 9, 10), EndDate = new DateTime(2017, 12, 31), ApproveStatus = 1, //LimitPersons = 10 });
-
-            return Json(new {success = true, data = surveys, pager = pager  });
-
-            // IEnumerable<SurveyInfo> surveys = _repository.List(null, _settings.Value.ChanelID, 1, 10);
-            // int dd = surveys.Count();
-
-            // var dasdf = surveys.First();
-
-            // var ddd = new ObjectId(dasdf.Id.ToString());
-
-            // Task<SurveyInfo> ss = _repository.GetSurvey(ddd);
-
-            // var data = BsonSerializer.Deserialize<dynamic>(ss.Result.Survey);
-
-            // return Json(new {success = data});
+            IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, title, sDate, eDate, approveStatus, out totalCount);
+            return Json(new {success = true, data = surveys, totalCount = totalCount });
         } 
 
         [HttpPost]

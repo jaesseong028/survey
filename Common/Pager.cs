@@ -7,12 +7,12 @@ namespace UBSurvey.Common
 {
     public class PagerModel
     {
-        public int Current  {get;set;}
-        public int? First {get;set;}
-        public int? Prev {get;set;}
-        public IEnumerable<int> Pages {get;set;}
-        public int? Next {get;set;}
-        public int? Last {get;set;}
+        public int PageIndex  { get; set;}
+        public int? First { get; set;}
+        public int? Prev { get; set;}
+        public IEnumerable<int> Pages { get; set;}
+        public int? Next { get; set;}
+        public int? Last { get; set;}
     }
     public static class Pager
     {
@@ -33,24 +33,26 @@ namespace UBSurvey.Common
             }
 
             var lastPage = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); 
-
             var currentFirstPage = (int)(Math.Floor((current - 1) / 10.0) * 10) + 1;
             var lastFirstPage = (int)(Math.Floor((lastPage - 1) / 10.0) * 10) + 1;
 
-            if (current > lastPage)
+            if (lastPage != 0 && current > lastPage)
                 throw new ArgumentException($"잘못된 파라미터 입니다. 전체 페이지 수 보다 높습니다.");
 
-            if (currentFirstPage != lastFirstPage)
+            if (lastFirstPage > 0 && currentFirstPage != lastFirstPage)
             {
                 p.Next = currentFirstPage + 10;
                 p.Last = lastPage;
             }
 
-            p.Last = 10;
+            p.PageIndex = current;
 
-            p.Current = current;
+            int count = 10;
+            if (currentFirstPage + 10 >= lastPage){
+                count = (lastPage - currentFirstPage)  + 1;
+            }
 
-            p.Pages = Enumerable.Range(currentFirstPage, 10);
+            p.Pages = Enumerable.Range(currentFirstPage, count);
 
             return p;
         }

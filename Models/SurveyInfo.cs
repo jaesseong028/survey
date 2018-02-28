@@ -11,4 +11,11 @@ namespace UBSurvey.Models
         public dynamic Survey { get; set;}
         public dynamic _surveyResult { get; set;}
     }
+
+    public class SurveyResult 
+    {
+        public string UserToken { get; set; }
+        
+        public dynamic resultList { get; set;}
+    }
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model System.Tuple<object, object, object>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -16,18 +17,24 @@
     <table class="table table-bordered text-center">
         <tr>
             <td class="info">제목</td>
-            <td><input type="text" class="form-control" v-model="searchData.Title"></td>
+            <td><input type="text" class="form-control" v-model="searchData.title"></td>
             <td class="info">상태</td>
-            <td><input type="text" class="form-control" v-model="searchData.approve"></td>
+            <td>
+                <select class="form-control" v-model="searchData.approveStatus">
+                    <option value=1>승인</option>
+                    <option value=0>미승인</option>
+                </select>
+            </td>
         </tr>
         <tr>
             <td class="info">서비스명</td>
-            <td><input type="text" class="form-control" v-model="searchData.service"></td>
+            <td>
+            </td>
             <td class="info" >설문기간</td>
             <td><input type="text" class="form-control" v-model="searchData.startDate"></td>
         </tr>
     </table>
-    <div style="margin-bottom:15px"><button class="btn btn-success">설문등록</button> <button class="btn btn-info pull-right">검색</button></div>
+    <div style="margin-bottom:15px"><button class="btn btn-success">설문등록</button> <button class="btn btn-info pull-right" v-on:click=search>검색</button></div>
     <table class="table table-bordered table-hover">
     <tr class="info">
         <th>NO</th>
@@ -46,38 +53,39 @@
         <td><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
     </tr>     
     </table>
-    {{surveys}}
-    <ul class="pagination">
-        <li v-if="pager.first != null"><a v-bind:href="pager.first"><<</a></li>
-        <li v-if="pager.prev != null"><a v-bind:href="pager.prev"><</a></li>
-        <li v-for="page in pager.pages"><a v-bind:href="page">{{page}}</a></li>
-        <li v-if="pager.next != null"><a v-bind:href="pager.next">></a></li>
-        <li v-if="pager.last != null"><a v-bind:href="pager.last">>></a></li>
+    <center>
+    <ul class="pagination text-center">
+        <li v-if="pager.First != null"><a v-bind:href="pager.First"><<</a></li>
+        <li v-if="pager.Prev != null"><a v-bind:href="pager.Prev"><</a></li>
+        <li v-for="page in pager.Pages"><a v-bind:href="page">{{page}}</a></li>
+        <li v-if="pager.Next != null"><a v-bind:href="pager.Next">></a></li>
+        <li v-if="pager.Last != null"><a v-bind:href="pager.Last">>></a></li>
     </ul>
+    </center>
+    {{surveys}}
 </div>
 
 <script>
 var vue = new Vue({
     el: '#container',
     data: {
-        surveys : [],
-        searchData : {title : '', approve : 1, startDate : '2017-01-01', endDate : '2017-01-01'},
-        pager : []
+        surveys : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item1)),
+        searchData : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item3)),
+        pager : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item2))
     },
     created : function(){
-        this.selectSurvey();
+        
+        
     }, 
     methods : {
-        selectSurvey :  function() {
-            axios.get('/api/UBSurvey/list', this.survey)
-            .then(function (response) {
-                console.log(response.data);
-                vue.surveys = response.data.data;
-                vue.pager = response.data.pager;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        search : function(){
+            var params = $.param(this.searchData);
+            //console.log(params);
+            var actionUrl = '/?' + params;
+            location.href = actionUrl;
+        },
+        createActionUrl : function(pid){
+            
         },
         deletesurvey : function(_id){
         console.log(_id);

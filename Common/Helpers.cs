@@ -1,12 +1,18 @@
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace UBSurvey.Common
@@ -130,6 +136,52 @@ namespace UBSurvey.Common
         {
             DateTime dt;
             return DateTime.TryParseExact(date, format, CultureInfo.CurrentCulture, DateTimeStyles.None, out dt);
+        }
+
+        private static readonly HttpClient client = new HttpClient();
+
+
+        public static async Task<string> HttpPost(string url)
+        {
+           using(var httpClient = new HttpClient())
+           {
+                var response = await httpClient.GetAsync(url);
+                var contents = await response.Content.ReadAsStringAsync();
+                return contents;
+           }
+        }
+
+        public static async Task<string> HttpPost(string url, params string[] paramValues)
+        {
+           using(var httpClient = new HttpClient())
+           {
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                for(int i = 0; i < paramValues.Length; i = i + 2)
+                {
+                    dic.Add(paramValues[i], paramValues[i + 1]);
+                }
+
+                var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(dic));
+                var contents = await response.Content.ReadAsStringAsync();
+
+                return contents;
+           }
+        }
+
+        public static Dictionary<string, string> GetQueryStringToDictionary(string querystring, params string[] keys)
+        {
+            keys = keys.Select(q=> q.ToLower()).ToArray();
+            NameValueCollection namedValues =  HttpUtility.ParseQueryString(querystring);
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            foreach(string key in namedValues.Keys)
+            {
+                if (keys.Contains(key.ToLower()))
+                {
+                    dic.Add(key, namedValues.GetValues(key).First());
+                }
+
+            }
+            return dic;
         }
     }
 }

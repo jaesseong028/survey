@@ -30,7 +30,6 @@ namespace UBSurvey.Repository
         {
             _context = new SurveyContext(settings);
         }
-        
 
         public void InsertSurvey(SurveyInfo contact)
         {

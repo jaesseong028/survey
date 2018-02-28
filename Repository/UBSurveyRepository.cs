@@ -13,7 +13,7 @@ namespace UBSurvey.Repository
 {
     public interface IUBSurveyRepository
     {
-        IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, DateTime startDate, DateTime endDate, int approveStatus, out int totalCount);
+        IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime startDate, DateTime endDate, int approveStatus, out long totalCount);
         void InsertUBSurvey(UBSurveyInfo contact);
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
@@ -36,26 +36,23 @@ namespace UBSurvey.Repository
             _context.UBSurveys.InsertOne(contact);
         }
 
-        public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, DateTime startDate, DateTime endDate, int approveStatus, out int totalCount)
+        public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime startDate, DateTime endDate, int approveStatus, out long totalCount)
         {
-            //string filter = "StartDate >= DateTime.Parse(\"" + new BsonDateTime(start) + "\") AND EndDate <= DateTime.Parse(\"" + endDate + "\") AND ApproveStatus = " + approveStatus;
-            totalCount = _context.UBSurveys.AsQueryable()
-                .Where(p => p.StartDate >= startDate && p.EndDate <= endDate && p.ApproveStatus == approveStatus).Count();
+            var _filterDef = Builders<UBSurveyInfo>.Filter.Empty;
 
-            return _context.UBSurveys.AsQueryable()
-                .Where(p => p.StartDate >= startDate && p.EndDate <= endDate && p.ApproveStatus == approveStatus)
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize)
-                .Select(s=> s).ToArray();
+            _filterDef &= Builders<UBSurveyInfo>.Filter.Gte(t => t.StartDate, startDate);
+            _filterDef &= Builders<UBSurveyInfo>.Filter.Lte(t => t.EndDate, endDate);
+            _filterDef &= Builders<UBSurveyInfo>.Filter.Eq(t => t.ApproveStatus, approveStatus);
 
-            //var filterBuilder = Builders<UBSurveyInfo>.Filter;
-            //var filter = filterBuilder.Gte(s=> s.StartDate, startDate) & filterBuilder.Lt(s=> s.EndDate, endDate) & filterBuilder.Eq(s=> s.ApproveStatus, approveStatus);
-            //return _context.UBSurveys.Find(filter).Skip().Limit(pageSize).ToEnumerable();
+            if(!string.IsNullOrEmpty(title))
+                _filterDef &= Builders<UBSurveyInfo>.Filter.Regex(t => t.Title, title);
+
+            totalCount = _context.UBSurveys.Find(_filterDef).Count();
+            return _context.UBSurveys.Find(_filterDef).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToEnumerable();
         }
 
         public bool RemoveUBSurvey(string _id)
         {
-            
             DeleteResult actionResult = _context.UBSurveys.DeleteOne(Builders<UBSurveyInfo>.Filter.Eq("_id", new ObjectId(_id)));
 
             return actionResult.IsAcknowledged 
@@ -68,12 +65,10 @@ namespace UBSurvey.Repository
             return _context.UBSurveys
                             .Find(filter)
                             .FirstOrDefault();
-        
         }
         
         public bool UpdateUBSurvey(string _id, UBSurveyInfo item)
         {
-            
             ReplaceOneResult actionResult 
                 = _context.UBSurveys.ReplaceOne(n => n._id.Equals(new ObjectId(_id)), item, new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
