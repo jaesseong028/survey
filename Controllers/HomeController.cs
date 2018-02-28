@@ -39,7 +39,7 @@ namespace UBSurvey.Controllers
 
 
         // //////////////////////////////////// ///
-        public IActionResult DetailSurvey()
+        public IActionResult Edit()
         {
 
             return View();

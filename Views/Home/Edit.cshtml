@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "Detail Page";
+}
+
+@section Scripts {
+<environment include="Development">
+    <script src="~/js/vue.min.js"></script>
+</environment>
+<environment include="Production">    
+    <script src="~/js/vue.min.js"></script>
+</environment>
+<script src="~/js/axios.min.js"></script>
+}
+<script type="text/javascript">
+    $( function(){
+        $("#toDate").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $("#fromDate").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        
+    });
+
+</script>
+
+<div id="container"> 
+    
+        <table class="table table-bordered text-center">
+            <tr>
+                <td class="info">서비스명</td>
+                <td colspan="3"><input type="text" class="form-control" ></td>
+            </tr>
+            <tr>
+                <td class="info">제목</td>
+                <td colspan="3"><input type="text" class="form-control" ></td>
+            </tr>
+            <tr>
+                <td class="info" >배포기간</td>
+                <td class="form-inline">
+                    <input type="text" style="width:auto" class="form-control datepicker"  id="toDate"> ~
+                    <input type="text" style="width:auto" class="form-control datepicker" id="fromDate">
+                </td>
+                <td class="info" >마감인원</td>
+                <td><input type="text" class="form-control " ></td>
+            </tr>
+        </table>
+        <div>
+            <button class="btn btn-success">설문등록</button>
+            <button class="btn btn-primary pull-right" >저장</button>
+            <button class="btn btn-danger pull-right" >삭제</button>
+            <button class="btn btn-danger pull-right" >마감</button>
+        </div>
+        <table class="table table-bordered text-center">
+            <tr>
+                <td class="info">URL</td>
+                <td colspan="3" class="form-inline">
+                    <input type="text" class="form-control">
+                    <button class="btn btn-info">복사</button>
+                </td>
+
+            </tr>
+        </table>
+
+</div>
