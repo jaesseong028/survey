@@ -5,6 +5,7 @@ namespace UBSurvey.Lib
     {
         public string ChanelID;
         public int PageSize;
+        public string SurveyEncyptKey;
       
     }
 }

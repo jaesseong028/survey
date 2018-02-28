@@ -31,11 +31,9 @@ namespace UBSurvey.Controllers.Api
         [HttpGet]
         public JsonResult List(int pageIndex = 1, string title = null, DateTime? startDate = null, DateTime? endDate = null, int? approveStatus = null)
         {
-            DateTime sDate = startDate.HasValue ? startDate.Value : new DateTime(1900, 1, 1);
-            DateTime eDate = endDate.HasValue ? endDate.Value : DateTime.MaxValue;
             long totalCount = 0;
             
-            IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, title, sDate, eDate, approveStatus, out totalCount);
+            IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, title, startDate, endDate, approveStatus, out totalCount);
             return Json(new {success = true, data = surveys, totalCount = totalCount });
         } 
 

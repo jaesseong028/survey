@@ -23,6 +23,7 @@ namespace UBSurvey.Controllers
         }
         public IActionResult Index(int pageIndex = 1/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
+            //string ss =Helpers.GenerateKey(16);
 
             var r = Helpers.HttpGet($"http://192.168.245.101:5000/api/ubsurvey/list{Request.QueryString.ToString()}");
             dynamic d = JsonConvert.DeserializeObject(r.Result);

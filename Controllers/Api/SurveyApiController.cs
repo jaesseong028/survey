@@ -60,12 +60,13 @@ namespace UBSurvey.Controllers.Api
             return Json(new { success = true, data = result });
         } 
 
-          [HttpGet]
+        [HttpGet]
         public JsonResult ExistsUserToken(string channelID, string surveyID, string userToken)
         {
             var result = _repository.ExistsUserToken(channelID, surveyID, userToken);
             return Json(new { success = true, data = result });
         } 
-        
+
+        //             ////////////////////////////////////////////////////////   
     }
 }
