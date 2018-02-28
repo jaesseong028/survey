@@ -177,7 +177,8 @@ namespace UBSurvey.Common
             {
                 if (keys.Contains(key.ToLower()))
                 {
-                    dic.Add(key, namedValues.GetValues(key).First());
+                    if(!string.IsNullOrEmpty(namedValues.GetValues(key).FirstOrDefault()))
+                        dic.Add(key, namedValues.GetValues(key).First());
                 }
 
             }

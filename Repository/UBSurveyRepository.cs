@@ -13,7 +13,7 @@ namespace UBSurvey.Repository
 {
     public interface IUBSurveyRepository
     {
-        IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime startDate, DateTime endDate, int approveStatus, out long totalCount);
+        IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime startDate, DateTime endDate, int? approveStatus, out long totalCount);
         void InsertUBSurvey(UBSurveyInfo contact);
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
@@ -36,13 +36,14 @@ namespace UBSurvey.Repository
             _context.UBSurveys.InsertOne(contact);
         }
 
-        public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime startDate, DateTime endDate, int approveStatus, out long totalCount)
+        public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime startDate, DateTime endDate, int? approveStatus, out long totalCount)
         {
             var _filterDef = Builders<UBSurveyInfo>.Filter.Empty;
 
             _filterDef &= Builders<UBSurveyInfo>.Filter.Gte(t => t.StartDate, startDate);
             _filterDef &= Builders<UBSurveyInfo>.Filter.Lte(t => t.EndDate, endDate);
-            _filterDef &= Builders<UBSurveyInfo>.Filter.Eq(t => t.ApproveStatus, approveStatus);
+            if(approveStatus.HasValue)
+                _filterDef &= Builders<UBSurveyInfo>.Filter.Eq(t => t.ApproveStatus, approveStatus.Value);
 
             if(!string.IsNullOrEmpty(title))
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Regex(t => t.Title, title);

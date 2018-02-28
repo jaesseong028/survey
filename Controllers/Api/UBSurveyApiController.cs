@@ -29,7 +29,7 @@ namespace UBSurvey.Controllers.Api
         const string PAGEINDEXKEY = "pageIndex";
         const string PAGESIZEKEY = "pageSize";
         [HttpGet]
-        public JsonResult List(int pageIndex = 1, string title = null, DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1)
+        public JsonResult List(int pageIndex = 1, string title = null, DateTime? startDate = null, DateTime? endDate = null, int? approveStatus = null)
         {
             DateTime sDate = startDate.HasValue ? startDate.Value : new DateTime(1900, 1, 1);
             DateTime eDate = endDate.HasValue ? endDate.Value : DateTime.MaxValue;

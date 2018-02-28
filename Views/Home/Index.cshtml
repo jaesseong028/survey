@@ -13,59 +13,51 @@
 <script src="~/js/axios.min.js"></script>
 }
 
-<div id="container"> 
-    <table class="table table-bordered text-center">
+<div id="container" style="display:none"> 
+    <table class="table">
         <tr>
-            <td class="info">제목</td>
-            <td><input type="text" class="form-control" v-model="searchData.title"></td>
-            <td class="info">상태</td>
-            <td>
-                <select class="form-control" v-model="searchData.approveStatus">
-                    <option value=1>승인</option>
-                    <option value=0>미승인</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="info">서비스명</td>
-            <td>
-                유비케어 설문
-            </td>
-            <td class="info" >설문기간</td>
             <td>
                 <div class="form-inline">
-                    <input class="form-control" v-model="searchData.startDate">
-                    ~ <input  class="form-control" v-model="searchData.endDate">
+                    <div class="row">
+                        <div class="form-group">
+                            <input class="form-control" placeholder="시작일" v-model="searchData.startDate">
+                                ~ <input placeholder="종료일" class="form-control" v-model="searchData.endDate">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" v-model="searchData.title" style="width: 350px !important;" placeholder="Search...">
+                        </div>
+                        <div class="form-group">
+                            <button v-on:click=search class="btn btn-info"><span class="glyphicon glyphicon-search"></span> 검색</button>
+                        </div>
+                    </div>
                 </div>
             </td>
         </tr>
     </table>
-    <div style="margin-bottom:15px"><button class="btn btn-success">설문등록</button> <button class="btn btn-info pull-right" v-on:click=search>검색</button></div>
+    <div style="margin-bottom:15px"><button class="btn btn-success">설문등록</button></div>
     <table class="table table-bordered table-hover">
     <tr class="info">
         <th>NO</th>
         <th>설문제목</th>
         <th>기간</th>
-        <th>상태</th>
         <th>참여인원</th>
         <th>삭제</th>
     </tr>
-    <tr v-for="s in surveys">
-        <td>1</td>
-        <td>{{s.title}}</td>
+    <tr v-for="(s, index) in surveys">
+        <td>{{((pager.PageIndex - 1) * 10) + index + 1}}</td>
+        <td><a :href="editActionUrl(s._id)">{{s.title}}</a></td>
         <td>{{s.startDateAndEndDate}}</td>
-        <td>{{s.approveStatusStr}}</td>
         <td>{{s.limitPersonsStr}}</td>
         <td><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
     </tr>     
     </table>
     <center>
     <ul class="pagination text-center">
-        <li v-if="pager.First != null"><a v-bind:href="createActionUrl(pager.First)"><<</a></li>
-        <li v-if="pager.Prev != null"><a v-bind:href="createActionUrl(pager.Prev)"><</a></li>
-        <li v-for="page in pager.Pages"><a v-bind:href="createActionUrl(page)">{{page}}</a></li>
-        <li v-if="pager.Next != null"><a v-bind:href="createActionUrl(pager.Next)">></a></li>
-        <li v-if="pager.Last != null"><a v-bind:href="createActionUrl(pager.Last)">>></a></li>
+        <li v-if="pager.First != null"><a :href="createActionUrl(pager.First)"><<</a></li>
+        <li v-if="pager.Prev != null"><a :href="createActionUrl(pager.Prev)"><</a></li>
+        <li v-for="page in pager.Pages"><a :href="createActionUrl(page)">{{page}}</a></li>
+        <li v-if="pager.Next != null"><a :href="createActionUrl(pager.Next)">></a></li>
+        <li v-if="pager.Last != null"><a :href="createActionUrl(pager.Last)">>></a></li>
     </ul>
     </center>
     {{surveys}}
@@ -79,8 +71,8 @@ var vue = new Vue({
         searchData : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item3)),
         pager : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item2))
     },
-    created : function(){
-        
+    mounted : function(){
+        $("#container").show();
     }, 
     methods : {
         search : function(){
@@ -88,20 +80,21 @@ var vue = new Vue({
             var actionUrl = '/?' + params;
             location.href = actionUrl;
         },
+        editActionUrl : function(_id){
+             return '/home/edit/?surveyid=' + _id;
+        },
         createActionUrl : function(pid){
             var params = $.param(this.searchData);
             return '/?' + params + '&pageindex=' + pid;
         },
         deletesurvey : function(_id){
-        console.log(_id);
-        //headers = {'Content-Type': 'application/json; charset=UTF-8'};
-        axios.post('/api/UBSurvey/delete', {id : _id})
-        .then(function (response) {
-            vue.selectSurvey();
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            axios.post('/api/UBSurvey/delete', {id : _id})
+            .then(function (response) {
+                vue.selectSurvey();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         }
     }
 })
