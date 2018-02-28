@@ -725,6 +725,8 @@ function makeResultJson( pageSetNode ){
 
     if(link == '/survey/Progress')
     {
+        
+        surveyInfo.sendReuslt(resultJson);
         alert("Save");
     }else
     {
@@ -764,9 +766,12 @@ function domReady (){
     try
     {
         var surveyId = document.getElementById('ubSurvey');
-        console.log(strSurvey);
+        
+        parseSurvey = JSON.parse(surveyInfo.strSurvey);
 
-        var surveyJson = strSurvey.survey == undefined ? strSurvey : strSurvey.survey;
+        console.log(surveyInfo);
+
+        var surveyJson = parseSurvey.survey == undefined ? parseSurvey : parseSurvey.survey;
 
         if(('pages' in surveyJson) && ('title' in surveyJson))
         {

@@ -1,4 +1,4 @@
-@model UBSurvey.Models.SurveyInfo;
+@model UBSurvey.Models.V_ProgressInfo;
 
 @{
     ViewData["Title"] = "Progress";
@@ -7,19 +7,35 @@
 }
 
 <link rel="stylesheet" type="text/css" media="screen" href="~/css/Example/main2.css" />
+
 <environment include="Development">
     <script src="~/js/Example/view2.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>        
+    <script src="~/js/axios.min.js"></script>
 </environment>
 <environment include="Production">    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>        
     <script src="~/js/Example/view2.js"></script>
+    <script src="~/js/axios.min.js"></script>
 </environment>
+
 <script>
-    var strSurvey = @Html.Raw(Model.Survey);
+
+    var surveyInfo = {
+        info : '@Model._info',
+        strSurvey : '@Html.Raw(Model.Survey)',
+        sendReuslt : function(result){
+
+            axios.post('/Survey/Complete', { _info : this.info, _surveyResult : result})
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+    };
     
-    // var link = document.location.pathname; 
-    // console.log(link);
-
-
 </script>
 
 
