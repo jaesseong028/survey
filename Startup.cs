@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.WebEncoders;
 using UBSurvey.Lib;
+using UBSurvey.Models;
 using UBSurvey.Repository;
 
 namespace UBSurvey
@@ -36,6 +38,11 @@ namespace UBSurvey
             {
                 options.Level = CompressionLevel.Fastest;
             });
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<UBSurveyInfo, UBSurveyListInfo>();
+            }); 
 
             services.AddOptions();
             services.Configure<DBSettings>(options =>
