@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -34,7 +35,9 @@ namespace UBSurvey.Controllers.Api
             long totalCount = 0;
             
             IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, title, startDate, endDate, approveStatus, out totalCount);
-            return Json(new {success = true, data = surveys, totalCount = totalCount });
+            var wrapperSurveys = Mapper.Map<IEnumerable<UBSurveyInfo>, IEnumerable<UBSurveyListInfo>>(surveys);
+
+            return Json(new {success = true, data = wrapperSurveys, totalCount = totalCount });
         } 
 
         [HttpPost]
@@ -43,6 +46,13 @@ namespace UBSurvey.Controllers.Api
             var result = _repository.RemoveUBSurvey(data["id"].ToString());
             
             return Json(new {success = true, data = result});
+        }
+
+        [HttpPost]
+        public JsonResult Save([FromBody]UBSurveyInfo data)
+        {   
+            _repository.InsertUBSurvey(data);
+            return Json(new {success = true });
         }
     }
 }

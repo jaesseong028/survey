@@ -40,13 +40,11 @@ namespace UBSurvey.Repository
         {
             var _filterDef = Builders<UBSurveyInfo>.Filter.Empty;
 
-            if (startDate.HasValue){
+            if (startDate.HasValue)
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Gte(t => t.StartDate, startDate.Value);
-            }
-
-            if (endDate.HasValue){
-                _filterDef &= Builders<UBSurveyInfo>.Filter.Gte(t => t.EndDate, endDate.Value);
-            }
+                
+            if (endDate.HasValue)
+                _filterDef &= Builders<UBSurveyInfo>.Filter.Lte(t => t.EndDate, endDate.Value);
 
             if(approveStatus.HasValue)
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Eq(t => t.ApproveStatus, approveStatus.Value);

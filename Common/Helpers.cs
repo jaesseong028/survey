@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Newtonsoft.Json;
 
 namespace UBSurvey.Common
 {
@@ -77,6 +78,7 @@ namespace UBSurvey.Common
         public static string AesDecrypt256(string Input, string key)
         {
             Input = HttpUtility.UrlDecode(Input);
+            Input =  Input.Replace(" ", "+");
             RijndaelManaged aes = new RijndaelManaged();
             aes.KeySize = 256;
             aes.BlockSize = 128;
@@ -151,17 +153,15 @@ namespace UBSurvey.Common
            }
         }
 
-        public static async Task<string> HttpPost(string url, params string[] paramValues)
+        public static async Task<string> HttpPost(string url, object model)
         {
            using(var httpClient = new HttpClient())
            {
-                Dictionary<string, string> dic = new Dictionary<string, string>();
-                for(int i = 0; i < paramValues.Length; i = i + 2)
-                {
-                    dic.Add(paramValues[i], paramValues[i + 1]);
-                }
-
-                var response = await httpClient.PostAsync(url, new FormUrlEncodedContent(dic));
+                //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await httpClient.PostAsync(url, new StringContent(
+                    JsonConvert.SerializeObject(model),
+                    Encoding.UTF8,
+                    "application/json"));
                 var contents = await response.Content.ReadAsStringAsync();
 
                 return contents;
@@ -175,7 +175,7 @@ namespace UBSurvey.Common
             Dictionary<string, string> dic = new Dictionary<string, string>();
             foreach(string key in namedValues.Keys)
             {
-                if (keys.Contains(key.ToLower()))
+                if (key != null && keys.Contains(key.ToLower()))
                 {
                     if(!string.IsNullOrEmpty(namedValues.GetValues(key).FirstOrDefault()))
                         dic.Add(key, namedValues.GetValues(key).First());

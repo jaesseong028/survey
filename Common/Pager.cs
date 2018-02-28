@@ -26,15 +26,16 @@ namespace UBSurvey.Common
                 throw new ArgumentException($"잘못된 파라미터 입니다. Argument : totalCount");
 
             PagerModel p = new PagerModel();
-            if (current > 1)
-            {
-                p.First = 1;
-                p.Prev = (((current / pageSize) - 1) * pageSize) + 1;
-            }
-
+         
             var lastPage = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); 
             var currentFirstPage = (int)(Math.Floor((current - 1) / 10.0) * 10) + 1;
             var lastFirstPage = (int)(Math.Floor((lastPage - 1) / 10.0) * 10) + 1;
+
+            if (current > 10)
+            {
+                p.First = 1;
+                p.Prev = currentFirstPage - 10;
+            }
 
             if (lastPage != 0 && current > lastPage)
                 throw new ArgumentException($"잘못된 파라미터 입니다. 전체 페이지 수 보다 높습니다.");
