@@ -77,7 +77,7 @@ namespace UBSurvey.Common
 
         public static string AesDecrypt256(string Input, string key)
         {
-            Input = HttpUtility.UrlDecode(Input);
+            Input = HttpUtility.UrlDecode(Input.Replace("+", " "));
             RijndaelManaged aes = new RijndaelManaged();
             aes.KeySize = 256;
             aes.BlockSize = 128;
