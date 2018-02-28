@@ -16,7 +16,6 @@ namespace UBSurvey.Models
     public class SurveyResult 
     {
         public string UserToken { get; set; }
-        
-        public dynamic resultList { get; set;}
+        public dynamic Values { get; set;}
     }
 }

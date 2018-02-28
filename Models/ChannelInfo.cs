@@ -6,7 +6,11 @@ namespace UBSurvey.Models
 {
     public class ChannelInfo
     {
-        public ObjectId _id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string _id { get; set; }
+
         public string ServiceName { get; set;}
+        public string EncryptKey {get;set;}
     }
 }

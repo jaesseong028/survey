@@ -25,8 +25,6 @@ namespace UBSurvey.Models
         public DateTime StartDate { get; set;}
         [JsonIgnore]
         public DateTime EndDate { get; set;}
-
-
         public string ApproveStatusStr { get { return ((UbSurveyApprove)((int)ApproveStatus)).getEnumDescription(); }}
         public string StartDateAndEndDate { get { return $"{StartDate.ToString("yyyy-MM-dd")}~{EndDate.ToString("yyyy-MM-dd")}"; }}
         public string LimitPersonsStr { get { return $"{LimitPersons} 명"; }}

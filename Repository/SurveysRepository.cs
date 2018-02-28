@@ -19,6 +19,10 @@ namespace UBSurvey.Repository
         SurveyInfo GetSurvey(string channelID, string surveyID);
         bool UpdateSurvey(ObjectId Id, SurveyInfo item);
         bool RemoveSurvey(ObjectId Id);
+        bool UpdateSurveyResult (string suerveyID, SurveyResult result);
+        string GetChannelEncryptKey (string channelId);
+        int GetSurveyResultCount (string suerveyID);
+        bool ExistsUserToken (string suerveyID, string userToken);
     } 
     
 
@@ -55,6 +59,50 @@ namespace UBSurvey.Repository
                 = _context.Surveys.ReplaceOne(n => n._id.Equals(Id), item, new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
                 && actionResult.ModifiedCount > 0;
+        }
+
+        public bool UpdateSurveyResult (string suerveyID, SurveyResult result)
+        {
+            var data = _context.Surveys.AsQueryable().Where(p => p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
+
+            if (result == null || data == null)
+                return false;
+
+            data._surveyResult.Append(result);
+
+            ReplaceOneResult actionResult 
+                = _context.Surveys.ReplaceOne(p => p._id.Equals(new ObjectId(suerveyID)), data, new UpdateOptions { IsUpsert = true });
+
+            return actionResult.IsAcknowledged
+                && actionResult.ModifiedCount > 0;
+        }
+
+        public string GetChannelEncryptKey (string channelId)
+        {
+            var data = _context.Channels.AsQueryable().Where(p => p._id.Equals(new ObjectId(channelId))).FirstOrDefault();
+            if(data == null)
+                return null;
+
+            return data.EncryptKey;
+        }
+        public int GetSurveyResultCount (string suerveyID)
+        {
+            var data = _context.Surveys.AsQueryable().Where(p => p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
+
+            if (data == null)
+                return 0;
+
+            return data._surveyResult.Count();
+        }
+
+        public bool ExistsUserToken (string suerveyID, string userToken)
+        {
+            var data = _context.Surveys.AsQueryable().Where(p => p._id.Equals(new ObjectId(suerveyID))).FirstOrDefault();
+
+            if (data == null)
+                return false;
+
+            return data._surveyResult.Any(q=> q.UserToken == userToken);
         }
     }
 }

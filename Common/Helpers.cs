@@ -141,7 +141,7 @@ namespace UBSurvey.Common
         private static readonly HttpClient client = new HttpClient();
 
 
-        public static async Task<string> HttpPost(string url)
+        public static async Task<string> HttpGet(string url)
         {
            using(var httpClient = new HttpClient())
            {
