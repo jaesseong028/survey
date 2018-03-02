@@ -26,7 +26,7 @@ namespace UBSurvey.Controllers
         {
             // ///////////////////////////////
             // 임시 파라미터
-            val = "CreateDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a8fccc17622f83fe899c6ec&userToken=CCCC";
+            val = "CreateDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a966daa3cffd28f8c770b40&userToken=CCCC";
             channelID = "5a8fb4200ad8963fa4242cb2";
             val = Helpers.AesEncrypt256(val,"#ltqdcpk$)#!_no1");
             string temp = "?val=" + val + "&" + "ChannelID=" + channelID;
@@ -42,9 +42,6 @@ namespace UBSurvey.Controllers
             // Confirm Parameter 
             //NameValueCollection qscoll =  HttpUtility.ParseQueryString(Request.QueryString.ToString());
             NameValueCollection qscoll =  HttpUtility.ParseQueryString(temp);
-            Console.WriteLine(val);
-            Console.WriteLine(qscoll["val"]);
-            Console.WriteLine(HttpUtility.UrlDecode(val));
 
             qscoll = Validation.ConfirmParam(qscoll, encryptKey);
             var surveyInfo = _repository.GetSurvey(qscoll["ChannelID"],qscoll["SurveyID"]);
