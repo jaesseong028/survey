@@ -51,15 +51,45 @@
             <button class="btn btn-danger pull-right" >삭제</button>
             <button class="btn btn-danger pull-right" >마감</button>
         </div>
+        <hr>
         <table class="table table-bordered text-center">
             <tr>
                 <td class="info">URL</td>
                 <td colspan="3" class="form-inline">
-                    <input type="text" class="form-control">
-                    <button class="btn btn-info">복사</button>
+                        <input type="text" class="form-control">
+                        <button class="btn btn-info pull-right ">복사</button>
+                    </div>
                 </td>
 
             </tr>
         </table>
-
 </div>
+
+<script>
+    var vue = new Vue({
+        el: '#container',
+        data:{
+
+        },
+        methods : {
+            delete : function(){
+                alert('삭제');
+            },
+            save : function(){
+                alert('저장');
+            },
+            finish : function(){
+                alert('마감');
+            },
+            register: function(){
+                alert('설문등록');
+            }
+
+        }
+
+
+
+    });
+
+
+</script>

@@ -71,12 +71,9 @@ namespace UBSurvey.Repository
             if (result == null || data == null)
                 return false;
 
-<<<<<<< HEAD
             var bsonDoc = result.ToBsonDocument();
-            data._surveyResult.Append(bsonDoc);
-=======
-            data._surveyResult = data._surveyResult.Append(result);
->>>>>>> 6b565f5c7bd52238d77b725e690d1ae303b0f0b6
+            data._surveyResult = data._surveyResult.Append(bsonDoc);
+
 
             ReplaceOneResult actionResult 
                 = _context.Surveys.ReplaceOne(p => p._channelID == channelID && p._id.Equals(new ObjectId(suerveyID)), data, new UpdateOptions { IsUpsert = true });
