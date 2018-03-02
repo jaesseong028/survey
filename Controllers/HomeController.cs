@@ -10,15 +10,19 @@ using Newtonsoft.Json.Linq;
 using UBSurvey.Common;
 using UBSurvey.Lib;
 using UBSurvey.Models;
+using UBSurvey.Repository;
 
 namespace UBSurvey.Controllers
 {
     public class HomeController : Controller
     {   
+        private readonly IUBSurveyRepository _repository;
+
         private readonly IOptions<GlobalVariable> _globalVariable;
 
-        public HomeController(IOptions<GlobalVariable> globalVariable)
+        public HomeController(IUBSurveyRepository repository, IOptions<GlobalVariable> globalVariable)
         {
+            _repository = repository;
             _globalVariable =  globalVariable;
         }
         public IActionResult Index(int pageIndex = 1/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
@@ -52,8 +56,14 @@ namespace UBSurvey.Controllers
 
 
         // //////////////////////////////////// ///
-        public IActionResult Edit()
+        public IActionResult Edit(string surveyid)
         {
+            if( surveyid != null)
+            {
+                var info = _repository.GetUBSurvey(surveyid);
+                return View(info);
+            }
+
 
             return View();
         }
