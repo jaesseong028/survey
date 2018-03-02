@@ -18,14 +18,13 @@ namespace UBSurvey.Common
     {
         public static PagerModel GetPageModel(int current, int pageSize, int totalCount)
         {
-            if (current < 1)
-                throw new ArgumentException($"잘못된 파라미터 입니다. Argument : current");
-            if (pageSize < 1)
-                throw new ArgumentException($"잘못된 파라미터 입니다. Argument : pageSize");
-            if (totalCount < 0)
-                throw new ArgumentException($"잘못된 파라미터 입니다. Argument : totalCount");
-
             PagerModel p = new PagerModel();
+            if (current < 1)
+                return p;
+            if (pageSize < 1)
+                return p;
+            if (totalCount < 0)
+                return p;
          
             var lastPage = (totalCount / pageSize) + (totalCount % pageSize == 0 ? 0 : 1); 
             var currentFirstPage = (int)(Math.Floor((current - 1) / 10.0) * 10) + 1;
@@ -36,9 +35,6 @@ namespace UBSurvey.Common
                 p.First = 1;
                 p.Prev = currentFirstPage - 10;
             }
-
-            if (lastPage != 0 && current > lastPage)
-                throw new ArgumentException($"잘못된 파라미터 입니다. 전체 페이지 수 보다 높습니다.");
 
             if (lastFirstPage > 0 && currentFirstPage != lastFirstPage)
             {

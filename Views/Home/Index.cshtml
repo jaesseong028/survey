@@ -55,12 +55,12 @@
     <ul class="pagination text-center">
         <li v-if="pager.First != null"><a :href="createActionUrl(pager.First)"><<</a></li>
         <li v-if="pager.Prev != null"><a :href="createActionUrl(pager.Prev)"><</a></li>
-        <li v-for="page in pager.Pages"><a :href="createActionUrl(page)">{{page}}</a></li>
+        <li v-for="page in pager.Pages" :class="{active : pager.PageIndex == page }"><a :href="createActionUrl(page)">{{page}}</a></li>
         <li v-if="pager.Next != null"><a :href="createActionUrl(pager.Next)">></a></li>
         <li v-if="pager.Last != null"><a :href="createActionUrl(pager.Last)">>></a></li>
     </ul>
     </center>
-    {{surveys}}
+    <!-- {{surveys}} -->
 </div>
 
 <script type="text/javascript">
@@ -91,7 +91,12 @@ var vue = new Vue({
     methods : {
         search : function(){
             var params = $.param(this.searchData);
-            var actionUrl = '/?' + params;
+            if(params) {
+                var actionUrl = '/?pageindex=' + vue.pager.PageIndex;
+            }else{
+                 var actionUrl = '/?' + params + '&pageindex=' + vue.pager.PageIndex;
+            }
+            
             location.href = actionUrl;
         },
         editActionUrl : function(_id){
@@ -102,6 +107,9 @@ var vue = new Vue({
             return '/?' + params + '&pageindex=' + pid;
         },
         deletesurvey : function(_id){
+            if(!confirm('해당 설문을 삭제 하시겠습니까?')){
+                return;
+            }
             axios.post('/api/UBSurvey/delete', {id : _id})
             .then(function (response) {
                 if(response.data.success){

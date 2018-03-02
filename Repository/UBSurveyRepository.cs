@@ -38,6 +38,11 @@ namespace UBSurvey.Repository
 
         public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount)
         {
+            if(currentPage < 1)
+            {
+               totalCount = 0;
+               return Enumerable.Empty<UBSurveyInfo>();
+            }
             var _filterDef = Builders<UBSurveyInfo>.Filter.Empty;
 
             if (startDate.HasValue)

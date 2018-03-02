@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web;
@@ -35,7 +36,11 @@ namespace UBSurvey.Controllers.Api
             long totalCount = 0;
             
             IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, title, startDate, endDate, approveStatus, out totalCount);
-            var wrapperSurveys = Mapper.Map<IEnumerable<UBSurveyInfo>, IEnumerable<UBSurveyListInfo>>(surveys);
+            IEnumerable<UBSurveyListInfo> wrapperSurveys =  Enumerable.Empty<UBSurveyListInfo>();
+            if(surveys.FirstOrDefault() != null)
+            {
+                wrapperSurveys = Mapper.Map<IEnumerable<UBSurveyInfo>, IEnumerable<UBSurveyListInfo>>(surveys);
+            }
 
             return Json(new {success = true, data = wrapperSurveys, totalCount = totalCount });
         } 
