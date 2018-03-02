@@ -287,122 +287,101 @@ Vue.component('skip-com', {
     template: '\
 <div>\
     <div class="modal-items">\
-            <span class="row">\
-                <div class="form-group">\
-                    <div class="col-md-6">\
-                        <div class="dropdown text-left">\
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">답변추가\
-                            <span class="caret"></span></button>\
-                            <ul class="dropdown-menu">\
-                                <template v-for="c in settings.choices">\
-                                    <li><a href="#" v-on:click="addChoice(c)">{{c}}</a></li>\
+        <span class="row">\
+            <div class="col-md-12">\
+                <div class="text-left">\
+                    <div class="form-horizontal" v-for="c in settings.choices">\
+                        <div class="form-group">\
+                            <label for="input1" class="col-lg-1 control-label">{{c}}</label>\
+                            <div class="col-lg-11">\
+                                <select class="col-md-8" class="form-control" v-on:change="onChange($event, c)">\
+                                    <option selected disabled>---선택---</option>\
+                                    <option v-for="q in questions" :value=q.name>{{q.title}}</option>\
+                                </select>\
+                            </div>\
+                            <div class="quesion-nowarp">\
+                                <template v-for="s in skip" v-if="s.choice == c">\
+                                    <span class="skip-question" v-for="(q, index) in s.skipQuestionNames">\
+                                        {{getTitle(q)}} <span class="btn btn-default btn-xs" v-on:click="deleteQuestion(s, index)">x</span>\
+                                    </span>\
                                 </template>\
-                                <li v-if="settings.is_other">\
-                                    <a href="#" v-on:click="addChoice(settings.other_text)">{{settings.other_text}}</a>\
-                                </li>\
-                            </ul>\
-                            <button class="btn btn-danger" v-on:click=deleteChoice>삭제</button>\
+                            </div>\
                         </div>\
                     </div>\
-                    <div class="col-md-6">\
-                        <div class="dropdown text-left">\
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">질문추가\
-                            <span class="caret"></span></button>\
-                            <ul class="dropdown-menu">\
-                                <template v-for="q in questions">\
-                                    <li><a href="#" v-on:click="addQuestion(q)">{{q}}</a></li>\
+                    <div class="form-horizontal" v-if="settings.is_other">\
+                        <div class="form-group">\
+                            <label for="input1" class="col-lg-1 control-label">{{settings.other_text}}</label>\
+                            <div class="col-lg-11">\
+                                <select class="col-md-8" class="form-control" v-on:change="onChange($event, settings.other_text)">\
+                                    <option selected disabled>---선택---</option>\
+                                    <option v-for="q in questions" :value=q.name>{{q.title}}</option>\
+                                </select>\
+                            </div>\
+                            <div class="quesion-nowarp">\
+                                <template v-for="s in skip" v-if="s.choice == settings.other_text">\
+                                    <span class="skip-question" v-for="(q, index) in s.skipQuestionNames">\
+                                        {{getTitle(q)}} <span class="btn btn-default btn-xs" v-on:click="deleteQuestion(s, index)">x</span>\
+                                    </span>\
                                 </template>\
-                            </ul>\
-                            <button class="btn btn-danger" v-on:click=deleteQuestion>삭제</button>\
+                            </div>\
                         </div>\
                     </div>\
-                </div>\
-            </span>\
-            <span class="row">\
-                <div class="form-group">\
-                    <div class="col-md-6">\
-                        <select name="sometext" multiple="multiple" v-model="choiceSelected" class="chosen-select form-control" size="12">\
-                            <option disable v-if="skip.choices.length == 0">답변을 선택하세요.</option>\
-                            <template v-for="c in skip.choices">\
-                                <option>{{c}}</option>\
-                            </template>\
-                        </select>\
-                    </div>\
-                    <div class="col-md-6">\
-                        <select name="sometext" multiple="multiple" v-model="questionSelected" class="chosen-select form-control" size="12">\
-                            <option disable v-if="skip.skipQuestionNames.length == 0">질문을 선택하세요.</option>\
-                            <template v-for="sq in skip.skipQuestionNames">\
-                                <option>{{sq}}</option>\
-                            </template>\
-                        </select>\
-                    </div>\
-                </div>\
-            </span>\
-    </div>\
-    <div class="modal-bottom">\
-        <span class="row">\
-             ※ 좌측에 있는 답을 선택 하였을 경우 우측의 질문은 선택 불가능 합니다.\
-        </span>\
-        <span class="row">\
-            <div>\
-                <div class="col-sm-12">\
-                    <button class="btn btn-info" v-on:click=regist>확인</button>\
-                    <button class="btn btn-secondary" v-on:click=layerClose>취소</button>\
                 </div>\
             </div>\
         </span>\
     </div>\
+    <span class="row">\
+    <div>\
+        <div class="col-sm-12">\
+            <button class="btn btn-info" v-on:click=regist>확인</button>\
+            <button class="btn btn-secondary" v-on:click=layerClose>취소</button>\
+        </div>\
+    </div>\
+    </span>\
 </div>',
     data: function () { return { skip : JSON.parse(JSON.stringify(this.settingInfo)), choiceSelected : [], questionSelected : []} },
     props: { settingInfo : { type : Object }, settings : { type : Array} },
     computed : {
         questions : function() {
-            var survery = this.$root.survey;
+            var surveryPage = this.$root.selectPage;
             var dropData = [];
-            for (var p=0; p < survery.pages.length; p++) {
-                for (var e=0; e< survery.pages[p].elements.length; e++) {
-                    if(this.settings !== survery.pages[p].elements[e]){
-                        dropData.push (survery.pages[p].elements[e].name);
-                    }
+            for (var e=0; e< surveryPage.elements.length; e++) {
+                if(surveryPage.elements[e] != this.$root.settings){
+                    dropData.push ({name : surveryPage.elements[e].name, title : surveryPage.elements[e].title});
                 }
             }
             return dropData;
         }
     },
     methods : {
-        addQuestion : function(q) {
-            if (this.skip.skipQuestionNames.indexOf(q) == -1){
-                this.skip.skipQuestionNames.push(q);
-            }
+        getTitle(qustionName){
+            var surveryPage = this.$root.selectPage;
+            var qEle = _.find(surveryPage.elements, function(ele){ return ele.name == qustionName}); 
+            if(qEle != undefined)
+                return qEle.title;
         },
-        deleteQuestion : function() {
-            for(var q = 0; q < this.questionSelected.length; q++) {
-                var idx = this.skip.skipQuestionNames.indexOf(this.questionSelected[q]);
-                if(idx != -1) {
-                    this.skip.skipQuestionNames.splice(idx, 1);
+        onChange : function(obj, item){
+            var ctl = $(obj.target);
+            var q = ctl.val();
+            ctl.val('---선택---').attr("selected", "selected");
+            var skipData = _.find(this.skip, function(sq){ return sq.choice == item}); 
+            //[{"choice" : "의사랑", "skipQuestionNames":["question4"]}]
+            if (skipData == undefined) {
+                this.skip.push({choice : item, skipQuestionNames : [q]});
+            }else{
+                if(skipData.skipQuestionNames.indexOf(q) == -1){
+                    skipData.skipQuestionNames.push(q);
                 }
             }
         },
-        addChoice : function(q) {
-            if (this.skip.choices.indexOf(q) == -1){
-                this.skip.choices.push(q);
+        deleteQuestion : function(skipInfo, index) {
+            skipInfo.skipQuestionNames.splice(index, 1);
+            if(skipInfo.skipQuestionNames.length == 0){
+                this.skip.splice(this.skip.indexOf(skipInfo), 1);
             }
-        },
-        deleteChoice : function() {
-            for(var q = 0; q < this.choiceSelected.length; q++) {
-                var idx = this.skip.choices.indexOf(this.choiceSelected[q]);
-                if(idx != -1) {
-                    this.skip.choices.splice(idx, 1);
-                }
-            }
+
         },
         regist : function() {
-
-            if (this.skip.skipQuestionNames.length == 0 || this.skip.choices.length == 0){
-                this.skip.skipQuestionNames = [];
-                this.skip.choices = [];
-            }
-            
             EventBus.$emit('layerClose', this.skip);
         }, 
         layerClose : function () {

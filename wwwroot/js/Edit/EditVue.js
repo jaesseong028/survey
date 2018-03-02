@@ -40,6 +40,7 @@ var vue = new Vue({
         settings : null,
         layerPopupOpened : false,
         layerPostObj : null,
+        qustionLastNameIndex : 1,
         focusedQeustionName : '', // 
         survey: { 
             title : '',
@@ -148,7 +149,26 @@ var vue = new Vue({
         edit : function (el) {
             this.settings = el;
         },
+        getMaxQustions : function(){
+            var arr = [];
+            for (var p=0; p < this.survey.pages.length; p++) {
+                for (var e=0; e<this.survey.pages[p].elements.length; e++) {
+                    var i = parseInt(this.survey.pages[p].elements[e].name.replace(this.GlobalValues.question, ""));
+                    arr.push(i);
+                }
+            }
+
+            if (arr.length == 0){
+                return 1;
+            }
+
+            return  Math.max.apply(null, arr) + 1;
+        },
         emptyName : function(subOtType) {
+
+            if (subOtType == this.GlobalValues.question) {
+                return this.GlobalValues.question + (this.qustionLastNameIndex++);
+            }
             var arr = [];
             var inc = 0;
 
@@ -162,11 +182,6 @@ var vue = new Vue({
             for (var p=0; p < this.survey.pages.length; p++) {
                 if (subOtType == this.GlobalValues.page) {
                     putInArray(arr, this.survey.pages[p].name, subOtType);
-                }
-                if (subOtType == this.GlobalValues.question) {
-                    for (var e=0; e<this.survey.pages[p].elements.length; e++) {
-                        putInArray(arr, this.survey.pages[p].elements[e].name, subOtType);
-                    }
                 }
             }
 
@@ -204,24 +219,21 @@ var vue = new Vue({
                     if ('skip' in s.pages[p].elements[e]) {
                         if (s.pages[p].elements[e].value instanceof Array) {
                             for (var i = 0; i < s.pages[p].elements[e].value.length; i++) {
-                                // if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value[i]) > -1) {
-                                //     //"skip" :[{"choice" : "예", "skipQuestionNames":["question3"]}, {"choice" : "아니오", "skipQuestionNames":["question4", "question5"]}],
-                                //     for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
-                                //         if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
-                                //             skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
-                                //         }
-                                //     }
-                                // }
+                                var skipQues = _.find(s.pages[p].elements[e].skip, function(sq){ return sq.choice == s.pages[p].elements[e].value[i]}); 
+                                if (skipQues != undefined) {
+                                    for(var sm = 0; sm < skipQues.skipQuestionNames.length; sm++){
+                                        skip_Questions.push(skipQues.skipQuestionNames[sm]);
+                                    }
+                                }
                             }
                         } else {
-                            // if (s.pages[p].elements[e].skip.choices.indexOf(s.pages[p].elements[e].value) > -1) {
-                            //     for(var sm = 0; sm < s.pages[p].elements[e].skip.skipQuestionNames.length; sm++){
-                            //         if(skip_Questions.indexOf(s.pages[p].elements[e].skip.skipQuestionNames[sm]) == -1){
-                            //             skip_Questions.push(s.pages[p].elements[e].skip.skipQuestionNames[sm]);
-                            //         }
-                            //     }
-                            // }
-                        }
+                            var skipQues = _.find(s.pages[p].elements[e].skip, function(sq){ return sq.choice == s.pages[p].elements[e].value}); 
+                            if (skipQues != undefined) {
+                                for(var sm = 0; sm < skipQues.skipQuestionNames.length; sm++){
+                                        skip_Questions.push(skipQues.skipQuestionNames[sm]);
+                                    }
+                                }
+                            }
                     }
                 }
             }
@@ -234,10 +246,13 @@ var vue = new Vue({
             if(data != null)
                 this.survey = JSON.parse(localStorage.getItem('survey'));
         }
-        
+
+        this.qustionLastNameIndex = this.getMaxQustions();
         this.selectPage = this.survey.pages[0];
         this.settings = this.survey.pages[0];
+        
         $("#container").show();
+
     },
     created : function() {
         EventBus.$on('edit', this.edit);
