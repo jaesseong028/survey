@@ -365,7 +365,6 @@ Vue.component('skip-com', {
             var q = ctl.val();
             ctl.val('---선택---').attr("selected", "selected");
             var skipData = _.find(this.skip, function(sq){ return sq.choice == item}); 
-            //[{"choice" : "의사랑", "skipQuestionNames":["question4"]}]
             if (skipData == undefined) {
                 this.skip.push({choice : item, skipQuestionNames : [q]});
             }else{
