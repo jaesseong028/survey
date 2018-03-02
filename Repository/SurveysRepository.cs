@@ -71,7 +71,7 @@ namespace UBSurvey.Repository
             if (result == null || data == null)
                 return false;
 
-            data._surveyResult.Append(result);
+            data._surveyResult = data._surveyResult.Append(result);
 
             ReplaceOneResult actionResult 
                 = _context.Surveys.ReplaceOne(p => p._channelID == channelID && p._id.Equals(new ObjectId(suerveyID)), data, new UpdateOptions { IsUpsert = true });
