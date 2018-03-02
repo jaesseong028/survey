@@ -52,7 +52,13 @@ var vue = new Vue({
     methods: {
         prev : function(){
             window.open("", "popup_window", "width=800, height=900, scrollbars=no");
-            var s = { survey : this.survey };
+            var copySurvey = JSON.parse(JSON.stringify(this.survey));
+            for (var p=0; p < copySurvey.pages.length; p++) {
+                for (var e=0; e <copySurvey.pages[p].elements.length; e++) { 
+                    delete copySurvey.pages[p].elements[e].value;
+                }
+            }
+            var s = { survey : copySurvey };
             $("#surveyJson").val(JSON.stringify(s));
             $("#myform").submit();
         },
