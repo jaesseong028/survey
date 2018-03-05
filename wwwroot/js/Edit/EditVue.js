@@ -19,6 +19,9 @@ var vue = new Vue({
     <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">\
         <input type="hidden" id="surveyJson" name="survey" value="" />\
     </form>\
+    <form id="saveform" name="myform" method="post">\
+        <input type="hidden" id="saveSurveyJson" name="survey" value="" />\
+    </form>\
     <div class="row content">\
         <div class="col-sm-1 sidenav leftnav">\
             <leftnav-com></leftnav-com>\
@@ -53,6 +56,11 @@ var vue = new Vue({
     methods: {
         prev : function(){
             window.open("", "popup_window", "width=800, height=900, scrollbars=no");
+            var s = this.getCleanSurvey();    
+            $("#surveyJson").val(JSON.stringify(s));
+            $("#myform").submit();
+        },
+        getCleanSurvey : function(){
             var copySurvey = JSON.parse(JSON.stringify(this.survey));
             for (var p=0; p < copySurvey.pages.length; p++) {
                 for (var e=0; e <copySurvey.pages[p].elements.length; e++) { 
@@ -60,12 +68,13 @@ var vue = new Vue({
                 }
             }
             var s = { survey : copySurvey };
-            $("#surveyJson").val(JSON.stringify(s));
-            $("#myform").submit();
+
+            return s;
         },
         save : function(){
-            //console.log('dd');
-            
+            var s = this.getCleanSurvey();    
+            $("#saveSurveyJson").val(JSON.stringify(s));
+            $("#saveform").submit();
         },
         getQueryString : function(key){
             return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
@@ -74,8 +83,10 @@ var vue = new Vue({
             var self = this;
             var surveryID = this.getQueryString('surveyid');
             var channelID = this.getQueryString('channelid');
+            var retUrl = this.getQueryString('retUrl');
 
             if (surveryID && channelID) {
+                $("#saveform").attr('action', retUrl);
                 axios.get('/api/survey/GetSurvey?surveyID=' + surveryID + '&channelID=' + channelID)
                 .then(function (res) {
                     if (res.data.data.survey != null) {
