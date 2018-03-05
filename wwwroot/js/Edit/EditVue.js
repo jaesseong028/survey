@@ -42,12 +42,13 @@ var vue = new Vue({
         layerPostObj : null,
         qustionLastNameIndex : 1,
         focusedQeustionName : '', // 
-        survey: { 
+        survey: {
             title : '',
+            logo_text : '',
             pages: [ 
                 { name: "page1", elements: [] }
             ]
-        },
+        } ,
     },
     methods: {
         prev : function(){
@@ -64,14 +65,33 @@ var vue = new Vue({
         },
         save : function(){
             //console.log('dd');
-            axios.post('/api/survey/save', this.survey)
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            
         },
+        getQueryString : function(key){
+            return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
+        },
+        getSurvey : function(){
+            var self = this;
+            var surveryID = this.getQueryString('surveyid');
+            var channelID = this.getQueryString('channelid');
+
+            if (surveryID && channelID) {
+                axios.get('/api/survey/GetSurvey?surveyID=' + surveryID + '&channelID=' + channelID)
+                .then(function (res) {
+                    if (res.data.data.survey != null) {
+                        /// 왜 this 를 변수에 담아야지 업데이트 돼니? ㅡㅡ
+                        self.survey = res.data.data.survey;
+                        self.qustionLastNameIndex = self.getMaxQustions();
+                        self.selectPage = self.survey.pages[0];
+                        self.settings = self.survey.pages[0];
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+        },
+      
         changedPage : function (index) {
             this.selectPage = this.survey.pages[index];
             this.settings = this.survey.pages[index];
@@ -253,11 +273,13 @@ var vue = new Vue({
                 this.survey = JSON.parse(localStorage.getItem('survey'));
         }
 
+        this.getSurvey();
         this.qustionLastNameIndex = this.getMaxQustions();
         this.selectPage = this.survey.pages[0];
         this.settings = this.survey.pages[0];
         
         $("#container").show();
+        
 
     },
     created : function() {

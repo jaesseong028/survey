@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.WebEncoders;
+using Microsoft.AspNetCore.Http;
 using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
+
+
+
 
 namespace UBSurvey
 {
@@ -77,7 +82,6 @@ namespace UBSurvey
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseResponseCompression();
-            
             
             if (env.IsDevelopment())
             {

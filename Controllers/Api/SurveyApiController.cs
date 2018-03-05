@@ -2,15 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UBSurvey.Common;
 using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
@@ -43,8 +46,10 @@ namespace UBSurvey.Controllers.Api
         public JsonResult GetSurvey(string channelID, string surveyID)
         {
             var data = _repository.GetSurvey(channelID, surveyID);
-            return Json(new { success = true, data = data});
+            return Json(new { data = data, success = true});
         } 
+
+       
 
         [HttpGet]
         public JsonResult RemoveSurvey(string channelID, string surveyID)
@@ -73,4 +78,5 @@ namespace UBSurvey.Controllers.Api
         
        
     }
+
 }
