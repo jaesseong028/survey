@@ -88,7 +88,7 @@
             register: function(){
                 var s = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
                 var c = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
-                var r = 'aaa';
+                var r = 'returl=http://192.168.245.106:5000/Home/SurveyEditSave';
                 
                 window.open('@Url.Action("index","Edit",new {surveyid="'+ s + '",channelid="'+ c +'",returl="'+ r +'"})','_blank');
             },
@@ -105,10 +105,6 @@
 
 
     });
-
-    function onlyNumber(obj) {
-        
-    }
 
 </script>
 

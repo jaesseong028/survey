@@ -74,9 +74,9 @@ namespace UBSurvey.Controllers
             return View(info);
         }
 
-        [HttpPost]
         public IActionResult SurveyEditSave([FromBody]JObject survey)
         {
+            ViewBag.value = survey;
             
             return View();
         } 
