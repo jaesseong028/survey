@@ -21,6 +21,7 @@ namespace UBSurvey.Models
         public virtual int LimitPersons { get; set;}
         public virtual DateTime StartDate { get; set;}
         public virtual DateTime EndDate { get; set;}
+        
     }
 
     public class UBSurveyListInfo : UBSurveyInfo
