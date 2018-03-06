@@ -13,7 +13,7 @@ var vue = new Vue({
         </template>\
         <template v-else-if="NotiMessage == GlobalValues.emptyString">\
             <div class="row logo-container">\
-                <h2><label class="col-sm-1 text-right">{{survey.logo_text}}</label></h2>\
+                <h2><label class="col-sm-1 text-right">{{survey.description}}</label></h2>\
                 <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
                 <div style="padding-top:20px; padding-left:-20px" class="col-sm-4 text-left">\
                     <label class="btn btn-success" v-on:click=save> 저장 </label>\
@@ -23,7 +23,7 @@ var vue = new Vue({
             <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">\
                 <input type="hidden" id="surveyJson" name="survey" value="" />\
             </form>\
-            <form id="saveform" name="myform" method="post">\
+            <form id="saveform" name="myform" method="post" target="popup_window">\
                 <input type="hidden" id="saveSurveyJson" name="survey" value="" />\
             </form>\
             <div class="row content">\
@@ -35,7 +35,7 @@ var vue = new Vue({
                 </div>\
                 <div class="col-sm-2 sidenav">\
                     <settinglayout-com :settings=settings></settinglayout-com>\
-                    <!--{{survey|pretty}}-->\
+                    {{survey|pretty}}\
                 </div>\
             </div>\
             <modallayout-com></modallayout-com>\
@@ -53,7 +53,6 @@ var vue = new Vue({
         focusedQeustionName : '', // 
         survey: {
             title : '',
-            logo_text : '',
             pages: [ 
                 { name: "page1", elements: [] }
             ]
@@ -62,23 +61,27 @@ var vue = new Vue({
     methods: {
         prev : function(){
             window.open("", "popup_window", "width=800, height=900, scrollbars=no");
-            var s = this.getCleanSurvey();    
+            var s = this.getCleanSurveyValue();    
             $("#surveyJson").val(JSON.stringify(s));
             $("#myform").submit();
         },
-        getCleanSurvey : function(){
+        getCleanSurveyValue : function(){
             var copySurvey = JSON.parse(JSON.stringify(this.survey));
             for (var p=0; p < copySurvey.pages.length; p++) {
-                for (var e=0; e <copySurvey.pages[p].elements.length; e++) { 
-                    delete copySurvey.pages[p].elements[e].value;
+                for (var e=0; e <copySurvey.pages[p].elements.length; e++) {
+                    if (copySurvey.pages[p].elements[e].type == this.GlobalValues.control.checkbox || copySurvey.pages[p].elements[e].type == this.GlobalValues.control.multiText) {
+                        copySurvey.pages[p].elements[e].value = [];
+                    }
+                    else {
+                        copySurvey.pages[p].elements[e].value = null;
+                    }
                 }
             }
             var s = { survey : copySurvey };
-
             return s;
         },
         save : function(){
-            var s = this.getCleanSurvey();    
+            var s = this.getCleanSurveyValue();    
             $("#saveSurveyJson").val(JSON.stringify(s));
             $("#saveform").submit();
         },
@@ -103,22 +106,24 @@ var vue = new Vue({
                     url : '/api/survey/GetSurvey',
                     data : {'surveyID' : surveryID, 'channelID' : channelID},
                     success : function (res) {
-                        console.log(res);
                         if (!res.success) {
                             self.NotiMessage = '데이터를 조회 할 수 없습니다.';
                         } else {
-                            if (res.data.survey != null) {
-                                self.survey = res.data.survey;
-                                self.qustionLastNameIndex = self.getMaxQustions();
-                                self.selectPage = self.survey.pages[0];
-                                self.settings = self.survey.pages[0];
-                            }
+                            vue.$nextTick(function() {
+                                if (res.data.survey != null) {
+                                    self.survey = res.data.survey;
+                                    self.qustionLastNameIndex = self.getMaxQustions();
+                                    self.selectPage = self.survey.pages[0];
+                                    self.settings = self.survey.pages[0];
+                                }
+                            });
                         }           
                     }, 
                     error: function(XMLHttpRequest, textStatus, errorThrown) { 
                         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
                     }   
                 });
+                
             }
         },
         changedPage : function (index) {
@@ -296,19 +301,20 @@ var vue = new Vue({
         }
     },
     mounted  : function() {
-        this.getSurvey();
-        // if (('localStorage' in window) && window['localStorage'] != null) {
-        //     var data = JSON.parse(localStorage.getItem('survey'));
-        //     if(data != null)
-        //         this.survey = JSON.parse(localStorage.getItem('survey'));
-        // }
-        
-        this.qustionLastNameIndex = this.getMaxQustions();
-        this.selectPage = this.survey.pages[0];
-        this.settings = this.survey.pages[0];
-        
-        $("#container").show();
-        
+        this.$nextTick(function() {
+            this.getSurvey();
+            // if (('localStorage' in window) && window['localStorage'] != null) {
+            //     var data = JSON.parse(localStorage.getItem('survey'));
+            //     if(data != null)
+            //         this.survey = JSON.parse(localStorage.getItem('survey'));
+            // }
+            
+            this.qustionLastNameIndex = this.getMaxQustions();
+            this.selectPage = this.survey.pages[0];
+            this.settings = this.survey.pages[0];
+            
+            $("#container").show();
+        });
 
     },
     created : function() {

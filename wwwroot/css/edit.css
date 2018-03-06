@@ -18,13 +18,15 @@ body, html{ height:102%; }
 .tab fieldset .question { font-size: 1.2em; font-weight: bold; padding-left:2px}
 .tab fieldset .desc { border: 1px solid #c1c1c1; margin:0px 5px 10px; padding: 10px; }
 .tab fieldset .required {color: red; vertical-align:text-top}
+.tab fieldset .q-contain {width: 98%; float: left;}
 .tab .labelfor {background: #eee; padding: 9px; border: 1px solid #ccc; margin-left: 0; position: relative;left: 1px; top: -40px;-webkit-transition: background-color .17s linear;}
 .tab .labelfor span.sel { color:#87B2F1 }
 .tab .labelfor span {color: #C1C1C1}
 .tab .plus {padding: 8px; border: 1px solid #eee; margin-left: -1px; position: relative;left: -2px; top: -39px;color:#87B2F1; }
 .tab fieldset.setting {border:1px solid #87B2F1;}
 .tabgroup {display: none;}
-
+.page-title{ font-size: 1.5em; font-weight: bold;}
+.page-desc{ border: 1px solid #c1c1c1; margin:3px 0px 14px; padding: 10px; width:100% }
 .up_down { -webkit-appearance: none;cursor: pointer;border: 0; }
 
 

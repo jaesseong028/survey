@@ -18,6 +18,7 @@ namespace UBSurvey.Repository
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
         bool UpdateUBSurvey(string _id, UBSurveyInfo item);
+        IEnumerable<UBServiceInfo> GetServices();
     }    
 
     public class UBSurveyRepository : IUBSurveyRepository
@@ -83,6 +84,13 @@ namespace UBSurvey.Repository
                 = _context.UBSurveys.ReplaceOne(n => n._id.Equals(new ObjectId(_id)), item, new UpdateOptions { IsUpsert = true });
             return actionResult.IsAcknowledged
                 && actionResult.ModifiedCount > 0;
+        }   
+
+
+        public IEnumerable<UBServiceInfo> GetServices()
+        {
+            var filter = Builders<UBServiceInfo>.Filter.Empty;
+            return _context.UBServices.Find(filter).ToEnumerable();
         }   
     }
 }

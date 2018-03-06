@@ -39,6 +39,11 @@
         else if (this.el.text_width) {
             return this.el.text_width;
         } 
+    }, 
+    convertHtml : function(desc){            
+        if(desc)
+            return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
+        return '';
     }
 }
 
@@ -52,6 +57,10 @@ Vue.component('tab-page-com', {
                 <label class="labelfor cur" v-bind:class="{setting: page === settings}" :for="getPageID(page.name, index)">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>\
                 <label class="plus cur" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>\
                 <div class="tab-container">\
+                    <div class="row" v-if="page.title || page.description">\
+                        <label v-if="page.title" class="col-sm-12 text-left page-title">{{page.title}}</label>\
+                        <label v-if="page.description" class="col-sm-12 text-left page-desc" v-html="convertHtml(page.description)"></label>\
+                    </div>\
                     <controllayout-com  :skipQuestions=skipQuestions :elements=page.elements :settings=settings></controllayout-com>\
                 </div>\
             </div>\
@@ -80,7 +89,8 @@ Vue.component('tab-page-com', {
         }, 
         getPageID : function(name, index){
             return name + '_' + index;
-        }
+        },
+        convertHtml : this.methods.convertHtml,
     }
 });
 
@@ -108,7 +118,7 @@ Vue.component('controllayout-com', {
     <div v-sortable="{onUpdate : onUpdate, animation : 200 }">\
         <div v-for="(el, index) in elements" class="row" :key="el.name">\
             <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
-                <div style="width: 95%; float: left;" :style="skipStyle(el)">\
+                <div class="q-contain" style="" :style="skipStyle(el)">\
                     <label class="required" v-if="el.is_required">＊</label><label class="question">{{el.title}}</label>\
                     <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
                     <choice-list-com v-if="el.type === GlobalValues.control.radio || el.type === GlobalValues.control.checkbox" :el=el></choice-list-com>\
@@ -138,9 +148,7 @@ Vue.component('controllayout-com', {
         edit :  function (el) {
             EventBus.$emit('edit', el);
         }, 
-        convertHtml : function(desc){            
-            return desc.replace(/(?:\r\n|\r|\n)/g, "<br>");
-        }
+        convertHtml : this.methods.convertHtml,
     }
 })
 
@@ -239,10 +247,10 @@ Vue.component('text-com', {
 Vue.component('multi-text-com', {
     template: '\
     <div>\
-        <template v-for="(item, index) in el.items">\
+        <template v-for="(item, i) in el.items">\
             <div :style="col_style">\
                 <label>{{item.item}}</label>\
-                <input type="text" :name=el.name :maxlength="el.max_len" :id="uid" :size="textWidth" v-model=el.value[index] class="form-control non-width" />\
+                <input type="text" :name=el.name :maxlength="el.max_len" :id="uid" :size="textWidth" v-model="el.value[i]" class="form-control non-width" />\
             </div>\
         </template>\
     </div>',
