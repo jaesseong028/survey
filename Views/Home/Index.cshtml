@@ -10,7 +10,6 @@
 <environment include="Production">    
     <script src="~/js/vue.min.js"></script>
 </environment>
-<script src="~/js/axios.min.js"></script>
 }
 
 <div id="container" style="display:none"> 
@@ -110,14 +109,18 @@ var vue = new Vue({
             if(!confirm('해당 설문을 삭제 하시겠습니까?')){
                 return;
             }
-            axios.post('/api/UBSurvey/delete', {id : _id})
-            .then(function (response) {
-                if(response.data.success){
-                    vue.search();
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
+
+            $.ajax({
+                type : 'POST',
+                url : '/api/UBSurvey/delete',
+                data : {id : _id},
+                success : function (res) {
+                    if(res.success){
+                        vue.search();
+                }, 
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    console.log("Status: " + textStatus +  "Error: " + errorThrown);
+                }   
             });
         }
     }

@@ -13,7 +13,10 @@ namespace UBSurvey.Models
         {
             _surveyResult = Enumerable.Empty<SurveyResult>();
         }
-        public ObjectId _id { get; set; }
+        
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string _id { get; set; }
         public string _channelID { get; set;}
         public dynamic Survey { get; set;}
         public IEnumerable<dynamic> _surveyResult { get; set;}

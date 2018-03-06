@@ -354,7 +354,7 @@ Vue.component('skip-com', {
         }
     },
     methods : {
-        getTitle(qustionName){
+        getTitle : function(qustionName){
             var surveryPage = this.$root.selectPage;
             var qEle = _.find(surveryPage.elements, function(ele){ return ele.name == qustionName}); 
             if(qEle != undefined)

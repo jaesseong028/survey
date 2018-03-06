@@ -35,7 +35,7 @@ var vue = new Vue({
                 </div>\
                 <div class="col-sm-2 sidenav">\
                     <settinglayout-com :settings=settings></settinglayout-com>\
-                    {{NotiMessage|pretty}}\
+                    <!--{{survey|pretty}}-->\
                 </div>\
             </div>\
             <modallayout-com></modallayout-com>\
@@ -98,21 +98,26 @@ var vue = new Vue({
             }
 
             if (surveryID && channelID) {
-                axios.get('/api/survey/GetSurvey?surveyID=' + surveryID + '&channelID=' + channelID)
-                .then(function (res) {
-                    if(!res.data.success){
-                        self.NotiMessage = '데이터를 조회 할 수 없습니다.';
-                    }else{
-                        if (res.data.data.survey != null) {
-                            self.survey = res.data.data.survey;
-                            self.qustionLastNameIndex = self.getMaxQustions();
-                            self.selectPage = self.survey.pages[0];
-                            self.settings = self.survey.pages[0];
-                        }
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
+                $.ajax({
+                    type : 'GET',
+                    url : '/api/survey/GetSurvey',
+                    data : {'surveyID' : surveryID, 'channelID' : channelID},
+                    success : function (res) {
+                        console.log(res);
+                        if (!res.success) {
+                            self.NotiMessage = '데이터를 조회 할 수 없습니다.';
+                        } else {
+                            if (res.data.survey != null) {
+                                self.survey = res.data.survey;
+                                self.qustionLastNameIndex = self.getMaxQustions();
+                                self.selectPage = self.survey.pages[0];
+                                self.settings = self.survey.pages[0];
+                            }
+                        }           
+                    }, 
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                    }   
                 });
             }
         },
