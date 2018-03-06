@@ -58,14 +58,36 @@ namespace UBSurvey.Controllers
         // //////////////////////////////////// ///
         public IActionResult Edit(string surveyid)
         {
+            UBSurveyInfo info = new UBSurveyInfo()
+            {   
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now
+            };
+
             if( surveyid != null)
             {
-                var info = _repository.GetUBSurvey(surveyid);
+                info = _repository.GetUBSurvey(surveyid);
                 return View(info);
             }
 
 
-            return View();
+            return View(info);
         }
+        // [HttpGet]
+        // public IActionResult SurveyEditSave([FromBody]JObject survey)
+        // {
+        //     ViewBag.value = survey;
+            
+        //     return View();
+        // } 
+         [HttpPost]
+        public IActionResult SurveyEditSave([FromBody]JObject survey)
+        {
+            //ViewBag.value = survey;
+            
+            return View();
+        } 
+
+
     }
 }
