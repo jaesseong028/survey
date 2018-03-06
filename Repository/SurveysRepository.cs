@@ -49,7 +49,10 @@ namespace UBSurvey.Repository
                 return null;
             var data =  _context.Surveys.AsQueryable()
                 .Where(p => p._id.Equals(o) && p._channelID == channelID).FirstOrDefault();
-
+            
+            if (data == null)
+                return null;
+                
             data.Survey = Helpers.ToDynamic(data.Survey);
             
             return data;

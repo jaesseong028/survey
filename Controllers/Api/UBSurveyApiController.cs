@@ -31,11 +31,11 @@ namespace UBSurvey.Controllers.Api
         const string PAGEINDEXKEY = "pageIndex";
         const string PAGESIZEKEY = "pageSize";
         [HttpGet]
-        public JsonResult List(int pageIndex = 1, string title = null, DateTime? startDate = null, DateTime? endDate = null, int? approveStatus = null)
+        public JsonResult List(string channelID, int pageIndex = 1, string title = null, DateTime? startDate = null, DateTime? endDate = null, int? approveStatus = null)
         {
             long totalCount = 0;
             
-            IEnumerable<UBSurveyInfo> surveys = _repository.List(pageIndex, _globalVariable.Value.PageSize, title, startDate, endDate, approveStatus, out totalCount);
+            IEnumerable<UBSurveyInfo> surveys = _repository.List(channelID, pageIndex, _globalVariable.Value.PageSize, title, startDate, endDate, approveStatus, out totalCount);
             IEnumerable<UBSurveyListInfo> wrapperSurveys =  Enumerable.Empty<UBSurveyListInfo>();
             if(surveys.FirstOrDefault() != null)
             {
@@ -56,6 +56,9 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult Save([FromBody]UBSurveyInfo data)
         {   
+            if (string.IsNullOrEmpty(data.ChannelID))
+                return Json(new {success = false, message = "ChannelID 가 존재 하지 않습니다." });    
+                
             _repository.InsertUBSurvey(data);
             return Json(new {success = true });
         }

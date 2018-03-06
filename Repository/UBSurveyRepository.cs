@@ -13,7 +13,7 @@ namespace UBSurvey.Repository
 {
     public interface IUBSurveyRepository
     {
-        IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount);
+        IEnumerable<UBSurveyInfo> List(string channelID, int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount);
         void InsertUBSurvey(UBSurveyInfo contact);
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
@@ -36,7 +36,7 @@ namespace UBSurvey.Repository
             _context.UBSurveys.InsertOne(contact);
         }
 
-        public IEnumerable<UBSurveyInfo> List(int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount)
+        public IEnumerable<UBSurveyInfo> List(string channelID, int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount)
         {
             if(currentPage < 1)
             {

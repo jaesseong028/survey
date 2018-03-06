@@ -16,6 +16,7 @@ namespace UBSurvey.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public virtual string _id { get; set; }
         public virtual string SurveyID { get; set; }
+        public virtual string ChannelID { get; set; }
         public virtual short ApproveStatus { get; set;}
         public virtual string Title { get; set;}
         public virtual int LimitPersons { get; set;}
@@ -33,6 +34,8 @@ namespace UBSurvey.Models
         public override DateTime StartDate { get; set;}
         [JsonIgnore]
         public override DateTime EndDate { get; set;}
+        [JsonIgnore]
+        public override string ChannelID { get; set;}
         public string ApproveStatusStr { get { return ((UbSurveyApprove)((int)ApproveStatus)).getEnumDescription(); }}
         public string StartDateAndEndDate { get { return $"{StartDate.ToString("yyyy-MM-dd")}~{EndDate.ToString("yyyy-MM-dd")}"; }}
         public string LimitPersonsStr { get { return $"{LimitPersons} 명"; }}
