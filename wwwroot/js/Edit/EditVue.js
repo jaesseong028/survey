@@ -7,35 +7,40 @@
 var EventBus = new Vue();
 var vue = new Vue({
     template : '\
-<div class="container-fluid text-center">\
-    <div class="row logo-container">\
-        <h2><label class="col-sm-1 text-right">{{survey.logo_text}}</label></h2>\
-        <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
-        <div style="padding-top:20px; padding-left:-20px" class="col-sm-4 text-left">\
-            <label class="btn btn-success" v-on:click=save> 저장 </label>\
-            <label class="btn btn-info" v-on:click=prev>미리보기</label>\
-        </div>\
-    </div>\
-    <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">\
-        <input type="hidden" id="surveyJson" name="survey" value="" />\
-    </form>\
-    <form id="saveform" name="myform" method="post">\
-        <input type="hidden" id="saveSurveyJson" name="survey" value="" />\
-    </form>\
-    <div class="row content">\
-        <div class="col-sm-1 sidenav leftnav">\
-            <leftnav-com></leftnav-com>\
-        </div>\
-        <div class="col-sm-9 text-left">\
-            <tab-page-com :survey=survey :skipQuestions=skipQuestions :settings=settings :select-page=selectPage></tab-page-com>\
-        </div>\
-        <div class="col-sm-2 sidenav">\
-            <settinglayout-com :settings=settings></settinglayout-com>\
-            <!--{{survey|pretty}}-->\
-        </div>\
-    </div>\
-    <modallayout-com></modallayout-com>\
-</div>',
+    <div class="container-fluid text-center">\
+        <template v-if="NotiMessage != GlobalValues.emptyString">\
+            <div>{{NotiMessage}}</div>\
+        </template>\
+        <template v-else-if="NotiMessage == GlobalValues.emptyString">\
+            <div class="row logo-container">\
+                <h2><label class="col-sm-1 text-right">{{survey.logo_text}}</label></h2>\
+                <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
+                <div style="padding-top:20px; padding-left:-20px" class="col-sm-4 text-left">\
+                    <label class="btn btn-success" v-on:click=save> 저장 </label>\
+                    <label class="btn btn-info" v-on:click=prev>미리보기</label>\
+                </div>\
+            </div>\
+            <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">\
+                <input type="hidden" id="surveyJson" name="survey" value="" />\
+            </form>\
+            <form id="saveform" name="myform" method="post">\
+                <input type="hidden" id="saveSurveyJson" name="survey" value="" />\
+            </form>\
+            <div class="row content">\
+                <div class="col-sm-1 sidenav leftnav">\
+                    <leftnav-com></leftnav-com>\
+                </div>\
+                <div class="col-sm-9 text-left">\
+                    <tab-page-com :survey=survey :skipQuestions=skipQuestions :settings=settings :select-page=selectPage></tab-page-com>\
+                </div>\
+                <div class="col-sm-2 sidenav">\
+                    <settinglayout-com :settings=settings></settinglayout-com>\
+                    {{NotiMessage|pretty}}\
+                </div>\
+            </div>\
+            <modallayout-com></modallayout-com>\
+        </template>\
+    </div>',
     el: '#container',
     data: {
         template: '',
@@ -43,6 +48,7 @@ var vue = new Vue({
         settings : null,
         layerPopupOpened : false,
         layerPostObj : null,
+        NotiMessage : '',
         qustionLastNameIndex : 1,
         focusedQeustionName : '', // 
         survey: {
@@ -84,17 +90,25 @@ var vue = new Vue({
             var surveryID = this.getQueryString('surveyid');
             var channelID = this.getQueryString('channelid');
             var retUrl = this.getQueryString('retUrl');
+            if (retUrl) {
+                $("#saveform").attr('action', retUrl);
+            }else{
+                self.NotiMessage = '잘못된 데이터 입니다. : retUrl 파라미터가 존재 하지 않습니다.';
+                return;
+            }
 
             if (surveryID && channelID) {
-                $("#saveform").attr('action', retUrl);
                 axios.get('/api/survey/GetSurvey?surveyID=' + surveryID + '&channelID=' + channelID)
                 .then(function (res) {
-                    if (res.data.data.survey != null) {
-                        /// 왜 this 를 변수에 담아야지 업데이트 돼니? ㅡㅡ
-                        self.survey = res.data.data.survey;
-                        self.qustionLastNameIndex = self.getMaxQustions();
-                        self.selectPage = self.survey.pages[0];
-                        self.settings = self.survey.pages[0];
+                    if(!res.data.success){
+                        self.NotiMessage = '데이터를 조회 할 수 없습니다.';
+                    }else{
+                        if (res.data.data.survey != null) {
+                            self.survey = res.data.data.survey;
+                            self.qustionLastNameIndex = self.getMaxQustions();
+                            self.selectPage = self.survey.pages[0];
+                            self.settings = self.survey.pages[0];
+                        }
                     }
                 })
                 .catch(function (error) {
@@ -102,7 +116,6 @@ var vue = new Vue({
                 });
             }
         },
-      
         changedPage : function (index) {
             this.selectPage = this.survey.pages[index];
             this.settings = this.survey.pages[index];
@@ -242,9 +255,9 @@ var vue = new Vue({
         }
     }, 
     updated  : function() {
-        if (('localStorage' in window) && window['localStorage'] != null){
-            localStorage.setItem('survey', JSON.stringify(this.survey));
-        }
+        // if (('localStorage' in window) && window['localStorage'] != null){
+        //     localStorage.setItem('survey', JSON.stringify(this.survey));
+        // }
     },
     computed : {
         skipQuestions : function (){ 
@@ -278,13 +291,13 @@ var vue = new Vue({
         }
     },
     mounted  : function() {
-        if (('localStorage' in window) && window['localStorage'] != null) {
-            var data = JSON.parse(localStorage.getItem('survey'));
-            if(data != null)
-                this.survey = JSON.parse(localStorage.getItem('survey'));
-        }
-
         this.getSurvey();
+        // if (('localStorage' in window) && window['localStorage'] != null) {
+        //     var data = JSON.parse(localStorage.getItem('survey'));
+        //     if(data != null)
+        //         this.survey = JSON.parse(localStorage.getItem('survey'));
+        // }
+        
         this.qustionLastNameIndex = this.getMaxQustions();
         this.selectPage = this.survey.pages[0];
         this.settings = this.survey.pages[0];

@@ -46,10 +46,10 @@ namespace UBSurvey.Controllers.Api
         public JsonResult GetSurvey(string channelID, string surveyID)
         {
             var data = _repository.GetSurvey(channelID, surveyID);
+            if (data == null)
+                return Json(new { data = data, success = false, message = "조회불가" });
             return Json(new { data = data, success = true});
         } 
-
-       
 
         [HttpGet]
         public JsonResult RemoveSurvey(string channelID, string surveyID)
