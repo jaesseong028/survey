@@ -23,7 +23,7 @@ var vue = new Vue({
             <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">\
                 <input type="hidden" id="surveyJson" name="survey" value="" />\
             </form>\
-            <form id="saveform" name="myform" method="post" target="popup_window">\
+            <form id="saveform" name="myform" method="post">\
                 <input type="hidden" id="saveSurveyJson" name="survey" value="" />\
             </form>\
             <div class="row content">\
@@ -35,7 +35,7 @@ var vue = new Vue({
                 </div>\
                 <div class="col-sm-2 sidenav">\
                     <settinglayout-com :settings=settings></settinglayout-com>\
-                    {{survey|pretty}}\
+                    <!--{{survey|pretty}}-->\
                 </div>\
             </div>\
             <modallayout-com></modallayout-com>\
