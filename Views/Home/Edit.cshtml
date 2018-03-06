@@ -86,11 +86,11 @@
                 alert('저장');
             },
             register: function(){
-                var s = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
-                var c = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
-                var r = 'returl=http://192.168.245.106:5000/Home/SurveyEditSave';
-                
-                window.open('@Url.Action("index","Edit",new {surveyid="'+ s + '",channelid="'+ c +'",returl="'+ r +'"})','_blank');
+                var ps = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
+                var pc = '5a8fb4200ad8963fa4242cb2';
+                var pr = 'http://192.168.245.106:5000/Home/SurveyEditSave';
+                var actionUrl = '@Html.Raw(@Url.Action("index","Edit"))' + '?surveyid=' + ps + '&channelid=' + pc + '&retUrl=' + pr;
+                window.open(actionUrl,'_blank');
             },
             onlyNumber : function(e){
                 var obj = this;
