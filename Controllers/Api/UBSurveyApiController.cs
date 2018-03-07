@@ -58,9 +58,7 @@ namespace UBSurvey.Controllers.Api
         {   
             if (string.IsNullOrEmpty(data.ChannelID))
                 return Json(new {success = false, message = "ChannelID 가 존재 하지 않습니다." });    
-                
-            if (data == null)
-                return Json(new {success = isSuccess });    
+            
             bool isSuccess = _repository.UpSertUBSurvey(data);
             return Json(new {success = isSuccess });
         }

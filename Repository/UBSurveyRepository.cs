@@ -14,7 +14,7 @@ namespace UBSurvey.Repository
     public interface IUBSurveyRepository
     {
         IEnumerable<UBSurveyInfo> List(string channelID, int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount);
-        void UpSertUBSurvey(UBSurveyInfo contact);
+        bool UpSertUBSurvey(UBSurveyInfo contact);
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
         //bool UpdateUBSurvey(UBSurveyInfo item);
