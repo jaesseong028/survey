@@ -12,7 +12,7 @@ var vue = new Vue({
             <div>{{NotiMessage}}</div>\
         </template>\
         <template v-else-if="NotiMessage == GlobalValues.emptyString">\
-            <div class="row logo-container">\
+            <div class="logo-container">\
                 <h2><label class="col-sm-1 text-right">{{survey.description}}</label></h2>\
                 <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
                 <div style="padding-top:20px; padding-left:-20px" class="col-sm-4 text-left">\
@@ -26,8 +26,8 @@ var vue = new Vue({
             <form id="saveform" name="myform" method="post">\
                 <input type="hidden" id="saveSurveyJson" name="survey" value="" />\
             </form>\
-            <div class="row content">\
-                <div class="col-sm-2 sidenav leftnav">\
+            <div class="content">\
+                <div class="col-sm-2 leftnav">\
                     <leftnav-com></leftnav-com>\
                 </div>\
                 <div class="col-sm-8 controlContainer text-left">\
