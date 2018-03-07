@@ -27,13 +27,13 @@ var vue = new Vue({
                 <input type="hidden" id="saveSurveyJson" name="survey" value="" />\
             </form>\
             <div class="row content">\
-                <div class="col-sm-1 sidenav leftnav">\
+                <div class="col-sm-2 sidenav leftnav">\
                     <leftnav-com></leftnav-com>\
                 </div>\
-                <div class="col-sm-9 text-left">\
+                <div class="col-sm-8 controlContainer text-left">\
                     <tab-page-com :survey=survey :skipQuestions=skipQuestions :settings=settings :select-page=selectPage></tab-page-com>\
                 </div>\
-                <div class="col-sm-2 sidenav">\
+                <div class="col-sm-2 rightnav">\
                     <settinglayout-com :settings=settings></settinglayout-com>\
                     <!--{{survey|pretty}}-->\
                 </div>\

@@ -14,10 +14,10 @@ namespace UBSurvey.Repository
     public interface IUBSurveyRepository
     {
         IEnumerable<UBSurveyInfo> List(string channelID, int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount);
-        void InsertUBSurvey(UBSurveyInfo contact);
+        bool UpSertUBSurvey(UBSurveyInfo contact);
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
-        bool UpdateUBSurvey(string _id, UBSurveyInfo item);
+        //bool UpdateUBSurvey(UBSurveyInfo item);
         IEnumerable<UBServiceInfo> GetServices();
     }    
 
@@ -30,11 +30,14 @@ namespace UBSurvey.Repository
             _context = new UBSurveyContext(settings);
         }
 
-        public void InsertUBSurvey(UBSurveyInfo contact)
+        public bool UpSertUBSurvey(UBSurveyInfo contact)
         {
-             contact.StartDate = DateTime.SpecifyKind(contact.StartDate, DateTimeKind.Utc);
-             contact.EndDate = DateTime.SpecifyKind(contact.EndDate, DateTimeKind.Utc);
-            _context.UBSurveys.InsertOne(contact);
+            contact.StartDate = DateTime.SpecifyKind(contact.StartDate, DateTimeKind.Utc);
+            contact.EndDate = DateTime.SpecifyKind(contact.EndDate, DateTimeKind.Utc);
+
+            ReplaceOneResult actionResult = _context.UBSurveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
+            return actionResult.IsAcknowledged
+                && actionResult.ModifiedCount > 0;
         }
 
         public IEnumerable<UBSurveyInfo> List(string channelID, int currentPage, int pageSize, string title, DateTime? startDate, DateTime? endDate, int? approveStatus, out long totalCount)
