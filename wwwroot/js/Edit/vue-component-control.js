@@ -54,14 +54,11 @@ Vue.component('tab-page-com', {
             <div class="tab">\
                 <input type="radio" id="surveyID" name="tabgroup" class="tabgroup" v-on:click="surveyinfo" :checked="survey === settings" />\
                 <label class="labelfor cur" v-bind:class="{setting: survey === settings}" for="surveyID">설문설정 <span v-bind:class="{sel: survey === settings}"  class="glyphicon glyphicon-cog"></span> </label>\
+                <div class="tab-container"></div>\
             </div>\
         </div>\
         <div v-for="(page, index) in survey.pages">\
             <div class="tab">\
-                <!--<label class="labelfor survey cur" v-bind:class="{setting: survey === settings}"  v-on:click="surveyinfo">설문설정 <span v-bind:class="{sel: survey === settings}" class="glyphicon glyphicon-cog"></span></label>-->\
-                \
-                \
-                \
                 <input type="radio" :id="getPageID(page.name, index)" name="tabgroup" class="tabgroup" v-on:click="changedPage(index)" :checked="page === settings" />\
                 <label class="labelfor cur" v-bind:class="{setting: page === settings}" :for="getPageID(page.name, index)">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>\
                 <label class="plus cur" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>\
