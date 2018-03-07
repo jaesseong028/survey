@@ -82,10 +82,15 @@ namespace UBSurvey.Controllers
             
         //     return View();
         // } 
+
+        // public class aaa {
+        //     public  survey{get;set;}
+        // }
          [HttpPost]
-        public IActionResult SurveyEditSave([FromBody]JObject survey)
+        public IActionResult SurveyEditSave(string survey)
         {
-            //ViewBag.value = survey;
+            //Request.QueryString.ToString();
+            ViewBag.survey = survey;
             
             return View();
         } 

@@ -88,8 +88,13 @@
                 var ps = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
                 var pc = '5a8fb4200ad8963fa4242cb2';
                 var pr = 'http://192.168.245.106:5000/Home/SurveyEditSave';
+
                 var actionUrl = '@Html.Raw(@Url.Action("index","Edit"))' + '?surveyid=' + ps + '&channelid=' + pc + '&retUrl=' + pr;
-                window.open(actionUrl,'_blank');
+                
+                var child = window.open(actionUrl,'_blank');
+                if( child.opener == null)
+                    child.opener = self;
+
             },
             onlyNumber : function(e){
                 var obj = this;
@@ -99,11 +104,17 @@
             }
         }
         
+        
          
 
 
 
     });
+
+    function test(val)
+        {
+            alert(val);
+        }
 
 </script>
 
