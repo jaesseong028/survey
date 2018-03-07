@@ -19,7 +19,6 @@ namespace UBSurvey.Controllers
     public class EditController : Controller
     {
         
-
         [HttpGet]
         public IActionResult Index ()
         {

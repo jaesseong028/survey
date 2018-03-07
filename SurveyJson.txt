@@ -10,8 +10,8 @@
 		"pages": [
 		{
 			"name": "page1",
-			"description" : "설명1",
 			"title" : "타이틀1",
+			"description" : "설명1",
 			"elements": [
 			{
 				"type": "text",

@@ -32,14 +32,16 @@ namespace UBSurvey.Controllers
             // for(int i =0; i < 100; i++)
             // {
             //     UBSurveyInfo s = new UBSurveyInfo();
-            //     s.SurveyID = "5a8fccc17622f83fe899c6ec";
+            //     s.SurveyID = "5a9e290f2713a086b8a57a7b";
             //     s.Title = "title" + i.ToString();
+            //     s.ChannelID = "5a8fb4200ad8963fa4242cb2";
             //     s.ApproveStatus = (short)(new Random()).Next(0, 1);
             //     s.StartDate = DateTime.Now.AddDays((new Random()).Next(-100, 100));
             //     s.EndDate = s.StartDate.AddDays((new Random()).Next(0, 100));
             //     s.LimitPersons = (new Random()).Next(0, 1000);
             //     var r1 = Helpers.HttpPost($"http://{site}/api/ubsurvey/save", s);  
             // }
+
             //string ss = Url.Action("/api/ubsurvey/list");
             var r = Helpers.HttpGet($"http://{site}/api/ubsurvey/list{Request.QueryString.ToString()}");
             dynamic d = JsonConvert.DeserializeObject(r.Result);

@@ -9,7 +9,7 @@ Vue.component('settinglayout-com', {
                         <label class="col-md-5">{{option.ko}}</label>\
                         <div class="col-md-7">\
                             <string-setting-com v-if="option.type === Options.types.String" :option=option :settings=settings :property=propertyName></string-setting-com>\
-                            <long-string-setting-com v-if="option.type === Options.types.LongString" :option=option :settings=settings :property=propertyName></long-string-setting-com>\
+                            <long-string-setting-com v-if="option.type === Options.types.LongString" :option=option :settings=settings :ko=option.ko :property=propertyName></long-string-setting-com>\
                             <checkbox-setting-com v-else-if="option.type === Options.types.Boolean" :option=option :settings=settings :property=propertyName></checkbox-setting-com>\
                             <int-setting-com v-else-if="option.type === Options.types.Int" :option=option :settings=settings :property=propertyName></int-setting-com>\
                             <drop-setting-com v-else-if="option.type === Options.types.ShortInt" :option=option :settings=settings :property=propertyName></drop-setting-com>\
@@ -113,10 +113,10 @@ Vue.component('long-string-setting-com', {
             <span class="input-group-addon">수정</span>\
         </a>\
     </div>',
-    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}},
+    props: { option : { type : Object }, property: { type : String}, settings : { type: Object , required : true}, ko : {type:String}},
     methods : {
         layerOpen : function () {
-            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, this.ko  + ' 수정');
+            EventBus.$emit('layerOpen', this.settings, this.property, this.option.type, this.ko + ' 수정');
         }
     },
     computed : {
@@ -270,9 +270,10 @@ Vue.component('modallayout-com', {
         layerClose : function (val) {
             this.opened  = false;
             if (val != null){
-                this.settings[this.property] = val;
+                vue.$set(this.settings, this.property, val);
+                //this.settings[this.property] = val;
                 //vue.$set(this.settings, this.property, val);
-                vue.$forceUpdate(); // 강제 업데이트를 해줘야 함.... 자동으로 observe 하지 않음
+                //vue.$forceUpdate(); // 강제 업데이트를 해줘야 함.... 자동으로 observe 하지 않음
             }
         }
     },
@@ -354,7 +355,7 @@ Vue.component('skip-com', {
         }
     },
     methods : {
-        getTitle(qustionName){
+        getTitle : function(qustionName){
             var surveryPage = this.$root.selectPage;
             var qEle = _.find(surveryPage.elements, function(ele){ return ele.name == qustionName}); 
             if(qEle != undefined)

@@ -11,12 +11,10 @@
 <environment include="Development">
     <script src="~/js/Example/view2.js"></script>
     <script src="~/lib/jquery/dist/jquery.js"></script>        
-    <script src="~/js/axios.min.js"></script>
 </environment>
 <environment include="Production">    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>        
     <script src="~/js/Example/view2.js"></script>
-    <script src="~/js/axios.min.js"></script>
 </environment>
 
 <script>
@@ -25,13 +23,16 @@
         info : '@Model._info',
         strSurvey : '@Html.Raw(Model.Survey)',
         sendReuslt : function(result){
-
-            axios.post('/Survey/Complete', { _info : this.info, _surveyResult : result})
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
+            $.ajax({
+                type : 'POST',
+                url : '/Survey/Complete',
+                data : { _info : this.info, _surveyResult : result},
+                success : function (res) {
+                    console.log(res);
+                }, 
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    console.log("Status: " + textStatus +  "Error: " + errorThrown);
+                }   
             });
         }
     };
