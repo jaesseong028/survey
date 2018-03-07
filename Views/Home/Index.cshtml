@@ -90,11 +90,15 @@ var vue = new Vue({
     methods : {
         search : function(){
             var params = $.param(this.searchData);
-            if(params) {
-                var actionUrl = '/?pageindex=' + vue.pager.PageIndex;
+            var actionUrl = '';
+            console.log(params);
+            if (params == '') {
+                actionUrl = '/?pageindex=' + vue.pager.PageIndex;
             }else{
-                 var actionUrl = '/?' + params + '&pageindex=' + vue.pager.PageIndex;
+                actionUrl = '/?' + params + '&pageindex=' + vue.pager.PageIndex;
             }
+
+            //console.log(actionUrl);
             
             location.href = actionUrl;
         },
