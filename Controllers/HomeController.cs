@@ -58,7 +58,7 @@ namespace UBSurvey.Controllers
 
 
         // //////////////////////////////////// ///
-        public IActionResult Edit(string surveyid)
+        public IActionResult Edit(string surveyid, string channelid)
         {
             UBSurveyInfo info = new UBSurveyInfo()
             {   
