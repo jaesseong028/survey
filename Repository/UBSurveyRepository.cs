@@ -68,8 +68,10 @@ namespace UBSurvey.Repository
             if (!string.IsNullOrEmpty(title))
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Regex(t => t.Title, title);
 
+            var sort = Builders<UBSurveyInfo>.Sort.Descending("_id");
+
             totalCount = _context.UBSurveys.Find(_filterDef).Count();
-            return _context.UBSurveys.Find(_filterDef).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToEnumerable();
+            return _context.UBSurveys.Find(_filterDef).Sort(sort).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToEnumerable();
         }
 
         public bool RemoveUBSurvey(string _id)

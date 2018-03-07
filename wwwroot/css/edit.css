@@ -1,7 +1,7 @@
 body, html{ height:102%; }
 /*  navbar */
 
-.logo-container {margin-top:-10px;}
+.logo-container {margin-top:20px;}
 .navbar { margin-bottom: 0px;}
 
 #container { display: none; }
@@ -20,11 +20,11 @@ body, html{ height:102%; }
 .tab fieldset .desc { border: 1px solid #c1c1c1; margin:0px 5px 10px; padding: 10px; }
 .tab fieldset .required {color: red; vertical-align:text-top}
 .tab fieldset .q-contain {width: 98%; float: left;}
-.tab .labelfor {background: #eee; padding: 9px; border: 1px solid #ccc; margin-left: 0; position: relative;left: 1px; top: -40px;-webkit-transition: background-color .17s linear;}
+.tab .labelfor {background: #eee; padding: 14px; border: 1px solid #ccc; margin-left: 0; position: relative;left: 3px; top: -50px;-webkit-transition: background-color .17s linear;}
 .tab .labelfor span.sel { color:#87B2F1 }
 .tab .labelfor span {color: #C1C1C1}
-.tab .plus {padding: 8px; border: 1px solid #eee; margin-left: -1px; position: relative;left: -2px; top: -39px;color:#87B2F1; }
-.tab fieldset.setting {border:1px solid #87B2F1;}
+.tab .plus {padding: 8px; border: 1px solid #eee; margin-left: -1px; position: relative;left: -2px; top: -44px;color:#87B2F1; }
+.setting {border:1px solid #87B2F1;}
 .tabgroup {display: none;}
 .page-title{ font-size: 1.5em; font-weight: bold;}
 .page-desc{ border: 1px solid #c1c1c1; margin:3px 0px 14px; padding: 10px; width:100% }
@@ -32,9 +32,8 @@ body, html{ height:102%; }
 .controlContainer {padding-left: 11px; padding-right:27px;}
 
 
-.tab-container {max-height:93vh;
-    min-height:90px;position: absolute;top:-1px;width:100%;border: 1px solid #ccc; overflow-y:scroll;display:none; background-color:#f5f9fb } 
-.tab [type=radio]:checked ~ .labelfor {background: white;border-bottom: 1px solid white;z-index: 2;}
+.tab-container {max-height:93vh; right:0;min-height:90px;position: absolute;top:-1px;width:100%;border: 1px solid #ccc; overflow-y:scroll;display:none; background-color:#f5f9fb } 
+.tab [type=radio]:checked ~ .labelfor {background: white;border: 1px solid #14a5e6;border-bottom: 1px solid white;z-index: 2; color:#14a5e6}
 .tab [type=radio]:checked ~ .labelfor ~ .tab-container {z-index: 1;display:block;} 
 
 .rate [type=radio] { display: none;}

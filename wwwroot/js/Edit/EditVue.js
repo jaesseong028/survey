@@ -12,10 +12,11 @@ var vue = new Vue({
             <div>{{NotiMessage}}</div>\
         </template>\
         <template v-else-if="NotiMessage == GlobalValues.emptyString">\
-            <div class="logo-container">\
-                <h2><label class="col-sm-1 text-right">{{survey.description}}</label></h2>\
-                <h4><div class="col-sm-7 text-left">{{survey.title}}</div></h4>\
-                <div style="padding-top:20px; padding-left:-20px" class="col-sm-4 text-left">\
+            <div class="row logo-container">\
+                <div class="col-sm-10 text-left" style="padding-left:15px">\
+                        <h4>{{survey.title}}</h4>\
+                </div>\
+                <div class="col-xs-2">\
                     <label class="btn btn-success" v-on:click=save> 저장 </label>\
                     <label class="btn btn-info" v-on:click=prev>미리보기</label>\
                 </div>\
@@ -132,6 +133,7 @@ var vue = new Vue({
         },
         surveyinfo : function(survey) {
             this.settings = survey;
+            //vue.$set(this, 'settings', survey);
         },
         deleteSetting : function() {
             var pageDeleteAction = "elements" in this.settings && this.selectPage != null;
