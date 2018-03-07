@@ -213,12 +213,12 @@ var vue = new Vue({
             var arr = [];
             for (var p=0; p < this.survey.pages.length; p++) {
                 for (var e=0; e<this.survey.pages[p].elements.length; e++) {
-                    var i = parseInt(this.survey.pages[p].elements[e].name.replace(this.GlobalValues.question, ""));
+                    var i = parseInt(this.survey.pages[p].elements[e].name.toLowerCase().replace(this.GlobalValues.question.toLowerCase(), ""));
                     arr.push(i);
                 }
             }
 
-            if (arr.length == 0){
+            if (arr.length == 0) {
                 return 1;
             }
 

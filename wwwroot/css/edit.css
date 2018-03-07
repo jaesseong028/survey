@@ -8,12 +8,12 @@ body, html{ height:102%; }
 #container { display: none; }
 
 .survey {background:white !important; top:-3px}
-.leftnav {color:#87B2F1; padding: 47px 0;}
-.leftnav p { border-bottom: 1px solid #eee; }
+.leftnav {color:#222222; padding-top: 47px; text-align: left}
+.leftnav p { border-bottom: 1px solid #eee; padding-left:10px }
 /* page tab 처리 */
 .tabs {position: relative;clear: both;margin: 52px -27px 0px -11px;background: white;}
 .tab {float: left; }
-.tab fieldset {border:1px solid white; padding:20px 0px 20px 20px; margin-bottom:10px; background-color: #eee; height: 100%}
+.tab fieldset {background-color:white; border:1px solid #CCC; padding:30px 0px 30px 30px; margin: 9px 9px 4.5px 9px; height: 100%}
 .tab fieldset.setting {border:1px solid #87B2F1;}
 .tab fieldset .question { font-size: 1.2em; font-weight: bold; padding-left:2px}
 .tab fieldset .desc { border: 1px solid #c1c1c1; margin:0px 5px 10px; padding: 10px; }
@@ -30,7 +30,7 @@ body, html{ height:102%; }
 .up_down { -webkit-appearance: none;cursor: pointer;border: 0; }
 
 
-.tab-container {height:90vh;position: absolute;top:-1px;width:100%;right:0;padding:20px;border: 1px solid #ccc; overflow-y:scroll;display:none;} 
+.tab-container {height:90vh;position: absolute;top:-1px;width:100%;right:0;padding:5px 20px 0px 18px;border: 1px solid #ccc; overflow-y:scroll;display:none; background-color:#f5f9fb } 
 .tab [type=radio]:checked ~ .labelfor {background: white;border-bottom: 1px solid white;z-index: 2;}
 .tab [type=radio]:checked ~ .labelfor ~ .tab-container {z-index: 1;display:block;} 
 

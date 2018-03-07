@@ -119,7 +119,7 @@ Vue.component('controllayout-com', {
         <div v-for="(el, index) in elements" class="row" :key="el.name">\
             <fieldset v-on:click="edit(el)" v-bind:class="{setting: el === settings}">\
                 <div class="q-contain" style="" :style="skipStyle(el)">\
-                    <label class="required" v-if="el.is_required">＊</label><label class="question">{{el.title}}</label>\
+                    <label class="question">{{el.title}}</label><span class="required" v-if="el.is_required"> *</span>\
                     <div class="desc" v-show="el.description" v-html="convertHtml(el.description)"></div>\
                     <choice-list-com v-if="el.type === GlobalValues.control.radio || el.type === GlobalValues.control.checkbox" :el=el></choice-list-com>\
                     <text-com v-else-if="el.type === GlobalValues.control.text" :el=el></text-com>\

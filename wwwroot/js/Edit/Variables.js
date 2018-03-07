@@ -1,5 +1,5 @@
 ﻿
-const globalVal = { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : 'comment', multiText : 'multiText' }, Up : 'Up', Down : 'Down', question : 'question', page : 'page', maxCreatePage : 10, emptyString : '' }
+const globalVal = { control : { radio : 'radio', checkbox : 'checkbox', text : 'text', rate : 'rate', comment : 'comment', multiText : 'multiText' }, Up : 'Up', Down : 'Down', question : 'Question', page : 'page', maxCreatePage : 10, emptyString : '' }
 
 options = {
     survey : {
