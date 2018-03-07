@@ -37,9 +37,8 @@ namespace UBSurvey.Controllers.Api
         {
             SurveyInfo s = new SurveyInfo();
             s.Survey = BsonDocument.Parse(survey.ToString());
-            SurveyInfo ret =_repository.UpsertSurvey(s);
-            Console.WriteLine(ret._id);
-            return Json(new { success = ret != null });
+            bool isSuccess =_repository.UpsertSurvey(s);
+            return Json(new { success = isSuccess, data = s });
         } 
 
         [HttpGet]

@@ -15,7 +15,7 @@ namespace UBSurvey.Repository
 {
     public interface ISurveyRepository
     {
-        SurveyInfo UpsertSurvey(SurveyInfo contact);
+        bool UpsertSurvey(SurveyInfo contact);
         SurveyInfo GetSurvey(string channelID, string surveyID);
         bool UpdateSurvey(string channelID, string surveyID, SurveyInfo item);
         bool RemoveSurvey(string channelID, string surveyID);
@@ -35,7 +35,7 @@ namespace UBSurvey.Repository
             _context = new SurveyContext(settings);
         }
 
-        public SurveyInfo UpsertSurvey(SurveyInfo contact)
+        public bool UpsertSurvey(SurveyInfo contact)
         {
             if(string.IsNullOrEmpty(contact._channelID))
                 throw new Exception("_channelID 가 존재 하지 않습니다.");
@@ -44,16 +44,12 @@ namespace UBSurvey.Repository
             if (!string.IsNullOrEmpty(contact._id))
             {
                 ReplaceOneResult actionResult = _context.Surveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
-                bool isSuccess = actionResult.IsAcknowledged
+                return actionResult.IsAcknowledged
                     && actionResult.ModifiedCount > 0;
-
-                if (isSuccess) {
-                    return contact;   
-                }
-                return null;
             }
             _context.Surveys.InsertOne(contact);
-            return contact;
+
+            return true;
         }
 
         public SurveyInfo GetSurvey(string channelID, string surveyID)
