@@ -1,8 +1,4 @@
 
-@{
-    ViewData["Title"] = "Edit Page";
-}
-
 @section Scripts {
 <environment include="Development">
     <script src="~/js/vue.min.js"></script>
@@ -15,12 +11,6 @@
 
 <script>
     var val = '@Html.Raw(ViewData["survey"])';
-    //console.log(val);
-    opener.test(val);
+    opener.sendSurveyJson(val);
     self.close();
-
 </script>
-
-
-
-

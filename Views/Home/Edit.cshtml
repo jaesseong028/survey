@@ -1,4 +1,4 @@
-@model UBSurvey.Models.UBSurveyInfo;
+@model UBSurvey.Models.UBSurveyEditInfo;
 @{
     ViewData["Title"] = "Edit Page";
 }
@@ -39,6 +39,9 @@
             <button class="btn btn-primary pull-right" v-on:click="save" >저장</button>
             <button class="btn btn-danger pull-right" v-on:click="deletesurvey">삭제</button>
         </div>
+        <div>
+            <input type="hidden" id="surveyJson" value="">
+        </div>
         <hr>
         <table class="table table-bordered text-center">
             <tr>
@@ -58,10 +61,10 @@
     var vue = new Vue({
         el: '#container',
         data : {
-            title : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Title)),
-            limitperson : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.LimitPersons)),
-            startDate : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StartDate.ToString("yyyy-MM-dd"))),
-            endDate : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.EndDate.ToString("yyyy-MM-dd")))
+            title : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.Title)),
+            limitperson : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.LimitPersons)),
+            startDate : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.StartDate.ToString("yyyy-MM-dd"))),
+            endDate : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.EndDate.ToString("yyyy-MM-dd")))
         },
         mounted : function(){
 
@@ -83,9 +86,9 @@
                 return;
                 }
 
-                var ubSurveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model._id));
-                var surveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
-                var channelID = '5a8fb4200ad8963fa4242cb2';
+                var ubSurveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey._id));
+                var surveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.SurveyID));
+                var channelID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.ChannelID));
 
                 $.ajax({ 
                     type : 'post',
@@ -119,33 +122,33 @@
                 });
             },
             save : function(){
-                var t = $("#title").val();
-                var s = $("#startDate").val();
-                var e = $("#endDate").val();
-                var l = $("#limitperson").val();
 
                 var data = {
-                    channelID : "5a8fb4200ad8963fa4242cb2",
-                    _id : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model._id)),
-                    SurveyID : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID)),
-                    Title : t,
-                    StartDate : s,
-                    EndDate : e,
-                    LimitPersons : l
+                    channelID : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.ChannelID)),
+                    _id : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey._id)),
+                    SurveyID : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.SurveyID)),
+                    Title : $("#title").val(),
+                    StartDate : $("#startDate").val(),
+                    EndDate : $("#endDate").val(),
+                    LimitPersons : $("#limitperson").val()
                 }
 
-                console.log(data);
+                var data2 = {
+                    _channelID : '@Model.survey.ChannelID',
+                    Survey : $("#surveyJson").val(),
+                }
 
                 $.ajax({
                     type : 'post',
-                    url : '/api/UBSurvey/save',
+                    url : '/api/survey/save',
                     contentType: 'application/json',
-                    data : JSON.stringify(data),
+                    data : JSON.stringify(data2),
                     success : function (res) {
                         if(res.success)
                         {
-                            var url = '/home/index';
-                            $(location).attr('href',url);
+                            console.log(res);
+                            
+
                         } 
                     }, 
                     error: function(XMLHttpRequest, textStatus, errorThrown) { 
@@ -155,14 +158,31 @@
 
 
 
+                /*
+                $.ajax({
+                    type : 'post',
+                    url : '/api/UBSurvey/save',
+                    contentType: 'application/json',
+                    data : JSON.stringify(data),
+                    success : function (res) {
+                        if(res.success)
+                        {
+                            alert(res);
+                            console.log('@Model.survey.SurveyID' );
+                            
 
+                        } 
+                    }, 
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                    }   
+                });
+                */
             },
             register: function(){
-                var ps = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
-                var pc = '5a8fb4200ad8963fa4242cb2';
-                var pr = 'http://192.168.245.106:5000/Home/SurveyEditSave';
-
-                var actionUrl = '@Html.Raw(@Url.Action("index","Edit"))' + '?surveyid=' + ps + '&channelid=' + pc + '&retUrl=' + pr;
+                    
+                var param = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.UrlParameter));
+                var actionUrl = '@Html.Raw(@Url.Action("index","Edit"))' + param;
                 
                 var child = window.open(actionUrl,'_blank');
                 if( child.opener == null)
@@ -176,17 +196,12 @@
             }
         }
         
-        
-         
-
-
-
     });
 
-    function test(val)
-        {
-            alert(val);
-        }
+    function sendSurveyJson(val)
+    {
+        $("#surveyJson").val(val);
+    }
 
 </script>
 

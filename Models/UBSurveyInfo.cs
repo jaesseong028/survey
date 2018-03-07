@@ -40,5 +40,13 @@ namespace UBSurvey.Models
         public string LimitPersonsStr { get { return $"{LimitPersons} 명"; }}
     }
 
+    public class UBSurveyEditInfo 
+    {
+        public string UrlParameter { get; set; }
+
+        public UBSurveyInfo survey { get; set; } 
+
+    }
+
 
 } 

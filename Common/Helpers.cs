@@ -211,6 +211,23 @@ namespace UBSurvey.Common
             return "?" + string.Join("&", array);
         }
 
+        public static string CreateUri(string root, NameValueCollection nvc)
+        {
+            var collection = HttpUtility.ParseQueryString(string.Empty);
+            foreach (var key in nvc.Cast<string>().Where(key => !string.IsNullOrEmpty(nvc[key])))
+            {
+                collection[key] = nvc[key];
+            }
+
+            if(!string.IsNullOrEmpty(root) )
+            {
+                var builder = new UriBuilder(root) { Query = collection.ToString() };
+                return builder.Uri.ToString();
+            }
+            
+            return "?" + collection.ToString();   
+        }
+
         // ////////////////////////////////////////////////////////////////////////////
         
         private static System.Text.RegularExpressions.Regex objectIdReplace = new System.Text.RegularExpressions.Regex(@"ObjectId\((.[a-f0-9]{24}.)\)", System.Text.RegularExpressions.RegexOptions.Compiled);

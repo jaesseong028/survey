@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -60,38 +62,37 @@ namespace UBSurvey.Controllers
         // //////////////////////////////////// ///
         public IActionResult Edit(string surveyid, string channelid)
         {
+            var site = Helpers.GetMyIp() + ":5000";
+
+            UBSurveyEditInfo editInfo = new UBSurveyEditInfo();
             UBSurveyInfo info = new UBSurveyInfo()
-            {   
+            {
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now
+                EndDate = DateTime.Now,
+                ChannelID  = channelid
             };
 
             if( surveyid != null)
-            {
                 info = _repository.GetUBSurvey(surveyid);
-                return View(info);
-            }
-
-
-            return View(info);
-        }
-        // [HttpGet]
-        // public IActionResult SurveyEditSave([FromBody]JObject survey)
-        // {
-        //     ViewBag.value = survey;
             
-        //     return View();
-        // } 
+            string returnUrl = "http://"+ site + "/Home/SurveyEditSave";
+            NameValueCollection namedValues =  new NameValueCollection
+            {
+                {"channelid" , channelid },
+                {"surveyid", info.SurveyID},
+                {"retUrl" , returnUrl },
+            };
+            editInfo.UrlParameter = Helpers.CreateUri("",namedValues);
+            editInfo.survey = info;
 
-        // public class aaa {
-        //     public  survey{get;set;}
-        // }
-         [HttpPost]
+            return View(editInfo);
+        }
+
+        [HttpPost]
         public IActionResult SurveyEditSave(string survey)
         {
-            //Request.QueryString.ToString();
             ViewBag.survey = survey;
-            
+           
             return View();
         } 
 
