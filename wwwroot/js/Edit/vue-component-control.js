@@ -53,14 +53,14 @@ Vue.component('tab-page-com', {
         <div>\
             <div class="tab">\
                 <input type="radio" id="surveyID" name="tabgroup" class="tabgroup" v-on:click="surveyinfo" :checked="survey === settings" />\
-                <label class="labelfor cur" v-bind:class="{setting: survey === settings}" for="surveyID">설문설정 <span v-bind:class="{sel: survey === settings}"  class="glyphicon glyphicon-cog"></span> </label>\
+                <label class="labelfor cur" v-bind:class="{setting: survey === settings}" for="surveyID">설문설정<span v-bind:class="{sel: survey === settings}"  class="glyphicon glyphicon-cog icon"></span> </label>\
                 <div class="tab-container"></div>\
             </div>\
         </div>\
         <div v-for="(page, index) in survey.pages">\
             <div class="tab">\
-                <input type="radio" :id="getPageID(page.name, index)" name="tabgroup" class="tabgroup" v-on:click="changedPage(index)" :checked="page === settings" />\
-                <label class="labelfor cur" v-bind:class="{setting: page === settings}" :for="getPageID(page.name, index)">{{page.name}} <span v-bind:class="{sel: page === settings}"  class="glyphicon glyphicon-cog"></span> </label>\
+                <input type="radio" :id="getPageID(page.name, index)" name="tabgroup" class="tabgroup" v-on:click="changedPage(index)" :checked="page === selectPage" />\
+                <label class="labelfor cur" v-bind:class="{setting: page === selectPage}" :for="getPageID(page.name, index)">{{page.name}}<span v-bind:class="{sel: page === selectPage}" class="glyphicon glyphicon-cog icon"></span> </label>\
                 <label class="plus cur" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>\
                 <div class="tab-container">\
                     <div class="row" v-if="page.title || page.description">\
@@ -74,16 +74,12 @@ Vue.component('tab-page-com', {
     </div>',
     data: function () { return { } },
     props: { survey: { type: Object }, settings : { type: Object }, selectPage : {type : Object }, skipQuestions: {type : Array}},
-    watch : {
-        radioGroup : function(val){
-            //console.log(val);
-        }
-    },
     methods : {
         changedPage : function (index) {
             this.$parent.changedPage(index);
         },
         surveyinfo : function() {
+            this.$parent.changedPage(-1);
             this.$parent.surveyinfo(this.survey);
         },
         appendPage : function(index) {
@@ -107,12 +103,12 @@ Vue.component('tab-page-com', {
 Vue.component('leftnav-com', {
     template : '\
     <span>\
-        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check"></span> 체크박스</label></p>\
-        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record"></span> 라디오박스 </label></p>\
-        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background"></span> 텍스트</label></p>\
-        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-superscript"></span> 코멘트</label></p>\
-        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left"></span> 등급</label></p>\
-        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.multiText)><span class="glyphicon glyphicon-th-list"></span> 멀티텍스트</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.checkbox)><span class="glyphicon glyphicon-check left-icon"></span>체크박스</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.radio)><span class="glyphicon glyphicon-record left-icon"></span> 라디오박스 </label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.text)><span class="glyphicon glyphicon-text-background left-icon"></span> 텍스트</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.comment)><span class="glyphicon glyphicon-superscript left-icon"></span> 코멘트</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.rate)><span class="glyphicon glyphicon-indent-left left-icon"></span> 등급</label></p>\
+        <p><label class="cur" v-on:click=addsurvey(GlobalValues.control.multiText)><span class="glyphicon glyphicon-th-list left-icon"></span> 멀티텍스트</label></p>\
     </span>',
     methods : {
         addsurvey : function (type) {
@@ -204,9 +200,9 @@ Vue.component('rate-list-com', {
 
 Vue.component('rate-com', {
     template: '\
-<div class="rate btn-group">\
+<div class="rate">\
     <input :value=choice type="radio" :name=el.name :id=uid v-model=el.value />\
-    <label class="btn btn-default" :for=uid>{{choice}}</label>\
+    <button class="btn btn-default" :for=uid>{{choice}}</button>\
 </div>',
     //gs : [mixin],
     props: { el: { type: Object, required: true }, choice : { type :  Number}},

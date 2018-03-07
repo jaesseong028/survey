@@ -13,12 +13,16 @@ var vue = new Vue({
         </template>\
         <template v-else-if="NotiMessage == GlobalValues.emptyString">\
             <div class="row logo-container">\
-                <div class="col-sm-10 text-left" style="padding-left:15px">\
-                        <h4>{{survey.title}}</h4>\
+                <div class="col-sm-10 text-left survey-title">\
+                    <span>{{survey.title}}</span>\
                 </div>\
                 <div class="col-xs-2">\
                     <label class="btn btn-success" v-on:click=save> 저장 </label>\
                     <label class="btn btn-info" v-on:click=prev>미리보기</label>\
+                </div>\
+            </div>\
+            <div class="row">\
+                <div class="col-sm-12" style="background-color:#4EB6F6; height:40px">\
                 </div>\
             </div>\
             <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">\

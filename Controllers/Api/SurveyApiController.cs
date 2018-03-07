@@ -35,10 +35,11 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult Save([FromBody]JObject survey)
         {
-            Models.SurveyInfo s = new SurveyInfo();
+            SurveyInfo s = new SurveyInfo();
             s.Survey = BsonDocument.Parse(survey.ToString());
-            bool isSuccess =_repository.UpsertSurvey(s);
-            return Json(new { success = isSuccess });
+            SurveyInfo ret =_repository.UpsertSurvey(s);
+            Console.WriteLine(ret._id);
+            return Json(new { success = ret != null });
         } 
 
         [HttpGet]

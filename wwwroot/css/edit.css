@@ -3,6 +3,9 @@ body, html{ height:102%; }
 
 .logo-container {padding-top:20px; padding-bottom:22px; margin: 0}
 .navbar { margin-bottom: 0px;}
+.survey-title {padding-left:15px;font-size: 20px}
+.icon {padding-left: 12px;}
+.left-icon {padding-right: 10px;}
 
 #container { display: none; }
 
@@ -12,18 +15,18 @@ body, html{ height:102%; }
 .rightnav {border-top: 1px solid #eee;border: 1px solid #eee;color:#222222; margin-top: 51px; text-align: left; padding-left: 0; padding-right: 0}
 
 /* page tab 처리 */
-.tabs {position: relative;clear: both;margin: 52px -27px 0px -11px;background: white;}
+.tabs {position: relative;clear: both;margin: 53px -27px 0px -11px;background: white;}
 .tab {float: left; }
 .tab fieldset {background-color:white; border:1px solid #CCC; padding:30px 0px 30px 30px; margin: 9px 9px 4.5px 9px; height: 100%}
 .tab fieldset.setting {border:1px solid #87B2F1;}
-.tab fieldset .question { font-size: 1.2em; font-weight: bold; padding-left:2px}
-.tab fieldset .desc { border: 1px solid #c1c1c1; margin:0px 5px 10px; padding: 10px; }
+.tab fieldset .question { font-size: 20px; font-weight: bold; color:#222;padding-bottom: 15px;}
+.tab fieldset .desc { padding-left:5px; padding-bottom: 20px; font-size: 14px; color:#14a5e6 }
 .tab fieldset .required {color: red; vertical-align:text-top}
 .tab fieldset .q-contain {width: 98%; float: left;}
-.tab .labelfor {background: #eee; padding: 14px; border: 1px solid #ccc; margin-left: 0; position: relative;left: 3px; top: -50px;-webkit-transition: background-color .17s linear;}
-.tab .labelfor span.sel { color:#87B2F1 }
+.tab .labelfor {background: #eee; padding: 14px 12px 14px 14px; border: 1px solid #ccc; margin-left: 0; position: relative;left: 10px; top: -50px;-webkit-transition: background-color .17s linear;}
+.tab .labelfor span.sel { color:rgb(44, 81, 138) }
 .tab .labelfor span {color: #C1C1C1}
-.tab .plus {padding: 8px; border: 1px solid #eee; margin-left: -1px; position: relative;left: -2px; top: -44px;color:#87B2F1; }
+.tab .plus {padding: 8px; border: 1px solid #eee; margin-left: -1px; position: relative;left: 6px; top: -44px;color:#87B2F1; }
 .setting {border:1px solid #87B2F1;}
 .tabgroup {display: none;}
 .page-title{ font-size: 1.5em; font-weight: bold;}
@@ -37,8 +40,8 @@ body, html{ height:102%; }
 .tab [type=radio]:checked ~ .labelfor ~ .tab-container {z-index: 1;display:block;} 
 
 .rate [type=radio] { display: none;}
-.rate label { min-width: 6em;}
-.rate [type=radio]:checked ~ label {color: #333;background-color: #e6e6e6;border-color: #adadad; }
+.rate button { min-width: 6em; margin:1px}
+.rate [type=radio]:checked ~ label {color: #333;background-color: #e7f6fc;border-color: #14a5e6; }
 
 
 .rate_min { padding-right: 3px; }
