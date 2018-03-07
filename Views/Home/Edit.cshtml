@@ -22,7 +22,7 @@
             </tr>
             <tr>
                 <td class="info">제목</td>
-                <td colspan="3"><input type="text" class="form-control" v-model="title" ></td>
+                <td colspan="3"><input type="text" class="form-control" v-model="title" id="title" ></td>
             </tr>
             <tr>
                 <td class="info" >배포기간</td>
@@ -31,7 +31,7 @@
                     <input type="text" style="width:auto" class="form-control datepicker" id="endDate" v-model="endDate">
                 </td>
                 <td class="info" >마감인원</td>
-                <td><input type="text" class="form-control " v-model="limitperson" v-on:keyup="onlyNumber"  ></td>
+                <td><input type="text" class="form-control " v-model="limitperson" v-on:keyup="onlyNumber" id="limitperson" ></td>
             </tr>
         </table>
         <div>
@@ -79,10 +79,83 @@
         },
         methods : {
             deletesurvey : function(){
-                alert('삭제');
+                if(!confirm('해당 설문을 삭제 하시겠습니까?')){
+                return;
+                }
+
+                var ubSurveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model._id));
+                var surveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
+                var channelID = '5a8fb4200ad8963fa4242cb2';
+
+                $.ajax({ 
+                    type : 'post',
+                    url : '/api/UBSurvey/Delete',
+                    contentType: 'application/json',
+                    data : JSON.stringify({'id' : ubSurveyID }),
+                    success : function (res) {
+                        if(res.success)
+                        {
+                            $.ajax({
+                            type : 'post',
+                            url : '/api/survey/RemoveSurvey',
+                            contentType: 'application/json',
+                            data : JSON.stringify({'surveyID' : surveyID, 'channelID' : channelID}),
+                            success : function (res) {
+                                if(res.success)
+                                {
+                                    var url = '/home/index';
+                                    $(location).attr('href',url);
+                                } 
+                            }, 
+                            error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                                alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                            }   
+                            });
+                        }
+                    }, 
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                    }   
+                });
             },
             save : function(){
-                alert('저장');
+                var t = $("#title").val();
+                var s = $("#startDate").val();
+                var e = $("#endDate").val();
+                var l = $("#limitperson").val();
+
+                var data = {
+                    channelID : "5a8fb4200ad8963fa4242cb2",
+                    _id : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model._id)),
+                    SurveyID : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID)),
+                    Title : t,
+                    StartDate : s,
+                    EndDate : e,
+                    LimitPersons : l
+                }
+
+                console.log(data);
+
+                $.ajax({
+                    type : 'post',
+                    url : '/api/UBSurvey/save',
+                    contentType: 'application/json',
+                    data : JSON.stringify(data),
+                    success : function (res) {
+                        if(res.success)
+                        {
+                            var url = '/home/index';
+                            $(location).attr('href',url);
+                        } 
+                    }, 
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                    }   
+                });
+
+
+
+
             },
             register: function(){
                 var ps = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyID));
@@ -99,8 +172,7 @@
             onlyNumber : function(e){
                 var obj = this;
                 obj.limitperson = obj.limitperson.replace(/[^0-9]/g,"");
-                if(obj.limitperson == '')
-                    obj.limitperson = 0;
+
             }
         }
         
