@@ -36,7 +36,7 @@ namespace UBSurvey.Controllers.Api
         public JsonResult Save([FromBody]SurveyInfo survey)
         {
             bool isSuccess =_repository.UpsertSurvey(survey);
-            return Json(new { success = isSuccess });
+            return Json(new { success = isSuccess,  data = survey });
         } 
 
         [HttpGet]

@@ -40,7 +40,7 @@
             <button class="btn btn-danger pull-right" v-on:click="deletesurvey">삭제</button>
         </div>
         <div>
-            <input type="hidden" id="surveyJson" value="">
+            <input type="hidden" id="surveyJson" value="" v-model="surveyJson">
         </div>
         <hr>
         <table class="table table-bordered text-center">
@@ -61,10 +61,11 @@
     var vue = new Vue({
         el: '#container',
         data : {
-            title : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.Title)),
-            limitperson : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.LimitPersons)),
-            startDate : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.StartDate.ToString("yyyy-MM-dd"))),
-            endDate : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.EndDate.ToString("yyyy-MM-dd")))
+            title : '@Model.survey.Title',
+            limitperson : '@Model.survey.LimitPersons',
+            startDate : '@Model.survey.StartDate.ToString("yyyy-MM-dd")',
+            endDate : '@Model.survey.EndDate.ToString("yyyy-MM-dd")',
+            surveyJson : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson)) == null ? '' : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson))
         },
         mounted : function(){
 
@@ -86,9 +87,9 @@
                 return;
                 }
 
-                var ubSurveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey._id));
-                var surveyID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.SurveyID));
-                var channelID = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.ChannelID));
+                var ubSurveyID = '@Model.survey._id';
+                var surveyID = '@Model.survey.SurveyID';
+                var channelID = '@Model.survey.ChannelID';
 
                 $.ajax({ 
                     type : 'post',
@@ -122,20 +123,16 @@
                 });
             },
             save : function(){
+                
+                var sruveyJson = $("#surveyJson").val();
+                
 
-                var data = {
-                    channelID : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.ChannelID)),
-                    _id : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey._id)),
-                    SurveyID : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.survey.SurveyID)),
-                    Title : $("#title").val(),
-                    StartDate : $("#startDate").val(),
-                    EndDate : $("#endDate").val(),
-                    LimitPersons : $("#limitperson").val()
-                }
+                
 
                 var data2 = {
                     _channelID : '@Model.survey.ChannelID',
-                    Survey : $("#surveyJson").val(),
+                    Survey : sruveyJson,
+                    _id : '@Model.survey._id',
                 }
 
                 $.ajax({
@@ -146,42 +143,47 @@
                     success : function (res) {
                         if(res.success)
                         {
-                            console.log(res);
-                            
+                            var data = {
+                                channelID : '@Model.survey.ChannelID',
+                                _id : '@Model.survey._id',
+                                SurveyID : res.data._id,
+                                Title : $("#title").val(),
+                                StartDate : $("#startDate").val(),
+                                EndDate : $("#endDate").val(),
+                                LimitPersons : $("#limitperson").val()
+                            }
 
+                            $.ajax({
+                                type : 'post',
+                                url : '/api/UBSurvey/save',
+                                contentType: 'application/json',
+                                data : JSON.stringify(data),
+                                success : function (res) {
+                                    if(res.success)
+                                    {
+                                        alert(res);
+                                        console.log('@Model.survey.SurveyID' );
+                                    } 
+                                }, 
+                                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                                    alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                                }   
+                            });
                         } 
                     }, 
                     error: function(XMLHttpRequest, textStatus, errorThrown) { 
                         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
                     }   
                 });
-
-
+                
 
                 /*
-                $.ajax({
-                    type : 'post',
-                    url : '/api/UBSurvey/save',
-                    contentType: 'application/json',
-                    data : JSON.stringify(data),
-                    success : function (res) {
-                        if(res.success)
-                        {
-                            alert(res);
-                            console.log('@Model.survey.SurveyID' );
-                            
-
-                        } 
-                    }, 
-                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-                    }   
-                });
+                
                 */
             },
             register: function(){
                     
-                var param = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.UrlParameter));
+                var param = '@Model.UrlParameter';
                 var actionUrl = '@Html.Raw(@Url.Action("index","Edit"))' + param;
                 
                 var child = window.open(actionUrl,'_blank');

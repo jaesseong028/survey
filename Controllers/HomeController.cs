@@ -60,6 +60,8 @@ namespace UBSurvey.Controllers
 
 
         // //////////////////////////////////// ///
+
+
         public IActionResult Edit(string surveyid, string channelid)
         {
             var site = Helpers.GetMyIp() + ":5000";
@@ -73,7 +75,17 @@ namespace UBSurvey.Controllers
             };
 
             if( surveyid != null)
+            {
                 info = _repository.GetUBSurvey(surveyid);
+                if(!string.IsNullOrEmpty(info.SurveyID))
+                {
+                    //var r = Helpers.HttpPost($"http://{site}/api/survey/GetSurvey",new { channelID = channelid, surveyID = info.SurveyID });
+                    var r =  Helpers.HttpGet($"http://{site}/api/survey/GetSurvey?channelID={channelid}&surveyID={info.SurveyID}");
+                    dynamic d = JsonConvert.DeserializeObject(r.Result);
+                    if( (bool)d["success"] && d["data"]["survey"] != null )
+                        editInfo.SurveyJson = d["data"]["survey"].ToString();
+                }
+            }
             
             string returnUrl = "http://"+ site + "/Home/SurveyEditSave";
             NameValueCollection namedValues =  new NameValueCollection
