@@ -15,7 +15,7 @@ namespace UBSurvey.Repository
 {
     public interface ISurveyRepository
     {
-        SurveyInfo UpsertSurvey(SurveyInfo contact)
+        SurveyInfo UpsertSurvey(SurveyInfo contact);
         SurveyInfo GetSurvey(string channelID, string surveyID);
         bool UpdateSurvey(string channelID, string surveyID, SurveyInfo item);
         bool RemoveSurvey(string channelID, string surveyID);
