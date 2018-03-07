@@ -788,7 +788,7 @@ function domReady (){
             // Survey Page
             var pages  = surveyJson.pages;
             var questionNumber = 1;
-
+            console.log(pages);
             for(var p in pages)
             {
                 if(pages.hasOwnProperty(p))
@@ -804,7 +804,7 @@ function domReady (){
                         cdom.getcss(elPage,'title',0).text(pages[p].title);
 
                     // Page description
-                    if('description' in pages[p] && questions[p].description != '' )
+                    if('description' in pages[p] && pages[p].description != '' )
                         cdom.getcss(elPage,'description',0).inhtml(pages[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
                     else
                         cdom.getcss(elPage,'description',0).removecss('description');
