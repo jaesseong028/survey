@@ -35,8 +35,6 @@ namespace UBSurvey.Models
         public override DateTime StartDate { get; set;}
         [JsonIgnore]
         public override DateTime EndDate { get; set;}
-        [JsonIgnore]
-        public override string ChannelID { get; set;}
         public string ApproveStatusStr { get { return ((UbSurveyApprove)((int)ApproveStatus)).getEnumDescription(); }}
         public string StartDateAndEndDate { get { return $"{StartDate.ToString("yyyy-MM-dd")}~{EndDate.ToString("yyyy-MM-dd")}"; }}
         public string LimitPersonsStr { get { return $"{LimitPersons} 명"; }}

@@ -44,7 +44,7 @@
         </thead>
         <tr v-for="(s, index) in surveys">
             <td class="text-right">{{((pager.PageIndex - 1) * 10) + index + 1}}</td>
-            <td><a :href="editActionUrl(s._id)">{{s.title}}</a></td>
+            <td><a :href="editActionUrl(s._id, s.channelID)">{{s.title}}</a></td>
             <td>{{s.startDateAndEndDate}}</td>
             <td>{{s.limitPersonsStr}}</td>
             <td><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
@@ -98,8 +98,8 @@ var vue = new Vue({
             
             location.href = actionUrl;
         },
-        editActionUrl : function(_id){
-             return '/home/edit/?surveyid=' + _id;
+        editActionUrl : function(_id, channelID){
+             return '/home/edit/?surveyid=' + _id + '&channelID=' + channelID;
         },
         createActionUrl : function(pid){
             var params = $.param(this.searchData);
