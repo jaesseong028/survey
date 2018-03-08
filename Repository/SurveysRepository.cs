@@ -44,8 +44,8 @@ namespace UBSurvey.Repository
             if (!string.IsNullOrEmpty(contact._id))
             {
                 ReplaceOneResult actionResult = _context.Surveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
-                return actionResult.IsAcknowledged
-                    && actionResult.ModifiedCount > 0;
+                return actionResult.IsAcknowledged;
+                // && actionResult.ModifiedCount > 0;
             }
             _context.Surveys.InsertOne(contact);
 
@@ -78,19 +78,6 @@ namespace UBSurvey.Repository
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
         }   
-
-        public bool UpdateSurvey(string channelID, string surveyID, SurveyInfo item)
-        {
-            ObjectId o;
-            if (!ObjectId.TryParse(surveyID, out o))
-                return false;
-
-            ReplaceOneResult actionResult 
-                = _context.Surveys.ReplaceOne(p => p._channelID == channelID && p._id.Equals(o), item, new UpdateOptions { IsUpsert = true });
-            return actionResult.IsAcknowledged
-                && actionResult.ModifiedCount > 0;
-        }
-
         /// API 로 연결 하지 말것
         public bool InsertSurveyResult (string channelID, string surveyID, SurveyResult result)
         {

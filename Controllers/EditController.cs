@@ -22,11 +22,6 @@ namespace UBSurvey.Controllers
 {
     public class EditController : Controller
     {
-        private readonly ISurveyRepository _repository;
-        public EditController(ISurveyRepository repository){
-            _repository = repository;
-        }
-        
         [HttpGet]
         public IActionResult Index ()
         {

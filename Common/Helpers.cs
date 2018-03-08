@@ -204,7 +204,7 @@ namespace UBSurvey.Common
 
 
         // ////////////////////////////////////////////////////////////////////////////
-        public static string ToQueryString(NameValueCollection nvc)
+        public static string toQueryString(this NameValueCollection nvc)
         {
             var array = (from key in nvc.AllKeys
                 from value in nvc.GetValues(key)
@@ -213,7 +213,7 @@ namespace UBSurvey.Common
             return "?" + string.Join("&", array);
         }
 
-        public static string ToQueryString(Dictionary<string, string> nvc)
+        public static string toQueryString(this Dictionary<string, string> nvc)
         {
             var array = (from key in nvc.Keys
                         select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key])))
@@ -251,7 +251,7 @@ namespace UBSurvey.Common
             return Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
         }
 
-        public static bool ParamsValidation(this JObject obj, params string[] p)
+        public static bool paramsValidation(this JObject obj, params string[] p)
         {
             if(obj == null)
                 return false;

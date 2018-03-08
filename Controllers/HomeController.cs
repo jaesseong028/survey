@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace UBSurvey.Controllers
             _repository = repository;
             _globalVariable =  globalVariable;
         }
-        public IActionResult Index(int pageIndex = 1/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
+        public IActionResult Index(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
             //string ss =Helpers.GenerateKey(16);
             var site = Helpers.GetMyIp() + ":5000";
@@ -46,16 +47,30 @@ namespace UBSurvey.Controllers
             // }
 
             //string ss = Url.Action("/api/ubsurvey/list");
-            var r = Helpers.HttpGet($"http://{site}/api/ubsurvey/list{Request.QueryString.ToString()}");
+
+            IEnumerable<UBServiceInfo> services = _repository.GetServices();
+            string url = $"http://{site}/api/ubsurvey/list/{Request.QueryString.ToString()}";
+
+            if (channelID == string.Empty)
+            {
+                channelID = services.First().ChannelID;
+                var gubun = Request.QueryString.HasValue ? "&" : "?";
+                url = url  + $"{gubun}channelID={channelID}";
+            }
+
+            var r = Helpers.HttpGet(url);
             dynamic d = JsonConvert.DeserializeObject(r.Result);
-
-            var searchData = Helpers.GetQueryStringToDictionary(Request.QueryString.ToString(), "title", "startDate", "endDate", "approveStatus");
-
             if(!(bool)d["success"])
                 return NotFound();
 
+            var uri = new Uri(url);
+            var newQueryString = HttpUtility.ParseQueryString(uri.Query);
+            var searchData = Helpers.GetQueryStringToDictionary(uri.Query, "channelID", "title", "startDate", "endDate", "approveStatus");
+
+    
+            
             var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, (int)d["totalCount"]);
-            Tuple<object, object, object> tuple = new Tuple<object, object, object>(d["data"], pager, searchData);
+            Tuple<object, object, object, object> tuple = new Tuple<object, object, object, object>(d["data"], pager, searchData, services);
             return View(tuple);
         }
 

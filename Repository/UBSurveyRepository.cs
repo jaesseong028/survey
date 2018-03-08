@@ -39,8 +39,8 @@ namespace UBSurvey.Repository
             if (!string.IsNullOrEmpty(contact._id))
             {
                 ReplaceOneResult actionResult = _context.UBSurveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
-                return actionResult.IsAcknowledged
-                    && actionResult.ModifiedCount > 0;
+                return actionResult.IsAcknowledged;
+                    //&& actionResult.ModifiedCount > 0;
             }
 
             _context.UBSurveys.InsertOne(contact);
@@ -90,18 +90,10 @@ namespace UBSurvey.Repository
                             .FirstOrDefault();
         }
 
-        public bool UpdateUBSurvey(string _id, UBSurveyInfo item)
-        {
-            ReplaceOneResult actionResult
-                = _context.UBSurveys.ReplaceOne(n => n._id.Equals(new ObjectId(_id)), item, new UpdateOptions { IsUpsert = true });
-            return actionResult.IsAcknowledged
-                && actionResult.ModifiedCount > 0;
-        }
-
-
         public IEnumerable<UBServiceInfo> GetServices()
         {
-            var filter = Builders<UBServiceInfo>.Filter.Empty;
+            //var filter = Builders<UBServiceInfo>.Filter.Empty;
+            var filter = Builders<UBServiceInfo>.Filter.Eq("Visible", true);
             return _context.UBServices.Find(filter).ToEnumerable();
         }
     }

@@ -59,7 +59,7 @@ namespace UBSurvey.Controllers
             dic.Remove("authdate");
             V_ProgressInfo model = new V_ProgressInfo();
             model.Survey = surveyInfo.Survey;
-            model._info = Helpers.AesEncrypt256(Helpers.ToQueryString(dic), _globalVariable.Value.SurveyEncyptKey);
+            model._info = Helpers.AesEncrypt256(dic.toQueryString(), _globalVariable.Value.SurveyEncyptKey);
 
             return View(model);
         }

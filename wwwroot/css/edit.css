@@ -35,7 +35,7 @@ body, html{ height:102%; }
 .controlContainer {padding-left: 11px; padding-right:27px;}
 
 
-.tab-container {max-height:93vh; right:0;min-height:90px;position: absolute;top:-1px;width:100%;border: 1px solid #ccc; overflow-y:scroll;display:none; background-color:#f5f9fb } 
+.tab-container {max-height:90vh; right:0;min-height:90px;position: absolute;top:-1px;width:100%;border: 1px solid #ccc; overflow-y:scroll;display:none; background-color:#f5f9fb } 
 .tab [type=radio]:checked ~ .labelfor {background: white;border: 1px solid #14a5e6;border-bottom: 1px solid white;z-index: 2; color:#14a5e6}
 .tab [type=radio]:checked ~ .labelfor ~ .tab-container {z-index: 1;display:block;} 
 
