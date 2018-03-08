@@ -39,7 +39,7 @@ namespace UBSurvey.Controllers.Api
             return Json(new { success = isSuccess,  data = survey });
         } 
 
-        [HttpGet]
+        [HttpPost]
         public JsonResult GetSurvey(string channelID, string surveyID)
         {
             var data = _repository.GetSurvey(channelID, surveyID);
@@ -48,21 +48,21 @@ namespace UBSurvey.Controllers.Api
             return Json(new { data = data, success = true});
         } 
 
-        [HttpGet]
+        [HttpPost]
         public JsonResult RemoveSurvey(string channelID, string surveyID)
         {
             var result = _repository.RemoveSurvey(channelID, surveyID);
             return Json(new { success = true, data = result });
         } 
 
-        [HttpGet]
+        [HttpPost]
         public JsonResult GetSurveyResultCount(string channelID, string surveyID)
         {
             var result = _repository.GetSurveyResultCount(channelID, surveyID);
             return Json(new { success = true, data = result });
         } 
 
-        [HttpGet]
+        [HttpPost]
         public JsonResult ExistsUserToken(string channelID, string surveyID, string userToken)
         {
             var result = _repository.ExistsUserToken(channelID, surveyID, userToken);
