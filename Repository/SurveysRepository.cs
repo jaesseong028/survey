@@ -17,7 +17,6 @@ namespace UBSurvey.Repository
     {
         bool UpsertSurvey(SurveyInfo contact);
         SurveyInfo GetSurvey(string channelID, string surveyID);
-        bool UpdateSurvey(string channelID, string surveyID, SurveyInfo item);
         bool RemoveSurvey(string channelID, string surveyID);
         bool InsertSurveyResult (string channelID, string surveyID, SurveyResult result);
         string GetChannelEncryptKey (string channelID);
