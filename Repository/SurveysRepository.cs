@@ -10,6 +10,8 @@ using UBSurvey.Lib;
 using System.Linq.Dynamic.Core;
 using System.Linq;
 using UBSurvey.Common;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace UBSurvey.Repository
 {
@@ -39,7 +41,10 @@ namespace UBSurvey.Repository
             if(string.IsNullOrEmpty(contact._channelID))
                 throw new Exception("_channelID 가 존재 하지 않습니다.");
 
-                
+            var surveyString = contact.Survey.ToString();
+            contact.Survey = BsonDocument.Parse(surveyString);
+            //var o = JsonConvert.DeserializeObject(surveyString).ToBsonDocument();
+            
             if (!string.IsNullOrEmpty(contact._id))
             {
                 ReplaceOneResult actionResult = _context.Surveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
