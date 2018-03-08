@@ -23,14 +23,6 @@ namespace UBSurvey.Controllers
 
         public IActionResult Progress(string channelID, string val)
         {
-            // ///////////////////////////////
-            // 임시 파라미터
-            val = "AuthDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a9e3a9d4b8ec158f8bf0620&userToken=CCCC";
-            channelID = "5a8fb4200ad8963fa4242cb2";
-            val = Helpers.AesEncrypt256(val,"#ltqdcpk$)#!_no1");
-            string temp = "?val=" + val + "&" + "ChannelID=" + channelID;
-            // ///////////////////////////////
-            
             if(string.IsNullOrEmpty(val) || string.IsNullOrEmpty(channelID))
             {
                 return NotFound("유효하지 않는 데이터 입니다.");
