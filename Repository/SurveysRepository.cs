@@ -56,8 +56,13 @@ namespace UBSurvey.Repository
             ObjectId o;
             if (!ObjectId.TryParse(surveyID, out o))
                 return null;
-            var data =  _context.Surveys.AsQueryable()
-                .Where(p => p._id.Equals(o) && p._channelID == channelID).FirstOrDefault();
+
+
+            var filter = Builders<SurveyInfo>.Filter.Eq("_id", o);
+            filter &= Builders<SurveyInfo>.Filter.Eq(q=> q._channelID, channelID);
+            var data = _context.Surveys
+                            .Find(filter)
+                            .FirstOrDefault();
             
             if (data == null)
                 return null;

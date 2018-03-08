@@ -18,13 +18,13 @@
             <td>
                 <div class="form-inline">
                     <div class="form-group">
-                        <select v-model="searchData.ChannelID">
+                        <select class="form-control" v-model="searchData.channelid" :on-change="search" >
                             <option v-for="(service, index) in services" :value="service.ChannelID">{{service.Desript}}</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" id="startDate" placeholder="시작일" v-model="searchData.startDate">
-                            ~ <input placeholder="종료일" id="endDate" class="form-control" v-model="searchData.endDate">
+                        <input class="form-control" id="startDate" placeholder="시작일" v-model="searchData.startdate">
+                            ~ <input placeholder="종료일" id="endDate" class="form-control" v-model="searchData.enddate">
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control" v-model="searchData.title" style="width: 350px !important;" placeholder="Search...">
@@ -36,7 +36,7 @@
             </td>
         </tr>
     </table>
-    <div style="margin-bottom:15px"><a class="btn btn-success" href="/home/edit/?channelID=5a8fb4200ad8963fa4242cb2">설문등록</a></div>
+    <div style="margin-bottom:15px"><button class="btn btn-success" v-on:click="createSurvey">설문등록</button></div>
     <table class="table table-bordered table-hover">
         <thead>
             <tr class="info">
@@ -76,24 +76,32 @@ var vue = new Vue({
         searchData : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item3)),
         services : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item4))
     },
+    watch:{
+      'searchData.channelid'  : function (val, oldval) {
+        this.search();   
+      }
+    },
     mounted : function(){
         $("#container").show();
         
         $("#startDate").datepicker({
             dateFormat: "yy-mm-dd",
              onSelect: function(dateText) { 
-                vue.searchData.startDate = dateText;
+                vue.searchData.startdate = dateText;
             }
         });
 
         $("#endDate").datepicker({
             dateFormat: "yy-mm-dd",
             onSelect: function(dateText) { 
-                vue.searchData.endDate = dateText;
+                vue.searchData.enddate = dateText;
             }
         });
     }, 
     methods : {
+        createSurvey : function(){
+            location.href = '/home/edit/?channelID=' + this.searchData.channelid;
+        },
         search : function(){
             var params = $.param(this.searchData);
             var actionUrl = '';
@@ -104,8 +112,6 @@ var vue = new Vue({
                 actionUrl = '/?' + params + '&pageindex=' + vue.pager.PageIndex;
             }
 
-            //console.log(actionUrl);
-            
             location.href = actionUrl;
         },
         editActionUrl : function(_id, channelID){

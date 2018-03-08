@@ -66,8 +66,6 @@ namespace UBSurvey.Controllers
             var uri = new Uri(url);
             var newQueryString = HttpUtility.ParseQueryString(uri.Query);
             var searchData = Helpers.GetQueryStringToDictionary(uri.Query, "channelID", "title", "startDate", "endDate", "approveStatus");
-
-    
             
             var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, (int)d["totalCount"]);
             Tuple<object, object, object, object> tuple = new Tuple<object, object, object, object>(d["data"], pager, searchData, services);

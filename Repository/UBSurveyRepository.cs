@@ -54,7 +54,7 @@ namespace UBSurvey.Repository
                 totalCount = 0;
                 return Enumerable.Empty<UBSurveyInfo>();
             }
-            var _filterDef = Builders<UBSurveyInfo>.Filter.Empty;
+            var _filterDef = Builders<UBSurveyInfo>.Filter.Gte(t => t.ChannelID, channelID);
 
             if (startDate.HasValue)
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Gte(t => t.StartDate, startDate.Value);
@@ -93,8 +93,9 @@ namespace UBSurvey.Repository
         public IEnumerable<UBServiceInfo> GetServices()
         {
             //var filter = Builders<UBServiceInfo>.Filter.Empty;
+            var sort = Builders<UBServiceInfo>.Sort.Descending("_id");
             var filter = Builders<UBServiceInfo>.Filter.Eq("Visible", true);
-            return _context.UBServices.Find(filter).ToEnumerable();
+            return _context.UBServices.Find(filter).Sort(sort).ToEnumerable();
         }
     }
 }
