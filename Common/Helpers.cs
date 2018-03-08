@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -194,7 +195,7 @@ namespace UBSurvey.Common
                 if (key != null && keys.Contains(key.ToLower()))
                 {
                     if(!string.IsNullOrEmpty(namedValues.GetValues(key).FirstOrDefault()))
-                        dic.Add(key, namedValues.GetValues(key).First());
+                        dic.Add(key.ToLower(), namedValues.GetValues(key).First());
                 }
 
             }
@@ -208,6 +209,14 @@ namespace UBSurvey.Common
             var array = (from key in nvc.AllKeys
                 from value in nvc.GetValues(key)
                 select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(value)))
+                .ToArray();
+            return "?" + string.Join("&", array);
+        }
+
+        public static string ToQueryString(Dictionary<string, string> nvc)
+        {
+            var array = (from key in nvc.Keys
+                        select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key])))
                 .ToArray();
             return "?" + string.Join("&", array);
         }

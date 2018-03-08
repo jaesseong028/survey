@@ -42,10 +42,8 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult GetSurvey([FromBody]JObject obj)
         {
-            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID"))
-            {
+            if(!obj.ParamsValidation( "channelID", "surveyID"))
                 return Json(new { success = false, message = "파라미터 오류입니다." });
-            }
             
             var data = _repository.GetSurvey((string)obj["channelID"], (string)obj["surveyID"]);
             if (data == null)
@@ -56,10 +54,9 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult RemoveSurvey([FromBody]JObject obj)
         {
-            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID"))
-            {
+            if(!obj.ParamsValidation("channelID", "surveyID"))
                 return Json(new { success = false, message = "파라미터 오류입니다." });
-            }
+                
             var result = _repository.RemoveSurvey((string)obj["channelID"], (string)obj["surveyID"]);
             return Json(new { success = true, data = result });
         } 
@@ -67,7 +64,7 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult GetSurveyResultCount([FromBody]JObject obj)
         {
-            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID"))
+            if(!obj.ParamsValidation("channelID", "surveyID"))
                 return Json(new { success = false, message = "파라미터 오류입니다." });
 
             var result = _repository.GetSurveyResultCount((string)obj["channelID"], (string)obj["surveyID"]);
@@ -77,7 +74,7 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult ExistsUserToken([FromBody]JObject obj)
         {
-            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID",  "userToken"))
+            if(!obj.ParamsValidation("channelID", "surveyID",  "userToken"))
                 return Json(new { success = false, message = "파라미터 오류입니다." });
 
             var result = _repository.ExistsUserToken((string)obj["channelID"], (string)obj["surveyID"], (string)obj["userToken"]);

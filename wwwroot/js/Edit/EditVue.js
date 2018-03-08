@@ -109,7 +109,6 @@ var vue = new Vue({
                 $.ajax({
                     type : 'POST',
                     url : '/api/survey/GetSurvey',
-                    //data : JSON.stringify({'channelID' : channelID}),
                     data : JSON.stringify({'channelID' : channelID, 'surveyID' : surveryID}),
                     contentType: 'application/json',
                     success : function (res) {

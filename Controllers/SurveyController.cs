@@ -14,7 +14,6 @@ namespace UBSurvey.Controllers
     public class SurveyController : Controller
     {
         private readonly ISurveyRepository _repository;
-
         private readonly IOptions<GlobalVariable> _globalVariable;
         public SurveyController(ISurveyRepository repository, IOptions<GlobalVariable> globalVariable)
         {
@@ -26,34 +25,41 @@ namespace UBSurvey.Controllers
         {
             // ///////////////////////////////
             // 임시 파라미터
-            val = "CreateDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a966daa3cffd28f8c770b40&userToken=CCCC";
+            val = "AuthDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a9e3a9d4b8ec158f8bf0620&userToken=CCCC";
             channelID = "5a8fb4200ad8963fa4242cb2";
             val = Helpers.AesEncrypt256(val,"#ltqdcpk$)#!_no1");
             string temp = "?val=" + val + "&" + "ChannelID=" + channelID;
             // ///////////////////////////////
             
             if(string.IsNullOrEmpty(val) || string.IsNullOrEmpty(channelID))
-                throw new ArgumentNullException("Argument 가 존재하지 않습니다. Argument : Null " );
-
-            
-            
+            {
+                return NotFound("유효하지 않는 데이터 입니다.");
+            }
 
             var encryptKey = _repository.GetChannelEncryptKey(channelID);
-            // Confirm Parameter 
-            //NameValueCollection qscoll =  HttpUtility.ParseQueryString(Request.QueryString.ToString());
-            NameValueCollection qscoll =  HttpUtility.ParseQueryString(temp);
+            string query = Helpers.AesDecrypt256(val, encryptKey);
+            var dic = Helpers.GetQueryStringToDictionary(query, "userToken", "SurveyID", "AuthDate");
+            bool isAuth = Validation.ConfirmAuthDate(dic["authdate"]);
+            if(!isAuth)
+            {
+                return NotFound("유효하지 않는 데이터 입니다.");
+            }
 
-            qscoll = Validation.ConfirmParam(qscoll, encryptKey);
-            var surveyInfo = _repository.GetSurvey(qscoll["ChannelID"],qscoll["SurveyID"]);
-            
-            if(surveyInfo == null)
-                throw new ArgumentNullException("Survey 가 존재하지 않습니다." );
+            if(!(dic.ContainsKey("usertoken") && dic.ContainsKey("surveyid") && dic.ContainsKey("authdate")))
+            {
+                return NotFound();
+            }
 
-            qscoll.Remove("CreateDate");
+            var surveyInfo = _repository.GetSurvey(channelID, dic["surveyid"]);
 
+            if(surveyInfo == null){
+                return NotFound();
+            }
+
+            dic.Remove("authdate");
             V_ProgressInfo model = new V_ProgressInfo();
             model.Survey = surveyInfo.Survey;
-            model._info = Helpers.AesEncrypt256( Helpers.ToQueryString(qscoll), _globalVariable.Value.SurveyEncyptKey);
+            model._info = Helpers.AesEncrypt256(Helpers.ToQueryString(dic), _globalVariable.Value.SurveyEncyptKey);
 
             return View(model);
         }
