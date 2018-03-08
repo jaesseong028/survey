@@ -16,9 +16,6 @@ using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
 
-
-
-
 namespace UBSurvey
 {
     public class Startup
@@ -55,6 +52,7 @@ namespace UBSurvey
                 options.ConnectionString = Configuration.GetSection("Settings:ConnectionString").Value;
                 options.SurveyDatabase = Configuration.GetSection("Settings:SurveyDatabase").Value;
                 options.UbSurveyDatabase = Configuration.GetSection("Settings:UbSurveyDatabase").Value;
+                
             });
 
             services.Configure<GlobalVariable>(options =>
@@ -62,6 +60,7 @@ namespace UBSurvey
                 options.ChanelID = Configuration.GetSection("Settings:ChanelID").Value;
                 options.PageSize = int.Parse(Configuration.GetSection("Settings:PageSize").Value);
                 options.SurveyEncyptKey = Configuration.GetSection("Settings:SurveyEncyptKey").Value;
+                options.ApiDomain = Configuration.GetSection("Settings:ApiDomain").Value;
             });
 
 

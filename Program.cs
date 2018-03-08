@@ -22,10 +22,10 @@ namespace UBSurvey
 
 
         public static IWebHost BuildWebHost(string[] args) {
-            string myIP = Helpers.GetMyIp();
+            //string myIP = Helpers.GetMyIp();
             return WebHost.CreateDefaultBuilder(args)
             .UseStartup<Startup>()
-            .UseUrls($"http://{myIP}:5000/")
+            //.UseUrls($"http://{myIP}:5000/")
             .Build();
         }
     }

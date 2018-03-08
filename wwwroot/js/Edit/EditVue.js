@@ -182,6 +182,8 @@ var vue = new Vue({
             }
         },
         addsurvey: function (type) {
+            if (this.selectPage == null)
+                return;
             var questionName = this.emptyName(this.GlobalValues.question);
             var item = { name: questionName, type: type, title: questionName, description: "", is_required : true, value : null};
             if (type == this.GlobalValues.control.checkbox || type == this.GlobalValues.control.radio) {

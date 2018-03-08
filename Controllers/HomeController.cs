@@ -33,7 +33,7 @@ namespace UBSurvey.Controllers
         public IActionResult Index(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
             //string ss =Helpers.GenerateKey(16);
-            var site = Helpers.GetMyIp() + ":5000";
+            //var site = _globalVariable.Value.ApiDomain;
             // for(int i =0; i < 1; i++)
             // {
             //     UBSurveyInfo s = new UBSurveyInfo();
@@ -51,7 +51,7 @@ namespace UBSurvey.Controllers
             //string ss = Url.Action("/api/ubsurvey/list");
 
             IEnumerable<UBServiceInfo> services = _repository.GetServices();
-            string url = $"http://{site}/api/ubsurvey/list/{Request.QueryString.ToString()}";
+            string url = $"{_globalVariable.Value.ApiDomain}/api/ubsurvey/list/{Request.QueryString.ToString()}";
 
             if (channelID == string.Empty)
             {
@@ -80,8 +80,6 @@ namespace UBSurvey.Controllers
 
         public IActionResult Edit(string ubsurveyid, string channelid)
         {
-            var site = Helpers.GetMyIp() + ":5000";
-
             UBSurveyEditInfo editInfo = new UBSurveyEditInfo();
             UBSurveyInfo info = new UBSurveyInfo()
             {
@@ -95,7 +93,7 @@ namespace UBSurvey.Controllers
                 info = _repository.GetUBSurvey(ubsurveyid);
                 if(!string.IsNullOrEmpty(info.SurveyID))
                 {
-                    var r = Helpers.HttpPost($"http://{site}/api/survey/GetSurvey",new { channelID = channelid, surveyID = info.SurveyID });
+                    var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurvey",new { channelID = channelid, surveyID = info.SurveyID });
                     var aaa = r.Result;
                     dynamic d = JsonConvert.DeserializeObject(aaa);
                     if( (bool)d["success"] && d["data"]["survey"] != null )
@@ -103,7 +101,7 @@ namespace UBSurvey.Controllers
                 }
             }
             
-            string returnUrl = "http://"+ site + "/Home/SurveyEditSave";
+            string returnUrl = $"{_globalVariable.Value.ApiDomain}/Home/SurveyEditSave";
             NameValueCollection namedValues =  new NameValueCollection
             {
                 {"channelid" , channelid },
