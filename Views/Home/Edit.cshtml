@@ -122,70 +122,36 @@
                 var sruveyObjID = '@Model.survey.SurveyID';
 
                 if(surveyJson != '')
-                {
-                    console.log(surveyJson);
-                    
-                    var data2 = {
+                {   
+                    var data = {
                         _channelID : '@Model.survey.ChannelID',
                         Survey : JSON.parse(surveyJson),
                         _id : '@Model.survey._id'
                     }
-
-                    console.log(data2);
-
+                    var self = this;
                     $.ajax({
                         type : 'post',
                         url : '/api/survey/save',
                         contentType: 'application/json',
-                        data : JSON.stringify(data2),
-                        async : false,
+                        data : JSON.stringify(data),
                         success : function (res) {
                             if(res.success)
                             {
-                                console.log('성공');
                                 sruveyObjID = res.data._id   
-                                alert(sruveyObjID);
+                                self.saveUBSurvey(sruveyObjID);
+
                             }else{
                                 alert(res.message);
-                            } 
+                            }
                         }, 
                         error: function(XMLHttpRequest, textStatus, errorThrown) { 
                             alert("Status: " + textStatus); alert("Error: " + errorThrown); 
                         }   
                     });
+                }else
+                {
+                    this.saveUBSurvey(sruveyObjID);
                 }
-
-                var data = {
-                                channelID : '@Model.survey.ChannelID',
-                                _id : '@Model.survey._id',
-                                SurveyID : sruveyObjID,
-                                Title : $("#title").val(),
-                                StartDate : $("#startDate").val(),
-                                EndDate : $("#endDate").val(),
-                                LimitPersons : $("#limitperson").val()
-                            }
-
-                $.ajax({
-                    type : 'post',
-                    url : '/api/UBSurvey/save',
-                    contentType: 'application/json',
-                    data : JSON.stringify(data),
-                    success : function (res) {
-                        if(res.success)
-                        {
-                            var url = '/home/index';
-                            $(location).attr('href',url);
-                        } 
-                        else
-                        {
-                            alert(res.message);
-                        }
-                    }, 
-                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-                    }   
-                });
-                
             },
             register: function(){
                     
@@ -200,6 +166,38 @@
             onlyNumber : function(e){
                 var obj = this;
                 obj.limitperson = obj.limitperson.replace(/[^0-9]/g,"");
+            },
+            saveUBSurvey : function(sruveyObjID){
+                
+                var data = {
+                                channelID : '@Model.survey.ChannelID',
+                                _id : '@Model.survey._id',
+                                SurveyID : sruveyObjID,
+                                Title : $("#title").val(),
+                                StartDate : $("#startDate").val(),
+                                EndDate : $("#endDate").val(),
+                                LimitPersons : $("#limitperson").val()
+                            }
+                $.ajax({
+                    type : 'post',
+                    url : '/api/UBSurvey/save',
+                    contentType: 'application/json',
+                    data : JSON.stringify(data),
+                    success : function (res) {
+                        if(res.success)
+                        {
+                            var url = '/home/index?channelid' + '@Model.survey.ChannelID';
+                            $(location).attr('href',url);
+                        } 
+                        else
+                        {
+                            alert(res.message);
+                        }
+                    }, 
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                    }   
+                });
             }
         }
     });
