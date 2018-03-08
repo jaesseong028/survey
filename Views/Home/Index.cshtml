@@ -57,11 +57,11 @@
     </table>
     <center>
     <ul class="pagination text-center">
-        <li v-if="pager.First != null"><a :href="createActionUrl(pager.First)"><<</a></li>
-        <li v-if="pager.Prev != null"><a :href="createActionUrl(pager.Prev)"><</a></li>
+        <li v-if="pager.First != null"><a :href="createActionUrl(pager.First)"> &lt;&lt;</a></li>
+        <li v-if="pager.Prev != null"><a :href="createActionUrl(pager.Prev)"> &lt; </a></li>
         <li v-for="page in pager.Pages" :class="{active : pager.PageIndex == page }"><a :href="createActionUrl(page)">{{page}}</a></li>
-        <li v-if="pager.Next != null"><a :href="createActionUrl(pager.Next)">></a></li>
-        <li v-if="pager.Last != null"><a :href="createActionUrl(pager.Last)">>></a></li>
+        <li v-if="pager.Next != null"><a :href="createActionUrl(pager.Next)"> &gt; </a></li>
+        <li v-if="pager.Last != null"><a :href="createActionUrl(pager.Last)"> &gt;&gt; </a></li>
     </ul>
     </center>
     <!-- {{surveys}} -->
