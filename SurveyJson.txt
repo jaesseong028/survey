@@ -1,9 +1,4 @@
-"survey_info" : {
-	_startDate : '',
-	_endDate : '',
-	_limit : '',
-	_bizData : '',
-	_chanelID : '',
+
 	"survey" : {
 		"title" : "의사랑 설문 조사 입니다.",
 		
@@ -98,4 +93,3 @@
 		}]
 		}
 	}
-}

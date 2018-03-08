@@ -82,8 +82,7 @@ var vue = new Vue({
                     }
                 }
             }
-            var s = { survey : copySurvey };
-            return s;
+            return copySurvey;
         },
         save : function(){
             var s = this.getCleanSurveyValue();    
@@ -104,6 +103,7 @@ var vue = new Vue({
                 self.NotiMessage = '잘못된 데이터 입니다. : retUrl 파라미터가 존재 하지 않습니다.';
                 return;
             }
+      
 
             if (surveryID && channelID) {
                 $.ajax({
@@ -116,6 +116,7 @@ var vue = new Vue({
                             self.NotiMessage = res.message;
                         } else {
                             vue.$nextTick(function() {
+                                
                                 if (res.data.survey != null) {
                                     self.survey = res.data.survey;
                                     self.qustionLastNameIndex = self.getMaxQustions();
@@ -315,6 +316,8 @@ var vue = new Vue({
             //     if(data != null)
             //         this.survey = JSON.parse(localStorage.getItem('survey'));
             // }
+
+            
             
             this.qustionLastNameIndex = this.getMaxQustions();
             this.selectPage = this.survey.pages[0];
