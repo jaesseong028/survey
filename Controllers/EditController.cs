@@ -28,19 +28,8 @@ namespace UBSurvey.Controllers
         }
         
         [HttpGet]
-        public IActionResult Index (string channelID, string val)
+        public IActionResult Index ()
         {
-            if(channelID == null || val == null)
-                return NotFound();
-            var encryptKey = _repository.GetChannelEncryptKey(channelID);
-            string query = Helpers.AesDecrypt256(val, encryptKey);
-            var dic = Helpers.GetQueryStringToDictionary(query, "channelID", "surveyID", "AuthDate");
-            if(!(dic.ContainsKey("channelid") && dic.ContainsKey("channelid") && dic.ContainsKey("authdate")))
-            {
-                return NotFound();
-            }
-
-
             return View();
         }
 
