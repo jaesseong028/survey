@@ -54,7 +54,7 @@ namespace UBSurvey.Repository
                 totalCount = 0;
                 return Enumerable.Empty<UBSurveyInfo>();
             }
-            var _filterDef = Builders<UBSurveyInfo>.Filter.Gte(t => t.ChannelID, channelID);
+            var _filterDef = Builders<UBSurveyInfo>.Filter.Eq(t => t.ChannelID, channelID);
 
             if (startDate.HasValue)
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Gte(t => t.StartDate, startDate.Value);
