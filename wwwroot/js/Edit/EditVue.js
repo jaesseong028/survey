@@ -107,12 +107,13 @@ var vue = new Vue({
 
             if (surveryID && channelID) {
                 $.ajax({
-                    type : 'GET',
+                    type : 'POST',
                     url : '/api/survey/GetSurvey',
-                    data : {'surveyID' : surveryID, 'channelID' : channelID},
+                    data : JSON.stringify({'channelID' : channelID, 'surveyID' : surveryID}),
+                    contentType: 'application/json',
                     success : function (res) {
                         if (!res.success) {
-                            self.NotiMessage = '데이터를 조회 할 수 없습니다.';
+                            self.NotiMessage = res.message;
                         } else {
                             vue.$nextTick(function() {
                                 if (res.data.survey != null) {

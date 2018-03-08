@@ -40,18 +40,22 @@ namespace UBSurvey.Controllers.Api
         } 
 
         [HttpPost]
-        public JsonResult GetSurvey(string channelID, string surveyID)
+        public JsonResult GetSurvey([FromBody]JObject obj)
         {
-            var data = _repository.GetSurvey(channelID, surveyID);
+            if(obj == null ||  (string.IsNullOrEmpty((string)obj["channelID"]) || string.IsNullOrEmpty((string)obj["surveyID"])))
+            {
+                return Json(new { success = false, message = "파라미터 오류입니다." });
+            }
+            var data = _repository.GetSurvey((string)obj["channelID"], (string)obj["surveyID"]);
             if (data == null)
-                return Json(new { data = data, success = false, message = "조회불가" });
+                return Json(new { data = data, success = false, message = "데이터를 조회 할 수 없습니다." });
             return Json(new { data = data, success = true});
         } 
 
         [HttpPost]
-        public JsonResult RemoveSurvey(string channelID, string surveyID)
+        public JsonResult RemoveSurvey([FromBody]JObject obj)
         {
-            var result = _repository.RemoveSurvey(channelID, surveyID);
+            var result = _repository.RemoveSurvey((string)obj["channelID"], (string)obj["surveyID"]);
             return Json(new { success = true, data = result });
         } 
 

@@ -103,7 +103,7 @@ var vue = new Vue({
             location.href = actionUrl;
         },
         editActionUrl : function(_id, channelID){
-             return '/home/edit/?surveyid=' + _id + '&channelID=' + channelID;
+             return '/home/edit/?ubsurveyid=' + _id + '&channelID=' + channelID;
         },
         createActionUrl : function(pid){
             var params = $.param(this.searchData);
