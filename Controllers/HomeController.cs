@@ -63,7 +63,7 @@ namespace UBSurvey.Controllers
         // //////////////////////////////////// ///
 
 
-        public IActionResult Edit(string surveyid, string channelid)
+        public IActionResult Edit(string ubsurveyid, string channelid)
         {
             var site = Helpers.GetMyIp() + ":5000";
 
@@ -75,9 +75,9 @@ namespace UBSurvey.Controllers
                 ChannelID  = channelid
             };
 
-            if( surveyid != null)
+            if( ubsurveyid != null)
             {
-                info = _repository.GetUBSurvey(surveyid);
+                info = _repository.GetUBSurvey(ubsurveyid);
                 if(!string.IsNullOrEmpty(info.SurveyID))
                 {
                     var r = Helpers.HttpPost($"http://{site}/api/survey/GetSurvey",new { channelID = channelid, surveyID = info.SurveyID });

@@ -35,9 +35,9 @@
             </tr>
         </table>
         <div>
-            <button class="btn btn-success" v-on:click="register"  >설문등록</button>
+            <button class="btn btn-success" v-on:click="register" id="register" >{{surveyText}}</button>
             <button class="btn btn-primary pull-right" v-on:click="save" >저장</button>
-            <button class="btn btn-danger pull-right" v-on:click="deletesurvey">삭제</button>
+            <button class="btn btn-danger pull-right" v-on:click="deletesurvey" v-if="ubSurveyID != ''">삭제</button>
         </div>
         <div>
             <input type="hidden" id="surveyJson" value="" v-model="surveyJson">
@@ -65,21 +65,25 @@
             limitperson : '@Model.survey.LimitPersons',
             startDate : '@Model.survey.StartDate.ToString("yyyy-MM-dd")',
             endDate : '@Model.survey.EndDate.ToString("yyyy-MM-dd")',
-            surveyJson : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson)) == null ? '' : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson))
+            surveyJson : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson)) == null ? '' : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson)),
+            surveyText : '설문등록',
+            ubSurveyID : '@Model.survey._id'
+
         },
         mounted : function(){
-
-
             $("#startDate").datepicker({
                 dateFormat: "yy-mm-dd",
-                
             });
 
             $("#endDate").datepicker(
                 {
                 dateFormat: "yy-mm-dd"
-                
             });
+
+            if(this.surveyJson != '')
+                this.surveyText = "설문수정";
+            else
+                this.surveyText = "설문등록";
         },
         methods : {
             deletesurvey : function(){
@@ -125,14 +129,11 @@
             save : function(){
                 
                 var sruveyJson = $("#surveyJson").val();
-                
-
-                
-
+            
                 var data2 = {
                     _channelID : '@Model.survey.ChannelID',
                     Survey : sruveyJson,
-                    _id : '@Model.survey._id',
+                    _id : '@Model.survey._id'
                 }
 
                 $.ajax({
@@ -176,14 +177,10 @@
                     }   
                 });
                 
-
-                /*
-                
-                */
             },
             register: function(){
                     
-                var param = '@Model.UrlParameter';
+                var param = '@Html.Raw(Model.UrlParameter)';
                 var actionUrl = '@Html.Raw(@Url.Action("index","Edit"))' + param;
                 
                 var child = window.open(actionUrl,'_blank');
@@ -194,15 +191,15 @@
             onlyNumber : function(e){
                 var obj = this;
                 obj.limitperson = obj.limitperson.replace(/[^0-9]/g,"");
-
             }
         }
-        
     });
 
     function sendSurveyJson(val)
     {
         $("#surveyJson").val(val);
+        if(val != '')
+            $("#register").text("설문수정");
     }
 
 </script>
