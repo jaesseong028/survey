@@ -12,7 +12,6 @@
 </environment>
 }
 
-
 <div id="container" > 
     
         <table class="table table-bordered text-center">
@@ -34,28 +33,17 @@
                 <td><input type="text" class="form-control " v-model="limitperson" v-on:keyup="onlyNumber" id="limitperson" ></td>
             </tr>
         </table>
+        <hr>
         <div>
             <button class="btn btn-success" v-on:click="register" id="register" >{{surveyText}}</button>
             <button class="btn btn-primary pull-right" v-on:click="save" >저장</button>
             <button class="btn btn-danger pull-right" v-on:click="deletesurvey" v-if="ubSurveyID != ''">삭제</button>
         </div>
+        
         <div>
             <input type="hidden" id="surveyJson" value="" v-model="surveyJson">
-        </div>
-        <hr>
-        <table class="table table-bordered text-center">
-            <tr>
-                <td class="info">URL</td>
-                <td colspan="3" class="form-inline">
-                        <input type="text" class="form-control">
-                        <button class="btn btn-info pull-right ">복사</button>
-                    </div>
-                </td>
-
-            </tr>
-        </table>
+        </div>        
 </div>
-
 
 <script type="text/javascript">
     var vue = new Vue({
@@ -127,50 +115,71 @@
                 });
             },
             save : function(){
-                
-                var sruveyJson = $("#surveyJson").val();
-            
-                var data2 = {
-                    _channelID : '@Model.survey.ChannelID',
-                    Survey : sruveyJson,
-                    _id : '@Model.survey._id'
+                if($("#title").val() == '')
+                    return alert('Title이 입력되지 않았습니다.');
+
+                var surveyJson = $("#surveyJson").val();
+                var sruveyObjID = '@Model.survey.SurveyID';
+
+                if(surveyJson != '')
+                {
+                    console.log(surveyJson);
+                    
+                    var data2 = {
+                        _channelID : '@Model.survey.ChannelID',
+                        Survey : JSON.parse(surveyJson),
+                        _id : '@Model.survey._id'
+                    }
+
+                    console.log(data2);
+
+                    $.ajax({
+                        type : 'post',
+                        url : '/api/survey/save',
+                        contentType: 'application/json',
+                        data : JSON.stringify(data2),
+                        async : false,
+                        success : function (res) {
+                            if(res.success)
+                            {
+                                console.log('성공');
+                                sruveyObjID = res.data._id   
+                                alert(sruveyObjID);
+                            }else{
+                                alert(res.message);
+                            } 
+                        }, 
+                        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                            alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+                        }   
+                    });
                 }
 
-                $.ajax({
-                    type : 'post',
-                    url : '/api/survey/save',
-                    contentType: 'application/json',
-                    data : JSON.stringify(data2),
-                    success : function (res) {
-                        if(res.success)
-                        {
-                            var data = {
+                var data = {
                                 channelID : '@Model.survey.ChannelID',
                                 _id : '@Model.survey._id',
-                                SurveyID : res.data._id,
+                                SurveyID : sruveyObjID,
                                 Title : $("#title").val(),
                                 StartDate : $("#startDate").val(),
                                 EndDate : $("#endDate").val(),
                                 LimitPersons : $("#limitperson").val()
                             }
 
-                            $.ajax({
-                                type : 'post',
-                                url : '/api/UBSurvey/save',
-                                contentType: 'application/json',
-                                data : JSON.stringify(data),
-                                success : function (res) {
-                                    if(res.success)
-                                    {
-                                        alert(res);
-                                        console.log('@Model.survey.SurveyID' );
-                                    } 
-                                }, 
-                                error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                                    alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-                                }   
-                            });
+                $.ajax({
+                    type : 'post',
+                    url : '/api/UBSurvey/save',
+                    contentType: 'application/json',
+                    data : JSON.stringify(data),
+                    success : function (res) {
+                        if(res.success)
+                        {
+                            var url = '/home/index';
+                            $(location).attr('href',url);
                         } 
+                        else
+                        {
+                            alert(res.message);
+                        }
                     }, 
                     error: function(XMLHttpRequest, textStatus, errorThrown) { 
                         alert("Status: " + textStatus); alert("Error: " + errorThrown); 

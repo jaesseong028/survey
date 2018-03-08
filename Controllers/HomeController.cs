@@ -94,7 +94,8 @@ namespace UBSurvey.Controllers
                 if(!string.IsNullOrEmpty(info.SurveyID))
                 {
                     var r = Helpers.HttpPost($"http://{site}/api/survey/GetSurvey",new { channelID = channelid, surveyID = info.SurveyID });
-                    dynamic d = JsonConvert.DeserializeObject(r.Result);
+                    var aaa = r.Result;
+                    dynamic d = JsonConvert.DeserializeObject(aaa);
                     if( (bool)d["success"] && d["data"]["survey"] != null )
                         editInfo.SurveyJson = d["data"]["survey"].ToString();
                 }
