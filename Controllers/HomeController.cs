@@ -31,7 +31,7 @@ namespace UBSurvey.Controllers
         {
             //string ss =Helpers.GenerateKey(16);
             var site = Helpers.GetMyIp() + ":5000";
-            // for(int i =0; i < 100; i++)
+            // for(int i =0; i < 1; i++)
             // {
             //     UBSurveyInfo s = new UBSurveyInfo();
             //     s.SurveyID = "5a9e290f2713a086b8a57a7b";
@@ -42,6 +42,7 @@ namespace UBSurvey.Controllers
             //     s.EndDate = s.StartDate.AddDays((new Random()).Next(0, 100));
             //     s.LimitPersons = (new Random()).Next(0, 1000);
             //     var r1 = Helpers.HttpPost($"http://{site}/api/ubsurvey/save", s);  
+            //     string sadf = r1.Result;
             // }
 
             //string ss = Url.Action("/api/ubsurvey/list");

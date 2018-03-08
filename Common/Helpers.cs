@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Web;
 using MongoDB.Bson;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace UBSurvey.Common
 {
@@ -239,6 +240,20 @@ namespace UBSurvey.Common
         {
             var json = objectIdReplace.Replace(bson.ToJson(), (s) => s.Groups[1].Value);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
+        }
+
+        public static bool ParamsValidation(this JObject obj, params string[] p)
+        {
+            if(obj == null)
+                return false;
+            foreach(var pr in p) 
+            {
+                if(obj[pr] == null)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

@@ -42,10 +42,11 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult GetSurvey([FromBody]JObject obj)
         {
-            if(obj == null ||  (string.IsNullOrEmpty((string)obj["channelID"]) || string.IsNullOrEmpty((string)obj["surveyID"])))
+            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID"))
             {
                 return Json(new { success = false, message = "파라미터 오류입니다." });
             }
+            
             var data = _repository.GetSurvey((string)obj["channelID"], (string)obj["surveyID"]);
             if (data == null)
                 return Json(new { data = data, success = false, message = "데이터를 조회 할 수 없습니다." });
@@ -55,25 +56,32 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult RemoveSurvey([FromBody]JObject obj)
         {
+            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID"))
+            {
+                return Json(new { success = false, message = "파라미터 오류입니다." });
+            }
             var result = _repository.RemoveSurvey((string)obj["channelID"], (string)obj["surveyID"]);
             return Json(new { success = true, data = result });
         } 
 
         [HttpPost]
-        public JsonResult GetSurveyResultCount(string channelID, string surveyID)
+        public JsonResult GetSurveyResultCount([FromBody]JObject obj)
         {
-            var result = _repository.GetSurveyResultCount(channelID, surveyID);
+            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID"))
+                return Json(new { success = false, message = "파라미터 오류입니다." });
+
+            var result = _repository.GetSurveyResultCount((string)obj["channelID"], (string)obj["surveyID"]);
             return Json(new { success = true, data = result });
         } 
 
         [HttpPost]
-        public JsonResult ExistsUserToken(string channelID, string surveyID, string userToken)
+        public JsonResult ExistsUserToken([FromBody]JObject obj)
         {
-            var result = _repository.ExistsUserToken(channelID, surveyID, userToken);
+            if(!Helpers.ParamsValidation(obj, "channelID", "surveyID",  "userToken"))
+                return Json(new { success = false, message = "파라미터 오류입니다." });
+
+            var result = _repository.ExistsUserToken((string)obj["channelID"], (string)obj["surveyID"], (string)obj["userToken"]);
             return Json(new { success = true, data = result });
         } 
-
-        //             ////////////////////////////////////////////////////////   
     }
-
 }
