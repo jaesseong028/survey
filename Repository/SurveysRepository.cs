@@ -44,15 +44,21 @@ namespace UBSurvey.Repository
             var surveyString = contact.Survey.ToString();
             contact.Survey = BsonDocument.Parse(surveyString);
             //var o = JsonConvert.DeserializeObject(surveyString).ToBsonDocument();
-            
-            if (!string.IsNullOrEmpty(contact._id))
+            try
             {
-                ReplaceOneResult actionResult = _context.Surveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
-                return actionResult.IsAcknowledged;
-                // && actionResult.ModifiedCount > 0;
+                if (!string.IsNullOrEmpty(contact._id))
+                {
+                    ReplaceOneResult actionResult = _context.Surveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
+                    return actionResult.IsAcknowledged;
+                    // && actionResult.ModifiedCount > 0;
+                }
+                _context.Surveys.InsertOne(contact);
             }
-            _context.Surveys.InsertOne(contact);
-
+            finally
+            {
+                contact.Survey = ((BsonDocument)contact.Survey).ToDynamic();
+            }
+            
             return true;
         }
 
