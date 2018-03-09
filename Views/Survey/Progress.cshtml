@@ -27,14 +27,19 @@
                 _surveyResult : JSON.parse(result)
             };
 
-            
             $.ajax({
                 type : 'POST',
-                url : '/Survey/Complete',
+                url : '/Survey/save',
                 contentType: 'application/json',
                 data : JSON.stringify(data),
                 success : function (res) {
-                    console.log(res);
+                    if(res.success)
+                    {
+                        location.replace(res.data);
+                    }else
+                    {
+                        alert('오류가 발생 하였습니다.');
+                    }
                 }, 
                 error: function(XMLHttpRequest, textStatus, errorThrown) { 
                     console.log("Status: " + textStatus +  "Error: " + errorThrown);

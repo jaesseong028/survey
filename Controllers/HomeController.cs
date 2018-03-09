@@ -167,12 +167,18 @@ namespace UBSurvey.Controllers
                 return NotFound("Count 오류.");
             else if(!((int)d["data"] >= info.LimitPersons))
                 return NotFound("인원이 마감되었습니다.");
+            string returnUrl = $"{_globalVariable.Value.ApiDomain}/Home/Complete";
 
-            var val = $"AuthDate={DateTime.Now.ToString("yyyyMMddHHmmss")}&SurveyID={info.SurveyID}";
+            var val = $"AuthDate={DateTime.Now.ToString("yyyyMMddHHmmss")}&SurveyID={info.SurveyID}&retUrl={returnUrl}";
             var enVal = Helpers.AesEncrypt256(val,_globalVariable.Value.UserEncyptKey);
 
             return RedirectToAction("Progress","Survey",new{channelid = info.ChannelID, val = enVal});
 
+        }
+
+        public IActionResult Complete()
+        {
+            return View();
         }
 
 

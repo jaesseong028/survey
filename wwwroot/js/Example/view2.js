@@ -1,5 +1,64 @@
 // JQuery의 ready 메서드를 순수 Javascript로 대체
 // Mozilla, Opera, Webkit
+;(function() {
+    // helpers
+    var regExp = function(name) {
+        return new RegExp('(^| )'+ name +'( |$)');
+    };
+    var forEach = function(list, fn, scope) {
+        for (var i = 0; i < list.length; i++) {
+            fn.call(scope, list[i]);
+        }
+    };
+
+    // class list object with basic methods
+    function ClassList(element) {
+        this.element = element;
+    }
+
+    ClassList.prototype = {
+        add: function() {
+            forEach(arguments, function(name) {
+                if (!this.contains(name)) {
+                    this.element.className += this.element.className.length > 0 ? ' ' + name : name;
+                }
+            }, this);
+        },
+        remove: function() {
+            forEach(arguments, function(name) {
+                this.element.className =
+                    this.element.className.replace(regExp(name), '');
+            }, this);
+        },
+        toggle: function(name) {
+            return this.contains(name) 
+                ? (this.remove(name), false) : (this.add(name), true);
+        },
+        contains: function(name) {
+            return regExp(name).test(this.element.className);
+        },
+        // bonus..
+        replace: function(oldName, newName) {
+            this.remove(oldName), this.add(newName);
+        }
+    };
+
+    // IE8/9, Safari
+    if (!('classList' in Element.prototype)) {
+        Object.defineProperty(Element.prototype, 'classList', {
+            get: function() {
+                return new ClassList(this);
+            }
+        });
+    }
+
+    // replace() support for others
+    if (window.DOMTokenList && DOMTokenList.prototype.replace == null) {
+        DOMTokenList.prototype.replace = ClassList.prototype.replace;
+    }
+})();
+
+
 if (document.addEventListener) { 
     document.addEventListener("DOMContentLoaded", function () { 
         document.removeEventListener("DOMContentLoaded", arguments.callee, false); 
@@ -288,7 +347,13 @@ function createCheckRadio( elItems, items )
     for(p in elinputs)
     {
         if(elinputs.hasOwnProperty(p))
-            cdom.get(elinputs[p]).event('change', function(){ var obj = this; e_change_checkradio( obj, items ); });
+        {
+            cdom.get(elinputs[p]).event('change', function(){ 
+                var targetElemnt = event.target || event.srcElement;
+                e_change_checkradio( targetElemnt, items ); 
+            });
+
+        }
     }
 }
 
@@ -461,8 +526,9 @@ function addBtnEvent(elPage, btnType)
     var elbtn = cdom.get('button').addcss('btn' + btnType).inhtml(btnType);
 
     elbtn.event('click', function(){
-        var obj = this;
-        e_click_btn(obj, btnType);
+        var targetElemnt = event.target || event.srcElement;
+        
+        e_click_btn(targetElemnt, btnType);
     });
 
     cdom.getcss(elPage,'btn-set',0).append(elbtn.element)
@@ -587,6 +653,7 @@ function validQuestion ( pageNode )
 
 function e_click_btn( obj, btnType )
 {
+
     var pageNode = obj.parentNode.parentNode;   //page
     
     if(btnType == 'Next' && validQuestion(pageNode))
@@ -603,11 +670,8 @@ function e_click_btn( obj, btnType )
         isVisiblePage(prePObj, true);
     }else if (btnType == 'Complete' && validQuestion(pageNode))
     {
-        // 결과를 넣자..
         var pageSetNode = pageNode.parentNode;
         makeResultJson(pageSetNode);
-
-        console.log('완료');
     }
 }
 
@@ -723,17 +787,11 @@ function makeResultJson( pageSetNode ){
     
     resultJson.answer = answer;
     var link = document.location.pathname; 
-    alert(link);
-    if(link == '/Survey/Progress')
-    {
-        
+
+    if(link.toLowerCase() == '/survey/progress')
         surveyInfo.sendReuslt(JSON.stringify(resultJson));
-        alert("Save");
-    }else
-    {
-        alert('이건가');
+    else
         alert(JSON.stringify(resultJson));
-    }
 
     
     
