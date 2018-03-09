@@ -12,9 +12,8 @@
 </environment>
 <script>
     
-
     var surveyInfo = {
-        strSurvey : '@Html.Raw(ViewData["survey"])'
+        strSurvey : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["survey"]))
     };
 
 </script>

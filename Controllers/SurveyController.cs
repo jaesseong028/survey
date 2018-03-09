@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using UBSurvey.Common;
 using UBSurvey.Lib;
 using UBSurvey.Models;
@@ -31,12 +32,12 @@ namespace UBSurvey.Controllers
             string query = Helpers.AesDecrypt256(val, _globalVariable.Value.UserEncyptKey);
             var dic = Helpers.GetQueryStringToDictionary(query, "userToken", "SurveyID", "AuthDate");
             bool isAuth = Validation.ConfirmAuthDate(dic["authdate"]);
-            if(!isAuth)
-            {
-                return NotFound("유효하지 않는 데이터 입니다.");
-            }
+            // if(!isAuth)
+            // {
+            //     return NotFound("유효하지 않는 데이터 입니다.");
+            // }
 
-            if(!(dic.ContainsKey("usertoken") && dic.ContainsKey("surveyid") && dic.ContainsKey("authdate")))
+            if(!(dic.ContainsKey("surveyid") && dic.ContainsKey("authdate")))
             {
                 return NotFound();
             }
@@ -46,7 +47,8 @@ namespace UBSurvey.Controllers
             if(surveyInfo == null){
                 return NotFound();
             }
-
+            
+            dic.Add("channelID",channelID);
             dic.Remove("authdate");
             V_ProgressInfo model = new V_ProgressInfo();
             model.Survey = surveyInfo.Survey;
@@ -67,6 +69,7 @@ namespace UBSurvey.Controllers
             
             if(surveyInfo == null )
                 return Json(new { success = false});
+            
             
             SurveyResult m_surveyResult = new SurveyResult(
             ){

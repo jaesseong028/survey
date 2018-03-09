@@ -31,7 +31,7 @@ namespace UBSurvey.Controllers
         [HttpPost]
         public IActionResult Prev(string survey)
         {
-            ViewBag.survey = survey;
+            ViewBag.survey =  JObject.Parse(survey);
             return View();
         }       
     }

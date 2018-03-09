@@ -120,46 +120,30 @@ namespace UBSurvey.Controllers
         {
             // ubsurveyid 확인
             if(string.IsNullOrEmpty(ubsurveyid))
-                return NotFound();
+                return NotFound("Parameter가 누락 되었습니다.");
 
 
             var info = _repository.GetUBSurvey(ubsurveyid);
             if(info == null)
-                return NotFound();
+                return NotFound("Parameter가 유효하지 않습니다.");
             
             //기간 확인
             if(!Validation.ConfirmPeriod(DateTime.Now, info.StartDate, info.EndDate))
-                return NotFound("기간 확인 필요!@!!@!@#!");
+                return NotFound("기간이 종료 되었습니다.");
 
             // 전체 진행 수 확인
             var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurveyResultCount",new { channelID = info.ChannelID, surveyID = info.SurveyID});
             dynamic d = JsonConvert.DeserializeObject(r.Result);
-            
-            // UserToken 확인
-            // if(!string.IsNullOrEmpty(usertoken))
-            // {
-            //     var ut = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/ExistsUserToken",new { channelID = info.ChannelID, surveyID = info.SurveyID, userToken = usertoken});
-            //     dynamic dut = JsonConvert.DeserializeObject(r.Result);
-            //     if(!(bool)dut["success"] || dut["data"] == null)
-            //     return NotFound(); //오류
-            
-            //     if((bool)dut["data"])
-            //         return NotFound(); // 이미 있음   
-            // }
-            
-            
+            if(!(bool)d["success"])
+                return NotFound("Count 오류.");
+            else if(!((int)d["data"] >= info.LimitPersons))
+                return NotFound("인원이 마감되었습니다.");
 
-            // ///////////////////////////////
-            // 임시 파라미터
-            // val = 
-            // channelID = "5a8fb4200ad8963fa4242cb2";
-            // val = Helpers.AesEncrypt256(val,"#ltqdcpk$)#!_no1");
-            // string temp = "?val=" + val + "&" + "ChannelID=" + channelID;
-            // ///////////////////////////////
+            var val = $"AuthDate={DateTime.Now.ToString("yyyyMMddHHmmss")}&SurveyID={info.SurveyID}";
+            var enVal = Helpers.AesEncrypt256(val,_globalVariable.Value.UserEncyptKey);
 
-            var val = "AuthDate=" + DateTime.Now.ToString("yyyyMMddHHmmss") + "&SurveyID=5a9e3a9d4b8ec158f8bf0620&userToken=CCCC";
+            return RedirectToAction("Progress","Survey",new{channelid = info.ChannelID, val = enVal});
 
-            return View();   
         }
 
 

@@ -5,28 +5,34 @@
     Layout = "~/Views/Shared/Survey/_Layout.cshtml";
     
 }
-
 <link rel="stylesheet" type="text/css" media="screen" href="~/css/Example/main2.css" />
 
 <environment include="Development">
     <script src="~/js/Example/view2.js"></script>
-    <script src="~/lib/jquery/dist/jquery.js"></script>        
+    <script src="~/lib/jquery/dist/jquery.js"></script>    
 </environment>
 <environment include="Production">    
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>        
     <script src="~/js/Example/view2.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>    
 </environment>
 
 <script>
-
     var surveyInfo = {
         info : '@Model._info',
-        strSurvey : '@Html.Raw(Model.Survey)',
+        strSurvey : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Survey)),
         sendReuslt : function(result){
+
+            var data = {
+                _info : this.info,
+                _surveyResult : JSON.parse(result)
+            };
+
+            
             $.ajax({
                 type : 'POST',
                 url : '/Survey/Complete',
-                data : { _info : this.info, _surveyResult : result},
+                contentType: 'application/json',
+                data : JSON.stringify(data),
                 success : function (res) {
                     console.log(res);
                 }, 
@@ -36,9 +42,6 @@
             });
         }
     };
-    
 </script>
 
-
 <div id="ubSurvey"></div>
-

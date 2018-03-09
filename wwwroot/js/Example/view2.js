@@ -208,10 +208,11 @@ function e_change_checkradio( obj, items )
             }
         }
 
-    } else if(items.type === 'radio' )
+    } else if(items.type === 'radio'   )
     {
         var itemText = document.querySelector('input[id='+ items.name +'_othertext]');
-        itemText.value = '';
+        if(itemText != null)
+            itemText.value = '';
     }
 }
 
@@ -722,14 +723,15 @@ function makeResultJson( pageSetNode ){
     
     resultJson.answer = answer;
     var link = document.location.pathname; 
-
-    if(link == '/survey/Progress')
+    alert(link);
+    if(link == '/Survey/Progress')
     {
         
-        surveyInfo.sendReuslt(resultJson);
+        surveyInfo.sendReuslt(JSON.stringify(resultJson));
         alert("Save");
     }else
     {
+        alert('이건가');
         alert(JSON.stringify(resultJson));
     }
 
@@ -763,13 +765,16 @@ function createPageBtn(elPage, totalPage, currPage )
 }
 
 function domReady (){
+
     try
     {
+
         var surveyId = document.getElementById('ubSurvey');
         
-        parseSurvey = JSON.parse(surveyInfo.strSurvey);
-
+        //parseSurvey = JSON.parse(surveyInfo.strSurvey);
+        parseSurvey = surveyInfo.strSurvey;
         console.log(surveyInfo);
+        
 
         var surveyJson = parseSurvey.survey == undefined ? parseSurvey : parseSurvey.survey;
 
