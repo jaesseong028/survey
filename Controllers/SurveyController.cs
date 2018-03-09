@@ -30,14 +30,14 @@ namespace UBSurvey.Controllers
             }
 
             string query = Helpers.AesDecrypt256(val, _globalVariable.Value.UserEncyptKey);
-            var dic = Helpers.GetQueryStringToDictionary(query, "userToken", "SurveyID", "AuthDate");
+            var dic = Helpers.GetQueryStringToDictionary(query, "userToken", "SurveyID", "AuthDate","retUrl");
             bool isAuth = Validation.ConfirmAuthDate(dic["authdate"]);
             // if(!isAuth)
             // {
             //     return NotFound("유효하지 않는 데이터 입니다.");
             // }
 
-            if(!(dic.ContainsKey("surveyid") && dic.ContainsKey("authdate")))
+            if(!(dic.ContainsKey("surveyid") && dic.ContainsKey("authdate") && dic.ContainsKey("returl")))
             {
                 return NotFound();
             }
@@ -59,7 +59,7 @@ namespace UBSurvey.Controllers
 
 
         [HttpPost]
-        public JsonResult Complete( [FromBody] V_ProgressInfo result)
+        public JsonResult save( [FromBody] V_ProgressInfo result)
         {
             var deVal = Helpers.AesDecrypt256(result._info, _globalVariable.Value.SurveyEncyptKey);
             NameValueCollection qscoll =  HttpUtility.ParseQueryString(deVal);
@@ -80,9 +80,9 @@ namespace UBSurvey.Controllers
             var isSuccess = _repository.InsertSurveyResult(qscoll["channelID"], qscoll["surveyID"], m_surveyResult);
 
             if(isSuccess)
-                return Json(new { success = true, data = "result" });
+                return Json(new { success = true, data = qscoll["retUrl"].ToString() });
             else
-                return Json(new { success = false, data = "result" });
+                return Json(new { success = false });
         } 
 
     }
