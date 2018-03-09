@@ -1,4 +1,4 @@
-﻿@model System.Tuple<object, object, object, object>
+﻿@model System.Tuple<object, object, object, object, object>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -38,6 +38,14 @@
     </table>
     <div style="margin-bottom:15px"><button class="btn btn-success" v-on:click="createSurvey">설문등록</button></div>
     <table class="table table-bordered table-hover">
+        <colgroup>
+            <col width="10%"/>
+            <col width="40%"/>
+            <col width="20%"/>
+            <col width="10%"/>
+            <col width="10%"/>
+            <col width="10%"/>
+        </colgroup>
         <thead>
             <tr class="info">
                 <th>NO</th>
@@ -45,6 +53,7 @@
                 <th>기간</th>
                 <th>참여인원</th>
                 <th>삭제</th>
+                <th>URL복사</th>
             </tr>
         </thead>
         <tr v-for="(s, index) in surveys">
@@ -52,7 +61,8 @@
             <td><a :href="editActionUrl(s._id, s.channelID)">{{s.title}}</a></td>
             <td>{{s.startDateAndEndDate}}</td>
             <td>{{s.limitPersonsStr}}</td>
-            <td><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
+            <td class="text-center"><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
+            <td class="text-center"><button class="btn btn-info" v-on:click="copy_to_clipboard(s._id)" >복사</button> </td>
         </tr>     
     </table>
     <center>
@@ -99,6 +109,22 @@ var vue = new Vue({
         });
     }, 
     methods : {
+        copy_to_clipboard : function(UBSurveyID) {
+            var d = '@this.Model.Item5' + '/?UBSurveyID=' + UBSurveyID;
+            if(this.is_ie()) {
+                window.clipboardData.setData("Text", d);
+                alert("복사되었습니다.");
+                return;
+            }
+            prompt("Ctrl+C를 눌러 복사하세요.", d);
+        },
+        is_ie : function(){
+            console.log(navigator.userAgent);
+            if(navigator.userAgent.toLowerCase().indexOf("chrome") != -1) return false;
+            if(navigator.userAgent.toLowerCase().indexOf("msie") != -1) return true;
+            if(navigator.userAgent.toLowerCase().indexOf("windows nt") != -1) return true;
+            return false;
+        },
         createSurvey : function(){
             location.href = '/home/edit/?channelID=' + this.searchData.channelid;
         },

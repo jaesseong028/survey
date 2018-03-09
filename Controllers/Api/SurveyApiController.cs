@@ -48,6 +48,13 @@ namespace UBSurvey.Controllers.Api
             var data = _repository.GetSurvey((string)obj["channelID"], (string)obj["surveyID"]);
             if (data == null)
                 return Json(new { data = data, success = false, message = "데이터를 조회 할 수 없습니다." });
+
+
+            foreach (var r in data._surveyResult)
+            {   
+                var dd = r.GetType().GetProperties();
+            }
+
             return Json(new { data = data, success = true});
         } 
 
@@ -79,6 +86,28 @@ namespace UBSurvey.Controllers.Api
 
             var result = _repository.ExistsUserToken((string)obj["channelID"], (string)obj["surveyID"], (string)obj["userToken"]);
             return Json(new { success = true, data = result });
+        } 
+
+        [HttpPost]
+        public JsonResult GetSurveyResult([FromBody]JObject obj)
+        {
+             if(!obj.paramsValidation( "channelID", "surveyID"))
+                return Json(new { success = false, message = "파라미터 오류입니다." });
+            
+            var data = _repository.GetSurvey((string)obj["channelID"], (string)obj["surveyID"]);
+
+            dynamic expando = new ExpandoObject();
+            var p = expando as IDictionary<String, object>;
+            p["A"] = "New val 1";
+            p["B"] = "New val 2";
+
+            string ss = expando.B;
+            //data._surveyResult
+
+
+            if (data == null)
+                return Json(new { success = false, message = "데이터를 조회 할 수 없습니다." });
+            return Json(new { data = data._surveyResult, success = true});
         } 
     }
 }

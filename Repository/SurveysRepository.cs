@@ -78,7 +78,15 @@ namespace UBSurvey.Repository
                 return null;
                 
             data.Survey = Helpers.ToDynamic(data.Survey);
-            
+
+            List<dynamic> list = new List<dynamic>();
+            foreach(var r in data._surveyResult)
+            {
+                list.Add(((BsonDocument)r).ToDynamic());
+            }
+
+            data._surveyResult = list;
+
             return data;
         }
 

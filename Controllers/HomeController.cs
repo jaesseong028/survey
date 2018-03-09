@@ -15,7 +15,7 @@ using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
 using SSOCS;
-
+using System.Dynamic;
 
 namespace UBSurvey.Controllers
 {
@@ -30,6 +30,35 @@ namespace UBSurvey.Controllers
             _repository = repository;
             _globalVariable =  globalVariable;
         }
+        public IActionResult Result(string ubsurveyid = "5aa0ee2b9806b8b4f0c37ce2")
+        {
+            if (string.IsNullOrEmpty(ubsurveyid))
+                return NotFound();
+            
+            var info = _repository.GetUBSurvey(ubsurveyid);
+            if (info == null)
+                return NotFound();
+
+            if (string.IsNullOrEmpty(info.SurveyID))
+                return NotFound();
+
+            
+
+
+            var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });
+            var d = JsonConvert.DeserializeObject<dynamic>(r.Result);
+
+            List<dynamic> list = new List<dynamic> ();
+            foreach(var dd in d["data"]["_surveyResult"])
+            {
+                 list.Add(dd.Values.answer);
+            }
+            if( (bool)d["success"] && d["data"]["survey"] != null)
+                 return View(list);
+            else
+                return NotFound();
+        }
+
         public IActionResult List(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
             //string ss =Helpers.GenerateKey(16);
@@ -70,7 +99,7 @@ namespace UBSurvey.Controllers
             var searchData = Helpers.GetQueryStringToDictionary(uri.Query, "channelID", "title", "startDate", "endDate", "approveStatus");
             
             var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, (int)d["totalCount"]);
-            Tuple<object, object, object, object> tuple = new Tuple<object, object, object, object>(d["data"], pager, searchData, services);
+            Tuple<object, object, object, object, object> tuple = new Tuple<object, object, object, object, object>(d["data"], pager, searchData, services, _globalVariable.Value.ApiDomain);
             return View(tuple);
         }
 

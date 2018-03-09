@@ -1,0 +1,47 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Scripts {
+<environment include="Development">
+    <script src="~/js/vue.min.js"></script>
+</environment>
+<environment include="Production">    
+    <script src="~/js/vue.min.js"></script>
+</environment>
+}
+
+<link rel="stylesheet" type="text/css" href="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.css">
+<link rel="stylesheet" type="text/css" href="https://handsontable.com/static/css/main.css">
+<script src="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.js"></script>
+
+
+<div id="hot"></div>
+<script>
+  var dataObject =[{"id": ["item1","item2"], "user" : "dd"},{"id" : ["item1","item2"], "user" : "dddd"} ]
+   //@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
+   
+  // @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
+var currencyCodes = ['EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD', 'SEK', 'NOK', 'BRL', 'CNY', 'RUB', 'INR', 'TRY', 'THB', 'IDR', 'MYR', 'MXN', 'ARS', 'DKK', 'ILS', 'PHP'];
+
+var hotElement = document.querySelector('#hot');
+//var hotElementContainer = hotElement.parentNode;
+var hotSettings = {
+  data: dataObject,
+  
+  stretchH: 'all',
+  width: '100%',
+  autoWrapRow: true,
+  rowHeaders: true,
+  manualRowMove: true,
+  manualColumnMove: true,
+  manualRowResize: true,
+  manualColumnResize: true,
+  contextMenu: false,
+  readOnly : true
+};
+var hot = new Handsontable(hotElement, hotSettings);
+</script>
+
+

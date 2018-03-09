@@ -1,6 +1,14 @@
 answer : [
-            /*radio*/           {"question1" : "기타", "other_text_value" : "기타답변입니다."},               
-            /*checkbox*/        {"question3" : ["인터넷","약사회","기타"], "other_text_value" : "기타답변입니다."},
-            /*text or comment*/ {"question4" : "OOO 입니다."},
-            /*rate*/            {"question4" : "높음"},
+            /*radio*/           {"question1" : ["기타", {"other_text_value" : "기타답변입니다."}],               
+            /*checkbox*/        "question3" : ["인터넷","약사회","기타", {"other_text_value" : "기타답변입니다."}],
+            /*text or comment*/ "question4" : "OOO 입니다.",
+            /*rate*/            "question4" : "높음"
+                                "question6" : ["인터넷","약사회","기타"]
+                                },
+                                {"question1" : ["기타", {"other_text_value" : "기타답변입니다."}],               
+            /*checkbox*/        "question3" : ["인터넷","약사회","기타", {"other_text_value" : "기타답변입니다."}],
+            /*text or comment*/ "question4" : "OOO 입니다.",
+            /*rate*/            "question4" : "높음"
+                                "question6" : ["인터넷","약사회","기타"]
+                                },
 ]
