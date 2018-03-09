@@ -28,5 +28,20 @@ namespace UBSurvey.Common
 
             return true;
         }
+
+        public static bool ConfirmPeriod(DateTime c, DateTime s, DateTime e)
+        {
+        
+             c = DateTime.Parse(c.ToShortDateString());
+             s = DateTime.Parse(s.ToShortDateString());
+             e = DateTime.Parse(e.ToShortDateString());
+            TimeSpan ps = c- s;
+            TimeSpan pe = c- e;
+
+            if(ps.TotalDays >= 0 && pe.TotalDays <= 0 )
+                return true;
+                
+            return false;
+        }
     }
 }
