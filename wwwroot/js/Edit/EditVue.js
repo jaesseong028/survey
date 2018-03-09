@@ -86,7 +86,16 @@ var vue = new Vue({
         },
         save : function(){
             var s = this.getCleanSurveyValue();    
-            $("#saveSurveyJson").val(JSON.stringify(s));
+            var jsonStr = JSON.stringify(s);
+            jsonStr = jsonStr.replace(/[\\]/g, '\\\\')
+            .replace(/[\"]/g, '\\\"')
+            .replace(/[\/]/g, '\\/')
+            .replace(/[\b]/g, '\\b')
+            .replace(/[\f]/g, '\\f')
+            .replace(/[\n]/g, '\\n')
+            .replace(/[\r]/g, '\\r')
+            .replace(/[\t]/g, '\\t');
+            $("#saveSurveyJson").val(jsonStr);
             $("#saveform").submit();
         },
         getQueryString : function(key){

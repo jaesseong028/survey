@@ -103,8 +103,9 @@ namespace UBSurvey.Repository
 
             if (result == null || data == null)
                 return false;
+            
 
-            var bsonDoc = result.ToBsonDocument();
+            var bsonDoc = BsonDocument.Parse(JsonConvert.SerializeObject(result));
             data._surveyResult = data._surveyResult.Append(bsonDoc);
 
 

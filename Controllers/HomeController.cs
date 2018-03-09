@@ -30,7 +30,7 @@ namespace UBSurvey.Controllers
             _repository = repository;
             _globalVariable =  globalVariable;
         }
-        public IActionResult Index(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
+        public IActionResult List(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
             //string ss =Helpers.GenerateKey(16);
             //var site = _globalVariable.Value.ApiDomain;
@@ -116,7 +116,7 @@ namespace UBSurvey.Controllers
             return View(editInfo);
         }
 
-        public IActionResult Progress(string ubsurveyid)
+        public IActionResult Index(string ubsurveyid)
         {
             // ubsurveyid 확인
             if(string.IsNullOrEmpty(ubsurveyid))

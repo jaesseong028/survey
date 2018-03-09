@@ -63,7 +63,7 @@ Vue.component('tab-page-com', {
                 <label class="labelfor cur" v-bind:class="{setting: page === selectPage}" :for="getPageID(page.name, index)">{{page.name}}<span v-bind:class="{sel: page === selectPage}" class="glyphicon glyphicon-cog icon"></span> </label>\
                 <label class="plus cur" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>\
                 <div class="tab-container">\
-                    <div class="row" v-if="page.title || page.description">\
+                    <div v-if="page.title || page.description">\
                         <label v-if="page.title" class="col-sm-12 text-left page-title">{{page.title}}</label>\
                         <label v-if="page.description" class="col-sm-12 text-left page-desc" v-html="convertHtml(page.description)"></label>\
                     </div>\
@@ -186,13 +186,15 @@ Vue.component('rate-list-com', {
         <template v-if="el.min_description !== undefined">\
             <label class="rate_min">{{el.min_description}}</label>\
         </template>\
+        <span class="btn-group">\
         <template v-for="(choice, index) in el.choices">\
             <rate-com :el=el :choice=choice></rate-com>\
         </template>\
+        </span>\
         <template v-if="el.max_description !== undefined">\
         <label class="rate_max">{{el.max_description}}</label>\
         </template>\
-    </div>',
+    </div> ',
     props: { el: { type: Object, required: true }},
 })
 
@@ -200,10 +202,10 @@ Vue.component('rate-list-com', {
 
 Vue.component('rate-com', {
     template: '\
-<div class="rate">\
+    <span class="rate">\
     <input :value=choice type="radio" :name=el.name :id=uid v-model=el.value />\
-    <button class="btn btn-default" :for=uid>{{choice}}</button>\
-</div>',
+    <label class="btn btn-default" :for=uid>{{choice}}</label>\
+    </span>',
     //gs : [mixin],
     props: { el: { type: Object, required: true }, choice : { type :  Number}},
     computed : {

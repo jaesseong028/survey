@@ -29,8 +29,8 @@ body, html{ height:102%; }
 .tab .plus {padding: 8px; border: 1px solid #eee; margin-left: -1px; position: relative;left: 6px; top: -44px;color:#87B2F1; }
 .setting {border:1px solid #87B2F1;}
 .tabgroup {display: none;}
-.page-title{ font-size: 1.5em; font-weight: bold;}
-.page-desc{ border: 1px solid #c1c1c1; margin:3px 0px 14px; padding: 10px; width:100% }
+.page-title{ padding: 30px; color:#222; font-size: 20px; font-weight:bold}
+.page-desc{ padding-left: 30px; padding-bottom: 20px; font-size: 14px; color:#14a5e6; }
 .up_down { -webkit-appearance: none;cursor: pointer;border: 0; }
 .controlContainer {padding-left: 11px; padding-right:27px;}
 
@@ -40,8 +40,8 @@ body, html{ height:102%; }
 .tab [type=radio]:checked ~ .labelfor ~ .tab-container {z-index: 1;display:block;} 
 
 .rate [type=radio] { display: none;}
-.rate button { min-width: 6em; margin:1px}
-.rate [type=radio]:checked ~ label {color: #333;background-color: #e7f6fc;border-color: #14a5e6; }
+.rate label { min-width: 6em; margin:1px}
+.rate [type=radio]:checked ~ label {color:#14a5e6;background-color: #e7f6fc;border-color: #14a5e6; }
 
 
 .rate_min { padding-right: 3px; }
