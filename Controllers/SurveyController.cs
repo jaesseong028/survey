@@ -36,8 +36,7 @@ namespace UBSurvey.Controllers
                 return NotFound("유효하지 않는 데이터 입니다.");
             }
 
-            var encryptKey = _repository.GetChannelEncryptKey(channelID);
-            string query = Helpers.AesDecrypt256(val, encryptKey);
+            string query = Helpers.AesDecrypt256(val, _globalVariable.Value.UserEncyptKey);
             var dic = Helpers.GetQueryStringToDictionary(query, "userToken", "SurveyID", "AuthDate");
             bool isAuth = Validation.ConfirmAuthDate(dic["authdate"]);
             if(!isAuth)

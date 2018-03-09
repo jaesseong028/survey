@@ -21,7 +21,6 @@ namespace UBSurvey.Repository
         SurveyInfo GetSurvey(string channelID, string surveyID);
         bool RemoveSurvey(string channelID, string surveyID);
         bool InsertSurveyResult (string channelID, string surveyID, SurveyResult result);
-        string GetChannelEncryptKey (string channelID);
         int GetSurveyResultCount (string channelID, string surveyID);
         bool ExistsUserToken (string channelID, string surveyID, string userToken);
     } 
@@ -116,19 +115,6 @@ namespace UBSurvey.Repository
                 && actionResult.ModifiedCount > 0;
         }
 
-        /// API 로 연결 하지 말것
-        public string GetChannelEncryptKey(string channelID)
-        {
-            ObjectId o;
-            if (!ObjectId.TryParse(channelID, out o))
-                return null;
-
-            var data = _context.Channels.AsQueryable().Where(p => p._id.Equals(o)).FirstOrDefault();
-            if(data == null)
-                return null;
-
-            return data.EncryptKey;
-        }
         public int GetSurveyResultCount (string channelID, string surveyID)
         {
             ObjectId o;

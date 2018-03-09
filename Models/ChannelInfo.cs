@@ -11,6 +11,5 @@ namespace UBSurvey.Models
         public string _id { get; set; }
 
         public string ServiceName { get; set;}
-        public string EncryptKey {get;set;}
     }
 }

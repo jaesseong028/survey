@@ -60,6 +60,7 @@ namespace UBSurvey
                 options.ChanelID = Configuration.GetSection("Settings:ChanelID").Value;
                 options.PageSize = int.Parse(Configuration.GetSection("Settings:PageSize").Value);
                 options.SurveyEncyptKey = Configuration.GetSection("Settings:SurveyEncyptKey").Value;
+                options.UserEncyptKey = Configuration.GetSection("Settings:UserEncyptKey").Value;
                 options.ApiDomain = Configuration.GetSection("Settings:ApiDomain").Value;
             });
 
