@@ -165,7 +165,7 @@ namespace UBSurvey.Controllers
             dynamic d = JsonConvert.DeserializeObject(r.Result);
             if(!(bool)d["success"])
                 return NotFound("Count 오류.");
-            else if(!((int)d["data"] >= info.LimitPersons))
+            else if(((int)d["data"] >= info.LimitPersons))
                 return NotFound("인원이 마감되었습니다.");
             string returnUrl = $"{_globalVariable.Value.ApiDomain}/Home/Complete";
 
