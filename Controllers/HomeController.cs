@@ -30,7 +30,7 @@ namespace UBSurvey.Controllers
             _repository = repository;
             _globalVariable =  globalVariable;
         }
-        public IActionResult Result(string ubsurveyid = "5aa0ee2b9806b8b4f0c37ce2")
+        public IActionResult Result(string ubsurveyid = "5aa1e0f722b2867338e411ac")
         {
             if (string.IsNullOrEmpty(ubsurveyid))
                 return NotFound();
@@ -52,6 +52,11 @@ namespace UBSurvey.Controllers
             foreach(var dd in d["data"]["_surveyResult"])
             {
                  list.Add(dd.Values);
+
+                foreach (JProperty property in dd.Values.Properties())
+                {
+                    Console.WriteLine(property.Name + " - " + property.Value);
+                }
             }
             if( (bool)d["success"] && d["data"]["survey"] != null)
                  return View(list);

@@ -19,12 +19,9 @@
 
 <div id="hot"></div>
 <script>
-  var dataObject =[{"id": ["item1","item2"], "user" : "dd"},{"id" : ["item1","item2"], "user" : "dddd"} ]
-   //@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
+  //var dataObject =[{"id": ["item1","item2"], "user" : "dd"},{"id" : ["item1","item2"], "user" : "dddd"} ]
+   var dataObject = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
 
-
-   [{"Question4":"asdf","Question5":"2"}, {"Question4":"asdf1","Question5":"22"}]
-   
   // @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
 var currencyCodes = ['EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD', 'SEK', 'NOK', 'BRL', 'CNY', 'RUB', 'INR', 'TRY', 'THB', 'IDR', 'MYR', 'MXN', 'ARS', 'DKK', 'ILS', 'PHP'];
 
