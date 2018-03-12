@@ -523,7 +523,21 @@ function isVisiblePage(elPage, isShow)
 
 function addBtnEvent(elPage, btnType)
 {
-    var elbtn = cdom.get('button').addcss('btn' + btnType).inhtml(btnType);
+    var btnTxt = '';
+    switch(btnType)
+    {
+        case 'Next':
+            btnTxt = '다음';
+            break;
+        case 'Complete':
+            btnTxt = '완료';
+            break;
+        case 'Pre':
+            btnTxt = '이전';
+            break;
+    }
+
+    var elbtn = cdom.get('button').addcss('btn' + btnType).inhtml(btnTxt);
 
     elbtn.event('click', function(){
         var targetElemnt = event.target || event.srcElement;
@@ -656,19 +670,19 @@ function e_click_btn( obj, btnType )
 
     var pageNode = obj.parentNode.parentNode;   //page
     
-    if(btnType == '다음' && validQuestion(pageNode))
+    if(btnType == 'Next' && validQuestion(pageNode))
     {
         isVisiblePage(pageNode, false);
 
         var nextPObj = pageNode.nextSibling;
         isVisiblePage(nextPObj, true);
-    }else if (btnType == '이전')
+    }else if (btnType == 'Pre')
     {
         isVisiblePage(pageNode, false);
 
         var prePObj = pageNode.previousSibling;
         isVisiblePage(prePObj, true);
-    }else if (btnType == '완료' && validQuestion(pageNode))
+    }else if (btnType == 'Complete' && validQuestion(pageNode))
     {
         var pageSetNode = pageNode.parentNode;
         makeResultJson(pageSetNode);
@@ -695,11 +709,7 @@ function makeResultJson( pageSetNode ){
                     var textCss = itemSet.className == 'text_set' ? 'i_text' : 'i_comment';
                     var elText = cdom.getcss(itemSet, textCss ,0);
                     if(elText.element.value != '')
-                    {
-                        //var textResult = {};
                         resultJson[questionId] = elText.element.value;
-                        //answer.push(textResult);
-                    }    
                 break;
                 case 'radio_set':
                     var elRadio = itemNodes.getElementsByTagName('input');
@@ -710,7 +720,6 @@ function makeResultJson( pageSetNode ){
 
                     if(checkedItem.length == 1)
                     {
-                        //var radioResult = {};
                         var radioValue = [];
                         radioValue.push(checkedItem[0].value);
 
@@ -724,7 +733,6 @@ function makeResultJson( pageSetNode ){
                         }
 
                         resultJson[questionId] = radioValue;                        
-                        //answer.push(radioResult);
                     }
                 break;
 
@@ -734,12 +742,9 @@ function makeResultJson( pageSetNode ){
                         return el.checked;
                     });
                     
-                    //var checkResult = {};
                     var checkValue = [];
                     for(var i = 0; checkedItem.length > i; i++ )
-                    {
                         checkValue.push(checkedItem[i].value);
-                    }
                     
 
                     var checkedOther = [].filter.call(checkedItem, function( el ) {
@@ -757,7 +762,6 @@ function makeResultJson( pageSetNode ){
 
                     resultJson[questionId] = checkValue;
 
-                    //answer.push(checkResult);
                 break;
 
                 case 'rate_set':
@@ -767,11 +771,7 @@ function makeResultJson( pageSetNode ){
                     });
 
                     if(checkedItem.length > 0)
-                    {
-                        //var rateResult = {};
                         resultJson[questionId] = checkedItem[0].value;
-                        //answer.push(rateResult);
-                    }
                 break;
 
                 case 'multiText_set':
@@ -786,22 +786,18 @@ function makeResultJson( pageSetNode ){
                         var textValues = [];
                         for(var i = 0; textItem.length > i; i ++)
                         {
-                            console.log(textItem[i].previousSibling.outerText);
-
                             var value = {};
                             value[textItem[i].previousSibling.outerText] = textItem[i].value;
                             textValues.push(value);
                         }
                         
                         resultJson[questionId] = textValues;
-                        //answer.push(multiTextResult);
                     }
                 break;
             }
         }
     }
     
-    //resultJson.answer = answer;
     var link = document.location.pathname; 
 
     if(link.toLowerCase() == '/survey/progress')
@@ -817,21 +813,21 @@ function createPageBtn(elPage, totalPage, currPage )
     // 페이지 별 이전, 다음 버튼 추가
     if(totalPage == 1) // 페이지가 존재하지 않음
     {
-        addBtnEvent(elPage,'완료');
+        addBtnEvent(elPage,'Complete');
     }
     else if(totalPage - 1 == currPage)  // 마지막 페이지 일 경우 이전 버튼과 완료 버튼
     {
-        addBtnEvent(elPage,'이전');
-        addBtnEvent(elPage,'완료');
+        addBtnEvent(elPage,'Pre');
+        addBtnEvent(elPage,'Complete');
     }
     else if(totalPage > 1 && currPage == 0) // 페이지가 있으며 첫번째 페이지
     {
-        addBtnEvent(elPage,'다음');
+        addBtnEvent(elPage,'Next');
     }
     else if(totalPage > 1 && currPage > 0) // 페이지가 있으며 중간 페이지
     {
-        addBtnEvent(elPage,'이전');
-        addBtnEvent(elPage,'다음');
+        addBtnEvent(elPage,'Pre');
+        addBtnEvent(elPage,'Next');
     }
 }
 
@@ -861,7 +857,6 @@ function domReady (){
             // Survey Page
             var pages  = surveyJson.pages;
             var questionNumber = 1;
-            console.log(pages);
             for(var p in pages)
             {
                 if(pages.hasOwnProperty(p))

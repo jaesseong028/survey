@@ -1,31 +1,35 @@
 
-.survey {  }
+.survey { font-family: 'Nanum Gothic';  }
 .survey .header { margin-left:7px;}
 .survey .header .title { font-size:3em;}
 
 
-.page-set {background-color: #f5f9fb }
+.page-set { background-color: #f5f9fb;} /* #f5f9fb */
 .page {}
 .page .hide { display: none; }
 .page .show{ display: inline; }
 .page .header { margin-left:7px;}
 .page .header .title {font-weight: bold; font-size:1.8em;}
 .page .header .description {font-size:1.2em;}
-.page button { background-color: #E7E7E7; border-radius: 2px; padding: 10px; font-size: 16px; cursor: pointer; text-decoration: none; }
-.page .btnNext {}
-.page .btnPre {}
-.page .btnComplete {}
+
+
+
+.btn-set { } /* #f5f9fb */
+.btn-set  button { background-color: #E7E7E7; border-radius: 2px; padding: 10px; font-size: 16px; cursor: pointer; text-decoration: none; }
+.btn-set .btnNext { float: right; margin-left:7px; }
+.btn-set .btnPre { float: right;}
+.btn-set .btnComplete { float: right; border-radius: 4px;margin-left:7px; background-color: #5bc0de; border-color: #46b8da; color:#fff; }
 
 
 .questions {}
-.questions .question {padding:30px; margin-bottom:10px; background-color: white; border: 1px solid #cccccc; font-family: 'NanumGothic'}
+.questions .question { margin:10px; padding:30px; background-color: white; border: 1px solid #cccccc; }
 
 .question .hide { display: none; }
 .question .show { display: inline; }
 /* Question header */
 .question .header {font-weight: bold; padding-bottom: 5px;}
 .question .header .title { font-size: 16px; font-weight: bold; color: #222222}
-.question .header .title .required { color: #FE0000; padding-right:2px;}
+.question .header .title .required { color: #FE0000;}
 
 
 /* .question .header .description { padding:4px;  font-size: 0.9em; margin-left: 10px; border:1px solid #C3C3C3;} */
@@ -33,7 +37,7 @@
 
 
 /* Question itmes */
-.question .items { margin-left:7px; }
+.question .items { margin-left:7px;   }
 
 /* Text Box */
 .question .items .text_set {}
@@ -44,7 +48,7 @@
 .question .items .comment_set .i_comment { resize: none; }
 
 /* Radio Box */
-.question .items .radio_set {}
+.question .items .radio_set { font-size:16px; }
 .question .items .radio_set .i_radio { margin-right:3px; cursor: pointer; }
 .question .items .radio_set .lbl_radio { cursor: pointer; }
 
@@ -55,7 +59,7 @@
 .question .items .radio_other .txt_radio_other {}
 
 /* CheckBox Box */
-.question .items .checkbox_set {}
+.question .items .checkbox_set { font-size:16px; }
 .question .items .checkbox_set .i_checkbox { margin-right:3px; cursor: pointer; }
 .question .items .checkbox_set .lbl_checkbox { cursor: pointer; }
 
@@ -70,12 +74,12 @@
 .question .items .rate_set .min_description { padding-right: 3px; }
 .question .items .rate_set .max_description { padding-left: 3px; }
 .question .items .rate_set .i_rate { display: none;}
-.question .items .rate_set [type=radio]:checked + label {color: #333;background-color: #e6e6e6;border-color: #adadad;}
-.question .items .rate_set [type=radio]:hover + label{ color: #333;background-color: #e6e6e6;border-color: #adadad; }
-.question .items .rate_set .lbl_rate { min-width: 5em; background-color: #FFFFFF; border: 1px solid #ccc; cursor: pointer; text-align: center;}
+.question .items .rate_set [type=radio]:checked + label {color: #333;background-color: #e7f6fc;border-color: #14a5e6;}
+.question .items .rate_set [type=radio]:hover + label{ color: #333;background-color: #e7f6fc;border-color: #14a5e6; }
+.question .items .rate_set .lbl_rate { min-width: 5em; background-color: #FFFFFF; border: 1px solid #ccc; cursor: pointer; text-align: center; margin: 4px}
 
 /* Multi Text Box */
-.question .items .multiText_set { }
+.question .items .multiText_set { font-size:14px; color:#666666 }
 .question .items .multiText_set .lbl_multiText { margin-right:3px; }
 .question .items .multiText_set .i_multiText { }
 
