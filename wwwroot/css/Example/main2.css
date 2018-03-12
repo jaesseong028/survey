@@ -18,17 +18,18 @@
 
 
 .questions {}
-.questions .question {border:1px solid white; padding:15px; margin-bottom:10px; background-color: #eee}
+.questions .question {padding:30px; margin-bottom:10px; background-color: white}
 
 .question .hide { display: none; }
 .question .show { display: inline; }
 /* Question header */
 .question .header {font-weight: bold; padding-bottom: 5px;}
-.question .header .title { font-size: 1.3em; font-weight: bold; margin-bottom:0px;}
+.question .header .title { font-size: 16px; font-weight: bold; color: #222222}
 .question .header .title .required { color: #FE0000; padding-right:2px;}
 
 
-.question .header .description { padding:4px;  font-size: 0.9em; margin-left: 10px; border:1px solid #C3C3C3;}
+/* .question .header .description { padding:4px;  font-size: 0.9em; margin-left: 10px; border:1px solid #C3C3C3;} */
+.question .header .description { padding:4px;  font-size: 14px; margin-left: 10px; color:#14a5e6}
 
 
 /* Question itmes */

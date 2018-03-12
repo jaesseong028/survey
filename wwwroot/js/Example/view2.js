@@ -656,19 +656,19 @@ function e_click_btn( obj, btnType )
 
     var pageNode = obj.parentNode.parentNode;   //page
     
-    if(btnType == 'Next' && validQuestion(pageNode))
+    if(btnType == '다음' && validQuestion(pageNode))
     {
         isVisiblePage(pageNode, false);
 
         var nextPObj = pageNode.nextSibling;
         isVisiblePage(nextPObj, true);
-    }else if (btnType == 'Pre')
+    }else if (btnType == '이전')
     {
         isVisiblePage(pageNode, false);
 
         var prePObj = pageNode.previousSibling;
         isVisiblePage(prePObj, true);
-    }else if (btnType == 'Complete' && validQuestion(pageNode))
+    }else if (btnType == '완료' && validQuestion(pageNode))
     {
         var pageSetNode = pageNode.parentNode;
         makeResultJson(pageSetNode);
@@ -815,21 +815,21 @@ function createPageBtn(elPage, totalPage, currPage )
     // 페이지 별 이전, 다음 버튼 추가
     if(totalPage == 1) // 페이지가 존재하지 않음
     {
-        addBtnEvent(elPage,'Complete');
+        addBtnEvent(elPage,'완료');
     }
     else if(totalPage - 1 == currPage)  // 마지막 페이지 일 경우 이전 버튼과 완료 버튼
     {
-        addBtnEvent(elPage,'Pre');
-        addBtnEvent(elPage,'Complete');
+        addBtnEvent(elPage,'이전');
+        addBtnEvent(elPage,'완료');
     }
     else if(totalPage > 1 && currPage == 0) // 페이지가 있으며 첫번째 페이지
     {
-        addBtnEvent(elPage,'Next');
+        addBtnEvent(elPage,'다음');
     }
     else if(totalPage > 1 && currPage > 0) // 페이지가 있으며 중간 페이지
     {
-        addBtnEvent(elPage,'Pre');
-        addBtnEvent(elPage,'Next');
+        addBtnEvent(elPage,'이전');
+        addBtnEvent(elPage,'다음');
     }
 }
 
