@@ -483,12 +483,12 @@ function createQuestion(elPage, questions, questionNumber)
             
             // Questions iD
             cdom.get(elQuestion).attr('id',questions[p].name);
+            // Questions title
+            if('title' in questions[p])
+                cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);
             // Questions Required
             if(('is_required' in questions[p]) && (questions[p].is_required == true))
                 cdom.getcss(elQuestion,'title',0).append('strong').addcss('required').text('*');
-            // Questions title
-            if('title' in questions[p])
-                cdom.getcss(elQuestion,'title',0).text(questionNumber++ + '. ').text(questions[p].title);            
             // Questions description
             if('description' in questions[p] && questions[p].description != '' )
                 cdom.getcss(elQuestion,'description',0).inhtml(questions[p].description.replace(/(?:\r\n|\r|\n)/g,'<br />'));
@@ -678,7 +678,7 @@ function e_click_btn( obj, btnType )
 function makeResultJson( pageSetNode ){
     var questions = pageSetNode.getElementsByClassName('question');
     var resultJson = {};
-    var answer = [];
+    //var answer = [];
 
     for(p in questions)
     {
@@ -696,9 +696,9 @@ function makeResultJson( pageSetNode ){
                     var elText = cdom.getcss(itemSet, textCss ,0);
                     if(elText.element.value != '')
                     {
-                        var textResult = {};
-                        textResult[questionId] = elText.element.value;
-                        answer.push(textResult);
+                        //var textResult = {};
+                        resultJson[questionId] = elText.element.value;
+                        //answer.push(textResult);
                     }    
                 break;
                 case 'radio_set':
@@ -710,7 +710,7 @@ function makeResultJson( pageSetNode ){
 
                     if(checkedItem.length == 1)
                     {
-                        var radioResult = {};
+                        //var radioResult = {};
                         var radioValue = [];
                         radioValue.push(checkedItem[0].value);
 
@@ -723,8 +723,8 @@ function makeResultJson( pageSetNode ){
                             radioValue.push(radioOther);
                         }
 
-                        radioResult[questionId] = radioValue;                        
-                        answer.push(radioResult);
+                        resultJson[questionId] = radioValue;                        
+                        //answer.push(radioResult);
                     }
                 break;
 
@@ -734,7 +734,7 @@ function makeResultJson( pageSetNode ){
                         return el.checked;
                     });
                     
-                    var checkResult = {};
+                    //var checkResult = {};
                     var checkValue = [];
                     for(var i = 0; checkedItem.length > i; i++ )
                     {
@@ -755,9 +755,9 @@ function makeResultJson( pageSetNode ){
                         checkValue.push(checkOther);                        
                     }
 
-                    checkResult[questionId] = checkValue;
+                    resultJson[questionId] = checkValue;
 
-                    answer.push(checkResult);
+                    //answer.push(checkResult);
                 break;
 
                 case 'rate_set':
@@ -768,9 +768,9 @@ function makeResultJson( pageSetNode ){
 
                     if(checkedItem.length > 0)
                     {
-                        var rateResult = {};
-                        rateResult[questionId] = checkedItem[0].value;
-                        answer.push(rateResult);
+                        //var rateResult = {};
+                        resultJson[questionId] = checkedItem[0].value;
+                        //answer.push(rateResult);
                     }
                 break;
 
@@ -782,30 +782,32 @@ function makeResultJson( pageSetNode ){
 
                     if(textItem.length > 0)
                     {
-                        var multiTextResult = {};
+                        
                         var textValues = [];
                         for(var i = 0; textItem.length > i; i ++)
                         {
+                            console.log(textItem[i].previousSibling.outerText);
+
                             var value = {};
-                            value[textItem[i].getAttribute('id')] = textItem[i].value;
+                            value[textItem[i].previousSibling.outerText] = textItem[i].value;
                             textValues.push(value);
                         }
                         
-                        multiTextResult[questionId] = textValues;
-                        answer.push(multiTextResult);
+                        resultJson[questionId] = textValues;
+                        //answer.push(multiTextResult);
                     }
                 break;
             }
         }
     }
     
-    resultJson.answer = answer;
+    //resultJson.answer = answer;
     var link = document.location.pathname; 
 
     if(link.toLowerCase() == '/survey/progress')
-        surveyInfo.sendReuslt(JSON.stringify(resultJson.answer));
+        surveyInfo.sendReuslt(JSON.stringify(resultJson));
     else
-        alert(JSON.stringify(resultJson.answer));
+        alert(JSON.stringify(resultJson));
 }
 
 // 페이지 이동 및 완료 버튼
