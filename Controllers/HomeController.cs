@@ -51,7 +51,7 @@ namespace UBSurvey.Controllers
             List<dynamic> list = new List<dynamic> ();
             foreach(var dd in d["data"]["_surveyResult"])
             {
-                 list.Add(dd.Values.answer);
+                 list.Add(dd.Values);
             }
             if( (bool)d["success"] && d["data"]["survey"] != null)
                  return View(list);
