@@ -711,13 +711,19 @@ function makeResultJson( pageSetNode ){
                     if(checkedItem.length == 1)
                     {
                         var radioResult = {};
-                        radioResult[questionId] = checkedItem[0].value;
+                        var radioValue = [];
+                        radioValue.push(checkedItem[0].value);
+
                         
                         if(checkedItem[0].id == questionId + '_other' )
                         {
+                            var radioOther = {};
                             var otherTextValue = itemNodes.getElementsByClassName('txt_radio_other')[0].value;
-                            radioResult[checkedItem[0].value] = otherTextValue;
+                            radioOther[checkedItem[0].value] = otherTextValue;
+                            radioValue.push(radioOther);
                         }
+
+                        radioResult[questionId] = radioValue;                        
                         answer.push(radioResult);
                     }
                 break;
@@ -734,7 +740,7 @@ function makeResultJson( pageSetNode ){
                     {
                         checkValue.push(checkedItem[i].value);
                     }
-                    checkResult[questionId] = checkValue;
+                    
 
                     var checkedOther = [].filter.call(checkedItem, function( el ) {
                         return el.id == questionId + '_other';
@@ -742,9 +748,14 @@ function makeResultJson( pageSetNode ){
 
                     if(checkedOther.length > 0)
                     {
+                        var checkOther = {};
+
                         var otherText = itemNodes.getElementsByClassName('txt_checkbox_other')[0];
-                        checkResult[checkedOther[0].value] = otherText.value;
+                        checkOther[checkedOther[0].value] = otherText.value;
+                        checkValue.push(checkOther);                        
                     }
+
+                    checkResult[questionId] = checkValue;
 
                     answer.push(checkResult);
                 break;
@@ -772,12 +783,15 @@ function makeResultJson( pageSetNode ){
                     if(textItem.length > 0)
                     {
                         var multiTextResult = {};
-                        var textValue = {};
+                        var textValues = [];
                         for(var i = 0; textItem.length > i; i ++)
                         {
-                            textValue[textItem[i].getAttribute('id')] = textItem[i].value;
+                            var value = {};
+                            value[textItem[i].getAttribute('id')] = textItem[i].value;
+                            textValues.push(value);
                         }
-                        multiTextResult[questionId] = textValue;
+                        
+                        multiTextResult[questionId] = textValues;
                         answer.push(multiTextResult);
                     }
                 break;
@@ -789,12 +803,9 @@ function makeResultJson( pageSetNode ){
     var link = document.location.pathname; 
 
     if(link.toLowerCase() == '/survey/progress')
-        surveyInfo.sendReuslt(JSON.stringify(resultJson));
+        surveyInfo.sendReuslt(JSON.stringify(resultJson.answer));
     else
-        alert(JSON.stringify(resultJson));
-
-    
-    
+        alert(JSON.stringify(resultJson.answer));
 }
 
 // 페이지 이동 및 완료 버튼
@@ -829,11 +840,8 @@ function domReady (){
 
         var surveyId = document.getElementById('ubSurvey');
         
-        //parseSurvey = JSON.parse(surveyInfo.strSurvey);
         parseSurvey = surveyInfo.strSurvey;
-        console.log(surveyInfo);
         
-
         var surveyJson = parseSurvey.survey == undefined ? parseSurvey : parseSurvey.survey;
 
         if(('pages' in surveyJson) && ('title' in surveyJson))
