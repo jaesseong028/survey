@@ -10,26 +10,24 @@
     .handsontable .htDimmed {
         white-space: nowrap;
         word-wrap: break-word;
-        max-width: 80px;
+        max-width: 180px;
     }
 </style>
 <div class="row">
-    <div class="col-md-12"><h3>@this.Model.Item2</h3></div>
-    <div class="col-md-12" style="min-height:84vh">
+    <div class="col-md-12"><h3> &quot;@this.Model.Item2&quot; 결과입니다.</h3></div>
+    <div id="handsonTableConatiner" class="col-md-12" style="min-height:84vh">
         <div id="hot"></div>
     </div>
 </div>
 <script>
-
 var dataObject = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item1))
 var hotElement = document.querySelector('#hot');
 var hotSettings = {
   data: dataObject,
-  stretchH: 'all',
-  width: '100%',
-  colHeaders: true,
-  autoWrapRow: false,
+  width: document.body.clientWidth - 30,
+  height : $("#handsonTableConatiner").height(),
   rowHeaders: true,
+  colHeaders: true,
   manualRowMove: true,
   manualColumnMove: true,
   manualRowResize: true,

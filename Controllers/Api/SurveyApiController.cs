@@ -140,7 +140,7 @@ namespace UBSurvey.Controllers.Api
                     if (kvp.Value is ICollection)
                     {
                         var collection = (ICollection<Object>)kvp.Value;
-                        p[kvp.Key] = string.Join(",", collection.Select(s=> s.ToJson()));
+                        p[kvp.Key] = string.Join(",", collection.Select(s=> s.ToJson().Replace("\"", "").Replace("{", "").Replace("}", "")));
                     }
                     else
                     {

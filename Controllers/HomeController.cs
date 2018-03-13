@@ -30,7 +30,7 @@ namespace UBSurvey.Controllers
             _repository = repository;
             _globalVariable =  globalVariable;
         }
-        public IActionResult Result(string ubsurveyid = "5aa666082bfd87898cd8e965")
+        public IActionResult Result(string ubsurveyid)
         {
             if (string.IsNullOrEmpty(ubsurveyid))
                 return NotFound();
