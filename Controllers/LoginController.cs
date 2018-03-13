@@ -12,7 +12,7 @@ namespace UBSurvey.Controllers
             
             SessionManager.SetSession(HttpContext.Session,"UserName","정재성");
 
-            return RedirectToAction("list","HOME");
+            return RedirectToAction("list","home");
         }
 
         public IActionResult SSOLogin(string token)
