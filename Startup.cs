@@ -72,8 +72,12 @@ namespace UBSurvey
             {
                 options.TextEncoderSettings = new System.Text.Encodings.Web.TextEncoderSettings(System.Text.Unicode.UnicodeRanges.All);
             });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc();
+            
+            services.AddDistributedMemoryCache();
+            services.AddSession();
         }
 
 
@@ -81,6 +85,7 @@ namespace UBSurvey
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            
             app.UseResponseCompression();
             
             if (env.IsDevelopment())
@@ -94,16 +99,20 @@ namespace UBSurvey
             //app.UseWebOptimizer();
             app.UseStaticFiles();
 
+            app.UseSession();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Login}/{action=Index}");
 
                 routes.MapRoute(
                     name: "Survey",
                     template: "api/{controller=Survey}/{action=Index}");
             });
         }
+
+        
     }
 }

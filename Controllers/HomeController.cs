@@ -22,16 +22,22 @@ namespace UBSurvey.Controllers
     public class HomeController : Controller
     {   
         private readonly IUBSurveyRepository _repository;
-
         private readonly IOptions<GlobalVariable> _globalVariable;
-
-        public HomeController(IUBSurveyRepository repository, IOptions<GlobalVariable> globalVariable)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private ISession _session => _httpContextAccessor.HttpContext.Session;
+        public HomeController(IUBSurveyRepository repository, IOptions<GlobalVariable> globalVariable, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _globalVariable =  globalVariable;
+            _httpContextAccessor = httpContextAccessor;
+
+            
         }
         public IActionResult Result(string ubsurveyid = "5aa1e0f722b2867338e411ac")
         {
+            if(!SessionManager.IsLogin(_session))
+                throw new Exception("Session이 유효하지 않습니다.");
+
             if (string.IsNullOrEmpty(ubsurveyid))
                 return NotFound();
             
@@ -41,9 +47,6 @@ namespace UBSurvey.Controllers
 
             if (string.IsNullOrEmpty(info.SurveyID))
                 return NotFound();
-
-            
-
 
             var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });
             var d = JsonConvert.DeserializeObject<dynamic>(r.Result);
@@ -84,6 +87,9 @@ namespace UBSurvey.Controllers
 
             //string ss = Url.Action("/api/ubsurvey/list");
 
+            if(!SessionManager.IsLogin(_session))
+                throw new Exception("Session이 유효하지 않습니다.");
+
             IEnumerable<UBServiceInfo> services = _repository.GetServices();
             string url = $"{_globalVariable.Value.ApiDomain}/api/ubsurvey/list/{Request.QueryString.ToString()}";
 
@@ -114,6 +120,9 @@ namespace UBSurvey.Controllers
 
         public IActionResult Edit(string ubsurveyid, string channelid)
         {
+            if(!SessionManager.IsLogin(_session))
+                throw new Exception("Session이 유효하지 않습니다.");
+
             UBSurveyEditInfo editInfo = new UBSurveyEditInfo();
             UBSurveyInfo info = new UBSurveyInfo()
             {
