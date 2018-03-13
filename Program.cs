@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,16 +18,44 @@ namespace UBSurvey
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            
+            BuildWebHost(args);
         }
 
 
-        public static IWebHost BuildWebHost(string[] args) {
+        public static void BuildWebHost(string[] args) {
+            bool isService = true;
+            if (Debugger.IsAttached || args.Contains("--console"))
+            {
+                isService = false;
+            }
+
+             var pathToContentRoot = Directory.GetCurrentDirectory();
+            if (isService)
+            {
+                var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
+                pathToContentRoot = Path.GetDirectoryName(pathToExe);
+            }
+
             //string myIP = Helpers.GetMyIp();
-            return WebHost.CreateDefaultBuilder(args)
+            var host = WebHost.CreateDefaultBuilder(args)
+                .UseContentRoot(pathToContentRoot)
+                .UseConfiguration(new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("hosting.json", optional: true)
+                .Build()
+            )
             .UseStartup<Startup>()
             //.UseUrls($"http://{myIP}:5000/")
             .Build();
+
+            if(isService)
+            {
+                //host.RunAsService();
+            }else
+            {
+                host.Run();
+            }
         }
     }
 }

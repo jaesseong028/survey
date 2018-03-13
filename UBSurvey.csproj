@@ -16,6 +16,7 @@
       <SpecificVersion>False</SpecificVersion> 
     </Reference>
   </ItemGroup>
+  
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />

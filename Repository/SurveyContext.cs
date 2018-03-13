@@ -10,13 +10,13 @@ namespace UBSurvey.Repository
 {
     public class SurveyContext : DbContext
     {
-        public IMongoCollection<SurveyInfo> Surveys;
-        public IMongoCollection<ChannelInfo> Channels;
+        public IMongoCollection<BsonDocument> Surveys;
+        public IMongoCollection<BsonDocument> Channels;
         
         public SurveyContext(IOptions<DBSettings> settings) : base(settings)
         {
-            Surveys = _surveyDatabase.GetCollection<SurveyInfo>("surveys");
-            Channels = _surveyDatabase.GetCollection<ChannelInfo>("channels");
+            Surveys = _surveyDatabase.GetCollection<BsonDocument>("surveys");
+            Channels = _surveyDatabase.GetCollection<BsonDocument>("channels");
         }
     }
 }

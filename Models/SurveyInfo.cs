@@ -16,10 +16,21 @@ namespace UBSurvey.Models
         
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string _id { get; set; }
-        public string _channelID { get; set;}
-        public dynamic Survey { get; set;}
-        public IEnumerable<dynamic> _surveyResult { get; set;}
+        [BsonIgnoreIfDefault]
+        public virtual string _id { get; set; }
+        public virtual string _channelID { get; set;}
+        public virtual dynamic Survey { get; set;}
+        public virtual IEnumerable<SurveyResult> _surveyResult { get; set;}
+    }
+
+    public class SurveyInfoDTO : SurveyInfo
+    {
+        
+        public override string _id { get; set; }
+        public override string _channelID { get; set;}
+        public override dynamic Survey { get; set;}
+        public override IEnumerable<SurveyResult> _surveyResult { get; set;}
+
     }
 
     public class SurveyResult 
