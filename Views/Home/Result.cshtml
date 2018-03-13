@@ -3,45 +3,91 @@
     ViewData["Title"] = "Home Page";
 }
 
-<link rel="stylesheet" type="text/css" href="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.css">
-<script src="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.js"></script>
-
+<link rel="stylesheet" href="~/css/handsontable.min.css" />
+@section Scripts {
+<script src="~/js/handsontable.min.js"></script>
+}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <style>
     .handsontable .htDimmed {
         white-space: nowrap;
         word-wrap: break-word;
-        max-width: 180px;
+        max-width: 200px;
     }
 </style>
 <div class="row">
-    <div class="col-md-12"><h3> &quot;@this.Model.Item2&quot; 결과입니다.</h3></div>
-    <div id="handsonTableConatiner" class="col-md-12" style="min-height:84vh">
+    <div><h3> &quot;@this.Model.Item2&quot;의 결과입니다.</h3></div>
+    <div id="handsonTableConatiner" style="min-height:84vh; float:left;">
         <div id="hot"></div>
     </div>
+    <div id="piechart" style="height: 500px; float:left;"></div>
 </div>
 <script>
 var dataObject = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item1))
 var hotElement = document.querySelector('#hot');
 var hotSettings = {
   data: dataObject,
-  width: document.body.clientWidth - 30,
+  stretchH: 'last',
+  width: document.body.clientWidth * 0.7,
   height : $("#handsonTableConatiner").height(),
+  fixedRowsTop: 1,
   rowHeaders: true,
   colHeaders: true,
   manualRowMove: true,
   manualColumnMove: true,
+  manualRowMove: true,
   manualRowResize: true,
   manualColumnResize: true,
   contextMenu: false,
-  readOnly : true
+  readOnly : true, 
+  afterOnCellMouseDown : function (event, coords, TD, wt) {
+        var data = hot.getDataAtCol(coords.col);
+        var title = data[0];
+        data.splice(0, 1);
+
+        var contents = data.reduce((p, c) => {
+            var name = c;
+            if (!p.hasOwnProperty(name)) {
+                p[name] = 0;
+            }
+            p[name]++;
+            return p;
+        }, {});
+
+        if (Object.keys(contents).length < 10)
+        {
+           var countsExtended = Object.keys(contents).map(k => {return [k, contents[k]]; });
+           countsExtended.splice(0, 0, ['Task', '']);
+           var data = google.visualization.arrayToDataTable(countsExtended);
+           drawChart(data, title);
+        }
+   }
 };
+
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+
+function drawChart(data, title) {
+    var options = {
+        title: title
+    };
+
+    if(data == null) {
+         return;
+    }
+    $('#piechart').width(document.body.clientWidth * 0.27);
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    chart.draw(data, options);
+}
+
 var hot = new Handsontable(hotElement, hotSettings);
 
 $(document).ready(function(){
     $("#bodyContents").removeClass("container");
     $("#bodyContents").addClass("container-fluid");
     $("#hot-display-license-info").hide();
-})
+});
 </script>
 
 
