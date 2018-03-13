@@ -12,13 +12,14 @@ using System.Linq;
 using UBSurvey.Common;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace UBSurvey.Repository
 {
     public interface ISurveyRepository
     {
-        bool UpsertSurvey(SurveyInfo contact);
-        SurveyInfo GetSurvey(string channelID, string surveyID);
+        bool UpsertSurvey(SurveyInfoDTO contact);
+        SurveyInfoDTO GetSurvey(string channelID, string surveyID);
         bool RemoveSurvey(string channelID, string surveyID);
         bool InsertSurveyResult (string channelID, string surveyID, SurveyResult result);
         int GetSurveyResultCount (string channelID, string surveyID);
@@ -35,41 +36,40 @@ namespace UBSurvey.Repository
             _context = new SurveyContext(settings);
         }
 
-        public bool UpsertSurvey(SurveyInfo contact)
+        public bool UpsertSurvey(SurveyInfoDTO contact)
         {
             if(string.IsNullOrEmpty(contact._channelID))
                 throw new Exception("_channelID 가 존재 하지 않습니다.");
 
-            var surveyString = contact.Survey.ToString();
-            contact.Survey = BsonDocument.Parse(surveyString);
-            //var o = JsonConvert.DeserializeObject(surveyString).ToBsonDocument();
-            try
+            if (!string.IsNullOrEmpty(contact._id))
             {
-                if (!string.IsNullOrEmpty(contact._id))
-                {
-                    ReplaceOneResult actionResult = _context.Surveys.ReplaceOne(n => n._id.Equals(new ObjectId(contact._id)), contact, new UpdateOptions { IsUpsert = true });
-                    return actionResult.IsAcknowledged;
-                    // && actionResult.ModifiedCount > 0;
-                }
-                _context.Surveys.InsertOne(contact);
+                var surveyString = contact.Survey.ToString();
+                var filter = Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(contact._id));
+                string param = string.Format("{{$set: {{ Survey: {0} }}}}", BsonDocument.Parse(surveyString));
+                BsonDocument document = BsonDocument.Parse(param);
+                UpdateResult actionResult = _context.Surveys.UpdateOne(filter, document);
+                return actionResult.IsAcknowledged;
             }
-            finally
-            {
-                contact.Survey = ((BsonDocument)contact.Survey).ToDynamic();
-            }
-            
+            contact._id = null;
+            var setting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            BsonDocument doc = BsonDocument.Parse(JsonConvert.SerializeObject(contact, Formatting.None, setting));
+            _context.Surveys.InsertOne(doc);
+
+            SurveyInfo d = BsonSerializer.Deserialize<SurveyInfo>(doc);
+            var update =  Mapper.Map<SurveyInfo, SurveyInfoDTO>(d);
+            contact._id = update._id;
             return true;
         }
 
-        public SurveyInfo GetSurvey(string channelID, string surveyID)
+        public SurveyInfoDTO GetSurvey(string channelID, string surveyID)
         {
             ObjectId o;
             if (!ObjectId.TryParse(surveyID, out o))
                 return null;
 
 
-            var filter = Builders<SurveyInfo>.Filter.Eq("_id", o);
-            filter &= Builders<SurveyInfo>.Filter.Eq(q=> q._channelID, channelID);
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", o);
+            filter &= Builders<BsonDocument>.Filter.Eq("_channelID", channelID);
             var data = _context.Surveys
                             .Find(filter)
                             .FirstOrDefault();
@@ -77,17 +77,7 @@ namespace UBSurvey.Repository
             if (data == null)
                 return null;
                 
-            data.Survey = Helpers.ToDynamic(data.Survey);
-
-            List<dynamic> list = new List<dynamic>();
-            foreach(var r in data._surveyResult)
-            {
-                list.Add(((BsonDocument)r).ToDynamic());
-            }
-
-            data._surveyResult = list;
-
-            return data;
+            return BsonSerializer.Deserialize<SurveyInfoDTO>(data);
         }
 
         public bool RemoveSurvey(string channelID, string surveyID)
@@ -96,7 +86,10 @@ namespace UBSurvey.Repository
             if (!ObjectId.TryParse(surveyID, out o))
                 return false;
 
-            DeleteResult actionResult = _context.Surveys.DeleteOne(p=> p._channelID == channelID && p._id.Equals(o));
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", o);
+            filter &= Builders<BsonDocument>.Filter.Eq("_channelID", channelID);
+
+            DeleteResult actionResult = _context.Surveys.DeleteOne(filter);
             return actionResult.IsAcknowledged 
                 && actionResult.DeletedCount > 0;
         }   
@@ -106,19 +99,22 @@ namespace UBSurvey.Repository
             ObjectId o;
             if (!ObjectId.TryParse(surveyID, out o))
                 return false;
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", o);
+            filter &= Builders<BsonDocument>.Filter.Eq("_channelID", channelID);
 
-            var data = _context.Surveys.AsQueryable().Where(p => p._channelID == channelID && p._id.Equals(o)).FirstOrDefault();
+
+            var data = _context.Surveys.Find(filter).FirstOrDefault();
 
             if (result == null || data == null)
                 return false;
+
             
+            SurveyInfo sur =  BsonSerializer.Deserialize<SurveyInfo>(data);
+            sur._surveyResult = sur._surveyResult.Append(result);
 
-            var bsonDoc = BsonDocument.Parse(JsonConvert.SerializeObject(result));
-            data._surveyResult = data._surveyResult.Append(bsonDoc);
-
-
-            ReplaceOneResult actionResult 
-                = _context.Surveys.ReplaceOne(p => p._channelID == channelID && p._id.Equals(o), data, new UpdateOptions { IsUpsert = true });
+            string param = string.Format("{{$set: {{ _surveyResult: {0} }}}}", JsonConvert.SerializeObject(sur._surveyResult));
+            BsonDocument document = BsonDocument.Parse(param);
+            UpdateResult actionResult = _context.Surveys.UpdateOne(filter, document);
 
             return actionResult.IsAcknowledged
                 && actionResult.ModifiedCount > 0;
@@ -130,12 +126,17 @@ namespace UBSurvey.Repository
             if (!ObjectId.TryParse(surveyID, out o))
                 return 0;
 
-            var data = _context.Surveys.AsQueryable().Where(p => p._channelID == channelID && p._id.Equals(o)).FirstOrDefault();
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", o);
+            filter &= Builders<BsonDocument>.Filter.Eq("_channelID", channelID);
+
+            var data = _context.Surveys.Find(filter).FirstOrDefault();
 
             if (data == null)
                 return 0;
 
-            return data._surveyResult.Count();
+            SurveyInfo sur = BsonSerializer.Deserialize<SurveyInfo>(data);
+
+            return sur._surveyResult.Count();
         }
 
         public bool ExistsUserToken (string channelID, string surveyID, string userToken)
@@ -143,13 +144,19 @@ namespace UBSurvey.Repository
             ObjectId o;
             if (!ObjectId.TryParse(surveyID, out o))
                 return false;
+
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", o);
+            filter &= Builders<BsonDocument>.Filter.Eq("_channelID", channelID);
+
                 
-            var data = _context.Surveys.AsQueryable().Where(p => p._channelID == channelID && p._id.Equals(o)).FirstOrDefault();
+            var data = _context.Surveys.Find(filter).FirstOrDefault();
 
             if (data == null)
                 return false;
 
-            return data._surveyResult.Any(q=> q.UserToken == userToken);
+            SurveyInfo sur = BsonSerializer.Deserialize<SurveyInfo>(data);
+
+            return sur._surveyResult.Any(q=> q.UserToken == userToken);
         }
     }
 }

@@ -44,6 +44,7 @@ namespace UBSurvey
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<UBSurveyInfo, UBSurveyListInfo>();
+                cfg.CreateMap<SurveyInfo, SurveyInfoDTO>();
             }); 
 
             services.AddOptions();

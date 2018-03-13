@@ -33,7 +33,7 @@ namespace UBSurvey.Controllers
 
             
         }
-        public IActionResult Result(string ubsurveyid = "5aa1e0f722b2867338e411ac")
+        public IActionResult Result(string ubsurveyid)
         {
             if(!SessionManager.IsLogin(_session))
                 throw new Exception("Session이 유효하지 않습니다.");
@@ -48,21 +48,16 @@ namespace UBSurvey.Controllers
             if (string.IsNullOrEmpty(info.SurveyID))
                 return NotFound();
 
-            var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });
+            var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurveyResult",new { channelID = info.ChannelID, surveyID = info.SurveyID });
             var d = JsonConvert.DeserializeObject<dynamic>(r.Result);
 
-            List<dynamic> list = new List<dynamic> ();
-            foreach(var dd in d["data"]["_surveyResult"])
-            {
-                 list.Add(dd.Values);
+            
 
-                foreach (JProperty property in dd.Values.Properties())
-                {
-                    Console.WriteLine(property.Name + " - " + property.Value);
-                }
+            if( (bool)d["success"] && d["data"] != null)
+            {
+                 Tuple<dynamic, string> tuple = new Tuple<dynamic, string>(d["data"], info.Title);
+                 return View(tuple);
             }
-            if( (bool)d["success"] && d["data"]["survey"] != null)
-                 return View(list);
             else
                 return NotFound();
         }

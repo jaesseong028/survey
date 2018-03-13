@@ -1,39 +1,33 @@
-﻿@model dynamic
+﻿@model System.Tuple<dynamic, string>
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@section Scripts {
-<environment include="Development">
-    <script src="~/js/vue.min.js"></script>
-</environment>
-<environment include="Production">    
-    <script src="~/js/vue.min.js"></script>
-</environment>
-}
-
 <link rel="stylesheet" type="text/css" href="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.css">
-<link rel="stylesheet" type="text/css" href="https://handsontable.com/static/css/main.css">
 <script src="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.js"></script>
 
-
-<div id="hot"></div>
+<style>
+    .handsontable .htDimmed {
+        white-space: nowrap;
+        word-wrap: break-word;
+        max-width: 180px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12"><h3> &quot;@this.Model.Item2&quot; 결과입니다.</h3></div>
+    <div id="handsonTableConatiner" class="col-md-12" style="min-height:84vh">
+        <div id="hot"></div>
+    </div>
+</div>
 <script>
-  //var dataObject =[{"id": ["item1","item2"], "user" : "dd"},{"id" : ["item1","item2"], "user" : "dddd"} ]
-   var dataObject = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
-
-  // @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
-var currencyCodes = ['EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD', 'SEK', 'NOK', 'BRL', 'CNY', 'RUB', 'INR', 'TRY', 'THB', 'IDR', 'MYR', 'MXN', 'ARS', 'DKK', 'ILS', 'PHP'];
-
+var dataObject = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item1))
 var hotElement = document.querySelector('#hot');
-//var hotElementContainer = hotElement.parentNode;
 var hotSettings = {
   data: dataObject,
-  
-  stretchH: 'all',
-  width: '100%',
-  autoWrapRow: true,
+  width: document.body.clientWidth - 30,
+  height : $("#handsonTableConatiner").height(),
   rowHeaders: true,
+  colHeaders: true,
   manualRowMove: true,
   manualColumnMove: true,
   manualRowResize: true,
@@ -42,6 +36,12 @@ var hotSettings = {
   readOnly : true
 };
 var hot = new Handsontable(hotElement, hotSettings);
+
+$(document).ready(function(){
+    $("#bodyContents").removeClass("container");
+    $("#bodyContents").addClass("container-fluid");
+    $("#hot-display-license-info").hide();
+})
 </script>
 
 

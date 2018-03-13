@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -33,10 +34,10 @@ namespace UBSurvey.Controllers.Api
         }
 
         [HttpPost]
-        public JsonResult Save([FromBody]SurveyInfo survey)
+        public JsonResult Save([FromBody]SurveyInfoDTO survey)
         {
             bool isSuccess =_repository.UpsertSurvey(survey);
-            return Json(new { success = isSuccess,  data = survey });
+            return Json(new { success = isSuccess, data = survey });
         } 
 
         [HttpPost]
@@ -96,18 +97,61 @@ namespace UBSurvey.Controllers.Api
             
             var data = _repository.GetSurvey((string)obj["channelID"], (string)obj["surveyID"]);
 
-            dynamic expando = new ExpandoObject();
-            var p = expando as IDictionary<String, object>;
-            p["A"] = "New val 1";
-            p["B"] = "New val 2";
-
-            string ss = expando.B;
-            //data._surveyResult
-
-
             if (data == null)
                 return Json(new { success = false, message = "데이터를 조회 할 수 없습니다." });
-            return Json(new { data = data._surveyResult, success = true});
+
+            List<dynamic> list = new List<dynamic>();
+            List<string> keys = new List<string>();
+            
+            bool isUserTokenExists = data._surveyResult.Any(q=> q.UserToken != null);
+            dynamic expandoKey = new ExpandoObject();
+            var pp = expandoKey as IDictionary<String, object>;
+            if (isUserTokenExists)
+                pp["UserToken"] = "UserToken";
+            foreach (var p in data.Survey.pages)
+            {
+                foreach(var e in p.elements)
+                {
+                    if (!keys.Contains(e.name))
+                        keys.Add(e.name);
+                    if(!pp.ContainsKey(e.name))
+                        pp[e.name] = e.title;
+                }
+            }
+            list.Add(expandoKey);
+
+            foreach(var dd in data._surveyResult)
+            {
+                dynamic expando = new ExpandoObject();
+                var p = expando as IDictionary<String, object>;
+                if (isUserTokenExists)
+                    p["UserToken"] = dd.UserToken;
+
+                var dic = (IDictionary<String, object>)dd.Values;
+                foreach(var k in keys)
+                {
+                    if (!dic.ContainsKey(k) ){
+                        p[k] = null;
+                    }
+                }
+
+                foreach (KeyValuePair<string, object> kvp in dd.Values)
+                {
+                    if (kvp.Value is ICollection)
+                    {
+                        var collection = (ICollection<Object>)kvp.Value;
+                        p[kvp.Key] = string.Join(",", collection.Select(s=> s.ToJson().Replace("\"", "").Replace("{", "").Replace("}", "")));
+                    }
+                    else
+                    {
+                        p[kvp.Key] = kvp.Value.ToString();
+                    }
+                }
+
+                list.Add(expando);
+            }
+            
+            return Json(new { data = list, success = true});
         } 
     }
 }
