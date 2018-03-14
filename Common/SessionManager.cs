@@ -14,6 +14,10 @@ namespace UBSurvey.Common
             _session.SetString(key,value);
         }
 
+        public static void LogOut(ISession _session) {
+            _session.Clear();
+        }
+
         public static bool IsLogin(ISession _session, string key = "UserName")
         {
             if(GetSession(_session, key) == null)

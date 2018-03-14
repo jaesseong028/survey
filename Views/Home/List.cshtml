@@ -137,12 +137,14 @@ var vue = new Vue({
         search : function(){
             var params = $.param(this.searchData);
             var actionUrl = '@Url.Action("List", "Home")';
-            console.log(params);
+            
             if (params == '') {
-                actionUrl = '/?pageindex=' + vue.pager.PageIndex;
+                actionUrl += '/?pageindex=' + vue.pager.PageIndex;
             }else{
-                actionUrl = '/?' + params + '&pageindex=' + vue.pager.PageIndex;
+                actionUrl += '/?' + params + '&pageindex=' + vue.pager.PageIndex;
             }
+
+            //console.log(actionUrl);
 
             location.href = actionUrl;
         },

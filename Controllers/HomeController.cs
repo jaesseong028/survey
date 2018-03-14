@@ -64,24 +64,6 @@ namespace UBSurvey.Controllers
 
         public IActionResult List(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
-            //string ss =Helpers.GenerateKey(16);
-            //var site = _globalVariable.Value.ApiDomain;
-            // for(int i =0; i < 1; i++)
-            // {
-            //     UBSurveyInfo s = new UBSurveyInfo();
-            //     s.SurveyID = "5a9e290f2713a086b8a57a7b";
-            //     s.Title = "title" + i.ToString();
-            //     s.ChannelID = "5a8fb4200ad8963fa4242cb2";
-            //     s.ApproveStatus = (short)(new Random()).Next(0, 1);
-            //     s.StartDate = DateTime.Now.AddDays((new Random()).Next(-100, 100));
-            //     s.EndDate = s.StartDate.AddDays((new Random()).Next(0, 100));
-            //     s.LimitPersons = (new Random()).Next(0, 1000);
-            //     var r1 = Helpers.HttpPost($"http://{site}/api/ubsurvey/save", s);  
-            //     string sadf = r1.Result;
-            // }
-
-            //string ss = Url.Action("/api/ubsurvey/list");
-
             if(!SessionManager.IsLogin(_session))
                 throw new Exception("Session이 유효하지 않습니다.");
 

@@ -12,12 +12,15 @@ namespace UBSurvey.Repository
     {
         public IMongoCollection<UBSurveyInfo> UBSurveys;
         public IMongoCollection<UBServiceInfo> UBServices;
+
+        public IMongoCollection<BsonDocument> ErrorDump;
         
         
         public UBSurveyContext(IOptions<DBSettings> settings) : base(settings)
         {
             UBSurveys = _ubSurveydatabase.GetCollection<UBSurveyInfo>("ubsurveys");
             UBServices = _ubSurveydatabase.GetCollection<UBServiceInfo>("services");
+            ErrorDump = _ubSurveydatabase.GetCollection<BsonDocument>("error_dump");
         }
     }
 }

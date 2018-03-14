@@ -35,7 +35,7 @@ namespace UBSurvey
             //services.AddTransient<ISurveysRepository, SurveysRepository>();
 
             //services.AddWebOptimizer();
-            
+
             services.Configure<GzipCompressionProviderOptions>(options => 
             {
                 options.Level = CompressionLevel.Fastest;
@@ -75,8 +75,8 @@ namespace UBSurvey
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddMvc();
-            
+            var builder = services.AddMvc();
+            builder.AddMvcOptions(o => { o.Filters.Add(typeof(GlobalExceptionFilter)); });
             services.AddDistributedMemoryCache();
             services.AddSession();
         }
@@ -89,6 +89,7 @@ namespace UBSurvey
             
             app.UseResponseCompression();
             
+            Console.WriteLine("ddd :" + env.IsDevelopment());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

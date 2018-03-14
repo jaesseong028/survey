@@ -8,6 +8,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using Newtonsoft.Json;
 
 namespace UBSurvey.Repository
 {
@@ -19,6 +20,7 @@ namespace UBSurvey.Repository
         UBSurveyInfo GetUBSurvey(string _id);
         //bool UpdateUBSurvey(UBSurveyInfo item);
         IEnumerable<UBServiceInfo> GetServices();
+        void DumpError(object o);
     }
 
     public class UBSurveyRepository : IUBSurveyRepository
@@ -60,7 +62,7 @@ namespace UBSurvey.Repository
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Gte(t => t.StartDate, startDate.Value);
 
             if (endDate.HasValue)
-                _filterDef &= Builders<UBSurveyInfo>.Filter.Lte(t => t.EndDate, endDate.Value);
+                _filterDef &= Builders<UBSurveyInfo>.Filter.Lte(t => t.EndDate, endDate.Value.AddDays(1));
 
             if (approveStatus.HasValue)
                 _filterDef &= Builders<UBSurveyInfo>.Filter.Eq(t => t.ApproveStatus, approveStatus.Value);
@@ -96,6 +98,12 @@ namespace UBSurvey.Repository
             var sort = Builders<UBServiceInfo>.Sort.Descending("_id");
             var filter = Builders<UBServiceInfo>.Filter.Eq("Visible", true);
             return _context.UBServices.Find(filter).Sort(sort).ToEnumerable();
+        }
+
+        public void DumpError(object o)
+        {
+            BsonDocument doc = BsonDocument.Parse(JsonConvert.SerializeObject(o));
+            _context.ErrorDump.InsertOne(doc);
         }
     }
 }

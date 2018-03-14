@@ -18,7 +18,6 @@ namespace UBSurvey
     {
         public static void Main(string[] args)
         {
-            
             BuildWebHost(args);
         }
 
@@ -51,6 +50,7 @@ namespace UBSurvey
 
             if(isService)
             {
+                host.Run();
                 //host.RunAsService();
             }else
             {

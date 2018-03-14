@@ -20,7 +20,7 @@ body, html{ height:102%;font-family: 'Nanum Gothic'; }
 .tab {float: left; }
 .tab fieldset {background-color:white; border:1px solid #CCC; padding:30px 0px 30px 30px; margin: 9px 9px 4.5px 9px; height: 100%}
 .tab fieldset.setting {border:1px solid #87B2F1;}
-.tab fieldset .question { font-size: 20px; font-weight: bold; color:#222;padding-bottom: 15px;}
+.tab fieldset .question { font-size: 16px; font-weight: bold; color:#222;padding-bottom: 15px;}
 .tab fieldset .desc { padding-left:5px; padding-bottom: 20px; font-size: 14px; color:#14a5e6 }
 .tab fieldset .required {color: red; vertical-align:text-top}
 .tab fieldset .q-contain {width: 98%; float: left;}

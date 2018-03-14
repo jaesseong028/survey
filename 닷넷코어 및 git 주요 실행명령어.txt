@@ -12,5 +12,5 @@ dotnet add package 패키지명 ex) NewtonSoft.Json
 dotnet restore package 당겨오기
 dotnet run 실행
 dotnet build 빌드 실행
-dotnet publish -o {경로} -c {Debug|Release}
+dotnet publish -o {경로} -c {Debug|Release}     dotnet publish -o bin/Release_01 -c Release
 dotnet {프로젝트}.dll 실행  < 배포된 실행 
