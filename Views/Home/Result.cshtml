@@ -29,7 +29,7 @@ var hotSettings = {
   data: dataObject,
   //stretchH: 'last',
   autoRowWarp : true,
-  width: document.body.clientWidth * 0.75,
+  width: window.innerWidth* 0.75,
   height : $("#handsonTableConatiner").height(),
   fixedRowsTop: 1,
   rowHeaders: true,
@@ -46,7 +46,7 @@ var hotSettings = {
         var title = data[0];
         data.splice(0, 1);
 
-        var contents = data.reduce((p, c) => {
+        var contents = data.reduce(function(p, c) {
             var name = c;
             if(name == null)
                 return p;
@@ -59,7 +59,7 @@ var hotSettings = {
 
         if (Object.keys(contents).length < 10)
         {
-           var countsExtended = Object.keys(contents).map(k => {return [k, contents[k]]; });
+           var countsExtended = Object.keys(contents).map(function(k) {return [k, contents[k]]; });
            countsExtended.splice(0, 0, ['Task', '']);
            var data = google.visualization.arrayToDataTable(countsExtended);
            drawChart(data, title);
@@ -79,7 +79,7 @@ function drawChart(data, title) {
     if(data == null) {
          return;
     }
-    $('#piechart').width(document.body.clientWidth * 0.23);
+    $('#piechart').width(window.innerWidth * 0.23);
     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
     chart.draw(data, options);
 }
@@ -91,6 +91,17 @@ $(document).ready(function(){
     $("#bodyContents").addClass("container-fluid");
     $("#hot-display-license-info").hide();
 });
+
+
+function resizeScreen() {
+    hot.updateSettings({
+        width: window.innerWidth * 0.75
+    });
+    $('#piechart').width(window.innerWidth * 0.23);
+}
+
+$(function(){
+    $(window).resize( resizeScreen );
+    resizeScreen();
+});
 </script>
-
-

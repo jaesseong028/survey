@@ -54,8 +54,8 @@
                 <th>기간</th>
                 <th>참여인원</th>
                 <th>결과</th>
-                <th>삭제</th>
                 <th>URL복사</th>
+                <th>삭제</th>
             </tr>
         </thead>
         <tr v-for="(s, index) in surveys">
@@ -64,8 +64,8 @@
             <td>{{s.startDateAndEndDate}}</td>
             <td>{{s.limitPersonsStr}}</td>
             <td class="text-center"><a v-on:click="resultPageRedirect(s._id)" href="#" >결과보기</a> </td>
-            <td class="text-center"><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
             <td class="text-center"><button class="btn btn-info" v-on:click="copy_to_clipboard(s._id)" >복사</button> </td>
+            <td class="text-center"><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>
         </tr>     
     </table>
     <center>
