@@ -455,6 +455,7 @@ function createMultiTextBox( elItems, txtItems )
                 {
                     cdom.getcss(elItem.element,'lbl_' + txtItems.type, 0)
                             .append('strong')
+                            .text('*')
                             .addcss('required');
                 }
 
@@ -669,19 +670,17 @@ function validQuestion ( pageNode )
 
 function e_click_btn( obj, btnType, currPage )
 {
-
     var pageNode = obj.parentNode.parentNode;   //page
-    //cdom.get('cpage').text(currPage)
-    //console.log(parseInt(currPage)+1);
-    //console.log()
+
+    var cpage = document.getElementsByClassName('cpage')[0];
+    
     if(btnType == 'next' && validQuestion(pageNode))
     {
         isVisiblePage(pageNode, false);
 
         var nextPObj = pageNode.nextSibling;
         isVisiblePage(nextPObj, true);
-        // + 1
-        console.log(parseInt(currPage)+1);
+        cpage.innerText = parseInt(cpage.outerText) + 1;
         
     }else if (btnType == 'pre')
     {
@@ -689,13 +688,12 @@ function e_click_btn( obj, btnType, currPage )
 
         var prePObj = pageNode.previousSibling;
         isVisiblePage(prePObj, true);
-        console.log(parseInt(currPage)-1);
+        cpage.innerText = parseInt(cpage.outerText) - 1;
         
     }else if (btnType == 'complete' && validQuestion(pageNode))
     {
         var pageSetNode = pageNode.parentNode;
         makeResultJson(pageSetNode);
-        
     }
 }
 
@@ -864,8 +862,8 @@ function domReady (){
                 cdom.getcss(elSurvey,'title',0).text(surveyJson.title);
             
             cdom.getcss(elSurvey,'title',0)
-                    .append('lable').addcss('cpage').text(1)
-                    .insert('label').addcss('tpage').text('/' + surveyJson.pages.length);
+                    .append('label').addcss('tpage').text('/' + surveyJson.pages.length)
+                    .insert('label').addcss('cpage').text(1);
 
             // if('description' in surveyJson.survey)
             //     cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
