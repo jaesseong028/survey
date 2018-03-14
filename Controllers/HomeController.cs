@@ -191,10 +191,10 @@ namespace UBSurvey.Controllers
         public IActionResult SurveyEditSave(string survey)
         {
 
-            if (!SessionManager.IsLogin(_session))
-            {
-                return RedirectToAction("required", "login");
-            }
+            // if (!SessionManager.IsLogin(_session))
+            // {
+            //     return RedirectToAction("required", "login");
+            // }
             
             ViewBag.survey = survey;
            

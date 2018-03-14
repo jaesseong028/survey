@@ -151,7 +151,7 @@ function createSurveySet()
     var elSurvey = cdom.get('div').addcss('survey');
     elSurvey.append('div')
                 .addcss('header')
-                .append('p').addcss('title');
+                .append('label').addcss('title');
     elSurvey.append('div').addcss('barline');
     elSurvey.append('div').addcss('page-set');
 
@@ -323,7 +323,7 @@ function createCheckRadio( elItems, items )
                     .insert('label')
                         .addcss('lbl_' + items.type + '_other')
                         .attr('for', items.name + '_other')
-                        .inhtml(items.other_text)
+                        .inhtml(items.other_text == null ? '기타': items.other_text)
                     .insert('input')
                         .attr('type','text')
                         .attr('id',items.name + '_othertext')
@@ -728,15 +728,18 @@ function makeResultJson( pageSetNode ){
                     if(checkedItem.length == 1)
                     {
                         var radioValue = [];
-                        radioValue.push(checkedItem[0].value);
-
-                        
+                                                
                         if(checkedItem[0].id == questionId + '_other' )
                         {
+                            radioValue.push(checkedItem[0].value == 'undefined' ? '기타' : checkedItem[0].value );
+
                             var radioOther = {};
                             var otherTextValue = itemNodes.getElementsByClassName('txt_radio_other')[0].value;
-                            radioOther[checkedItem[0].value] = otherTextValue;
+                            radioOther[checkedItem[0].value == 'undefined' ? '기타' : checkedItem[0].value ] = otherTextValue;
                             radioValue.push(radioOther);
+                        }else
+                        {
+                            radioValue.push(checkedItem[0].value);
                         }
 
                         resultJson[questionId] = radioValue;                        
@@ -751,8 +754,12 @@ function makeResultJson( pageSetNode ){
                     
                     var checkValue = [];
                     for(var i = 0; checkedItem.length > i; i++ )
-                        checkValue.push(checkedItem[i].value);
-                    
+                    {
+                        if(checkedItem[i].id == questionId + '_other')
+                            checkValue.push(checkedItem[i].value == 'undefined' ? '기타' : checkedItem[i].value);
+                        else
+                            checkValue.push(checkedItem[i].value);
+                    }
 
                     var checkedOther = [].filter.call(checkedItem, function( el ) {
                         return el.id == questionId + '_other';
@@ -761,9 +768,10 @@ function makeResultJson( pageSetNode ){
                     if(checkedOther.length > 0)
                     {
                         var checkOther = {};
-
+                        console.log(checkedOther[0].value);
+                        
                         var otherText = itemNodes.getElementsByClassName('txt_checkbox_other')[0];
-                        checkOther[checkedOther[0].value] = otherText.value;
+                        checkOther[checkedOther[0].value == 'undefined' ? '기타' : checkedOther[0].value] = otherText.value;
                         checkValue.push(checkOther);                        
                     }
 
@@ -856,14 +864,15 @@ function domReady (){
         {
             // Create Survey 
             var elSurvey = createSurveySet();
-
+            
+            cdom.getcss(elSurvey,'title',0)
+                    .insert('label').addcss('tpage').text('/' + surveyJson.pages.length)
+                    .insert('label').addcss('cpage').text(1);
             // Survey Title
             if('title' in surveyJson)
                 cdom.getcss(elSurvey,'title',0).text(surveyJson.title);
             
-            cdom.getcss(elSurvey,'title',0)
-                    .append('label').addcss('tpage').text('/' + surveyJson.pages.length)
-                    .insert('label').addcss('cpage').text(1);
+            
 
             // if('description' in surveyJson.survey)
             //     cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
