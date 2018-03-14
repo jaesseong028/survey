@@ -35,18 +35,33 @@ namespace UBSurvey
                 var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
                 pathToContentRoot = Path.GetDirectoryName(pathToExe);
             }
-
-            //string myIP = Helpers.GetMyIp();
-            var host = WebHost.CreateDefaultBuilder(args)
-                .UseContentRoot(pathToContentRoot)
-                .UseConfiguration(new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("hosting.json", optional: true)
-                .Build()
-            )
-            .UseStartup<Startup>()
-            //.UseUrls($"http://{myIP}:5000/")
-            .Build();
+            IWebHost host = null;
+            string myIP = Helpers.GetMyIp();
+            if (isService)
+            {
+                host = WebHost.CreateDefaultBuilder(args)
+                    .UseContentRoot(pathToContentRoot)
+                    .UseConfiguration(new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("hosting.json", optional: true)
+                    .Build()
+                )
+                .UseStartup<Startup>()
+                //.UseUrls($"http://{myIP}:5000/")
+                .Build();
+            }
+            else
+            {
+                host = WebHost.CreateDefaultBuilder(args)
+                    .UseContentRoot(pathToContentRoot)
+                    .UseConfiguration(new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .Build()
+                )
+                .UseStartup<Startup>()
+                .UseUrls($"http://{myIP}:5000/", "http://locahost:5000")
+                .Build();
+            }
 
             if(isService)
             {

@@ -15,6 +15,11 @@ namespace UBSurvey.Controllers
             return RedirectToAction("list","home");
         }
 
+        public IActionResult Required()
+        {
+            return View();
+        }
+
         public IActionResult SSOLogin(string token)
         {
             if(string.IsNullOrEmpty(token))

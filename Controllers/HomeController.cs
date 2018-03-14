@@ -19,6 +19,7 @@ using System.Dynamic;
 
 namespace UBSurvey.Controllers
 {
+    ///[CustomAuthorize]
     public class HomeController : Controller
     {   
         private readonly IUBSurveyRepository _repository;
@@ -30,13 +31,13 @@ namespace UBSurvey.Controllers
             _repository = repository;
             _globalVariable =  globalVariable;
             _httpContextAccessor = httpContextAccessor;
-
-            
         }
         public IActionResult Result(string ubsurveyid)
         {
-            if(!SessionManager.IsLogin(_session))
-                throw new Exception("Session이 유효하지 않습니다.");
+            if (!SessionManager.IsLogin(_session))
+            {
+                return RedirectToAction("required", "login");
+            }
 
             if (string.IsNullOrEmpty(ubsurveyid))
                 return NotFound();
@@ -64,10 +65,15 @@ namespace UBSurvey.Controllers
 
         public IActionResult List(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
-            if(!SessionManager.IsLogin(_session))
-                throw new Exception("Session이 유효하지 않습니다.");
+            if (!SessionManager.IsLogin(_session))
+            {
+                return RedirectToAction("required", "login");
+            }
 
-            IEnumerable<UBServiceInfo> services = _repository.GetServices();
+            IEnumerable<UBServiceInfo> services = _repository.GetServices("홍종표11");
+            if(services.Count() == 0)
+                return NotFound();
+                
             string url = $"{_globalVariable.Value.ApiDomain}/api/ubsurvey/list/{Request.QueryString.ToString()}";
 
             if (channelID == string.Empty)
@@ -97,8 +103,10 @@ namespace UBSurvey.Controllers
 
         public IActionResult Edit(string ubsurveyid, string channelid)
         {
-            if(!SessionManager.IsLogin(_session))
-                throw new Exception("Session이 유효하지 않습니다.");
+            if (!SessionManager.IsLogin(_session))
+            {
+                return RedirectToAction("required", "login");
+            }
 
             UBSurveyEditInfo editInfo = new UBSurveyEditInfo();
             UBSurveyInfo info = new UBSurveyInfo()
@@ -176,11 +184,15 @@ namespace UBSurvey.Controllers
         [HttpPost]
         public IActionResult SurveyEditSave(string survey)
         {
+
+            if (!SessionManager.IsLogin(_session))
+            {
+                return RedirectToAction("required", "login");
+            }
+            
             ViewBag.survey = survey;
            
             return View();
         } 
-
-
     }
 }

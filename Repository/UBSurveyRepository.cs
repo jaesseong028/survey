@@ -19,7 +19,8 @@ namespace UBSurvey.Repository
         bool RemoveUBSurvey(string _id);
         UBSurveyInfo GetUBSurvey(string _id);
         //bool UpdateUBSurvey(UBSurveyInfo item);
-        IEnumerable<UBServiceInfo> GetServices();
+        IEnumerable<UBServiceInfo> GetServices(string userID);
+        UBServiceInfo GetService(string channelID);
         void DumpError(object o);
     }
 
@@ -78,7 +79,11 @@ namespace UBSurvey.Repository
 
         public bool RemoveUBSurvey(string _id)
         {
-            DeleteResult actionResult = _context.UBSurveys.DeleteOne(Builders<UBSurveyInfo>.Filter.Eq("_id", new ObjectId(_id)));
+            ObjectId o;
+            if (!ObjectId.TryParse(_id, out o))
+                return false;
+
+            DeleteResult actionResult = _context.UBSurveys.DeleteOne(Builders<UBSurveyInfo>.Filter.Eq("_id", o));
 
             return actionResult.IsAcknowledged
                 && actionResult.DeletedCount > 0;
@@ -86,18 +91,32 @@ namespace UBSurvey.Repository
 
         public UBSurveyInfo GetUBSurvey(string _id)
         {
-            var filter = Builders<UBSurveyInfo>.Filter.Eq("_id", new ObjectId(_id));
+            ObjectId o;
+            if (!ObjectId.TryParse(_id, out o))
+                return null;
+
+            var filter = Builders<UBSurveyInfo>.Filter.Eq("_id",o);
             return _context.UBSurveys
                             .Find(filter)
                             .FirstOrDefault();
         }
 
-        public IEnumerable<UBServiceInfo> GetServices()
+        public IEnumerable<UBServiceInfo> GetServices(string userID)
         {
             //var filter = Builders<UBServiceInfo>.Filter.Empty;
             var sort = Builders<UBServiceInfo>.Sort.Descending("_id");
             var filter = Builders<UBServiceInfo>.Filter.Eq("Visible", true);
+            filter &= Builders<UBServiceInfo>.Filter.AnyEq("Users", userID);
+
             return _context.UBServices.Find(filter).Sort(sort).ToEnumerable();
+        }
+
+        public UBServiceInfo GetService(string channelID)
+        {
+            var filter = Builders<UBServiceInfo>.Filter.Eq("Visible", true);
+            filter &= Builders<UBServiceInfo>.Filter.Eq("ChannelID", channelID);
+
+            return _context.UBServices.Find(filter).FirstOrDefault();
         }
 
         public void DumpError(object o)

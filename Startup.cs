@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Http;
 using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace UBSurvey
 {
@@ -100,7 +102,6 @@ namespace UBSurvey
             }
             //app.UseWebOptimizer();
             app.UseStaticFiles();
-
             app.UseSession();
 
             app.UseMvc(routes =>

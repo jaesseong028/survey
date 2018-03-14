@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -18,6 +19,7 @@ namespace UBSurvey.Models
         public virtual string ChannelID { get; set; }
         public virtual string Desript { get; set;}
         public virtual bool Visible { get; set;}
+        public virtual IEnumerable<string> Users { get; set;}
         
     }
 }
