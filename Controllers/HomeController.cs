@@ -70,10 +70,10 @@ namespace UBSurvey.Controllers
                 return RedirectToAction("required", "login");
             }
 
-            IEnumerable<UBServiceInfo> services = _repository.GetServices("홍종표11");
+            IEnumerable<UBServiceInfo> services = _repository.GetServices(SessionManager.GetSession(_session));
             if(services.Count() == 0)
                 return NotFound();
-                
+
             string url = $"{_globalVariable.Value.ApiDomain}/api/ubsurvey/list/{Request.QueryString.ToString()}";
 
             if (channelID == string.Empty)
