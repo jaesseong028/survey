@@ -72,3 +72,4 @@ textarea {resize: none;}
 .quesion-nowarp { color: #7f7f7f; margin-left:10%; padding-top:10px; display: inline-block; width: 89%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;white-space: normal; line-height: 30px; text-align: left; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 20; -webkit-box-orient: vertical;}
 
  .skip-question {padding: 4px; margin-left: 4px; display:inline_block; border: 1px solid gray; vertical-align: middle; border-radius: 2px; background: #efefef}
+.page-descript {border: 1px solid #CCC;margin: 9px 9px 4.5px 9px;}

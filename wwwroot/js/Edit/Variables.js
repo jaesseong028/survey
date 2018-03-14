@@ -68,7 +68,7 @@ options = {
         name :  { ko : "ID", type : "ReadOnlyString"  },
         title :  { ko : "제목", type : "LongString" },
         description :  { ko : "설명문구", type : "LongString" },
-        is_required :  { ko : "필수", type : "Boolean" },
+        //is_required :  { ko : "필수", type : "Boolean" },
         items :  { ko : "선택항목", type : "itemsArray" },
         max_len :  { ko : "최대 글자수", type : "Int" , min : 1,  max : 100 },
         text_width :  { ko : "텍스트넓이", type : "Int" , min : 1 },

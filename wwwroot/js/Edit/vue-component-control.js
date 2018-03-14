@@ -63,7 +63,7 @@ Vue.component('tab-page-com', {
                 <label class="labelfor cur" v-bind:class="{setting: page === selectPage}" :for="getPageID(page.name, index)">{{page.name}}<span v-bind:class="{sel: page === selectPage}" class="glyphicon glyphicon-cog icon"></span> </label>\
                 <label class="plus cur" v-if="index == survey.pages.length - 1" v-on:click="appendPage(index + 1)">+</label>\
                 <div class="tab-container">\
-                    <div v-if="page.title || page.description">\
+                    <div v-if="page.title || page.description" class="row page-descript">\
                         <label v-if="page.title" class="col-sm-12 text-left page-title">{{page.title}}</label>\
                         <label v-if="page.description" class="col-sm-12 text-left page-desc" v-html="convertHtml(page.description)"></label>\
                     </div>\
@@ -256,7 +256,7 @@ Vue.component('multi-text-com', {
     <div>\
         <template v-for="(item, i) in el.items">\
             <div :style="col_style">\
-                <label>{{item.item}}</label>\
+                <label>{{item.item}}</label><span class="required" v-if="item.is_required"> *</span>\
                 <input type="text" :name=el.name :maxlength="el.max_len" :id="uid" :size="textWidth" v-model="el.value[i]" class="form-control non-width" />\
             </div>\
         </template>\

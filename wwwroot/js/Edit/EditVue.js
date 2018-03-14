@@ -205,6 +205,7 @@ var vue = new Vue({
             }
 
             if (type == this.GlobalValues.control.multiText) {
+                delete item.is_required;
                 item.items = [{item : 'item1', is_required : true}, {item : 'item2', is_required : true}, {item : 'item3', is_required : true}];
                 item.value = [];
             }
