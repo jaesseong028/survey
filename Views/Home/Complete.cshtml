@@ -1,32 +1,30 @@
 
-<!-- @section Scripts {
-<environment include="Development">
-    <script src="~/js/vue.min.js"></script>
-</environment>
-<environment include="Production">    
-    <script src="~/js/vue.min.js"></script>
-</environment>
-} -->
+@{ Layout =  null;}
+<html>
+    <head>
+    <script>
+        /*
+        history.pushState(null, null, location.href);
+        window.onpopstate = function(event) {
+            history.go(1);
+        };
+        */
 
-<script>
-    /*
-    history.pushState(null, null, location.href);
-    window.onpopstate = function(event) {
-        history.go(1);
-    };
-    */
-
-    $(document).keydown(function(e){   
-        if(e.target.nodeName != "INPUT" && e.target.nodeName != "TEXTAREA"){       
-            if(e.keyCode === 8){   
-            return false;
+        $(document).keydown(function(e){   
+            if(e.target.nodeName != "INPUT" && e.target.nodeName != "TEXTAREA"){       
+                if(e.keyCode === 8){   
+                return false;
+                }
             }
-        }
-    });
- 
-    window.history.forward(0);
+        });
+    
+        window.history.forward(0);
 
-</script>
+    </script>
+</head>
+<body>
 <div>
     <label>설문이 완료 되었습니다.</label>
 </div>
+</body>
+</html>

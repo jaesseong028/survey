@@ -116,7 +116,7 @@ var vue = new Vue({
             location.href = '@Url.Action("result", "home")/?UBSurveyID=' + UBSurveyID; 
         },
         copy_to_clipboard : function(UBSurveyID) {
-            var d = '@Url.Action("index", "home")/?UBSurveyID=' + UBSurveyID;
+            var d = '@(this.Model.Item5 + Url.Action("index", "home"))/?UBSurveyID=' + UBSurveyID;
             if(this.is_ie()) {
                 window.clipboardData.setData("Text", d);
                 alert("복사되었습니다.");

@@ -27,8 +27,9 @@ var dataObject = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Mode
 var hotElement = document.querySelector('#hot');
 var hotSettings = {
   data: dataObject,
-  stretchH: 'last',
-  width: document.body.clientWidth * 0.7,
+  //stretchH: 'last',
+  autoRowWarp : true,
+  width: document.body.clientWidth * 0.75,
   height : $("#handsonTableConatiner").height(),
   fixedRowsTop: 1,
   rowHeaders: true,
@@ -47,6 +48,8 @@ var hotSettings = {
 
         var contents = data.reduce((p, c) => {
             var name = c;
+            if(name == null)
+                return p;
             if (!p.hasOwnProperty(name)) {
                 p[name] = 0;
             }
@@ -76,7 +79,7 @@ function drawChart(data, title) {
     if(data == null) {
          return;
     }
-    $('#piechart').width(document.body.clientWidth * 0.27);
+    $('#piechart').width(document.body.clientWidth * 0.23);
     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
     chart.draw(data, options);
 }
