@@ -130,7 +130,13 @@ namespace UBSurvey.Controllers
             
             if(string.IsNullOrEmpty(channelid))
                 return NotFound();
-
+            
+            UBServiceInfo service = _repository.GetService(channelid);
+            if(service == null)
+                return NotFound("channel이 존재하지 않습니다.");
+            
+            editInfo.ChannelName = service.Desript;
+            
             string returnUrl = $"{_globalVariable.Value.ApiDomain}/Home/SurveyEditSave";
             NameValueCollection namedValues =  new NameValueCollection
             {
