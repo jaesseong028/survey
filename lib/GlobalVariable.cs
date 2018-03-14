@@ -7,8 +7,6 @@ namespace UBSurvey.Lib
         public int PageSize;
         public string SurveyEncyptKey;
         public string UserEncyptKey;
-        public string ApiDomain;
-      
     }
 }
  

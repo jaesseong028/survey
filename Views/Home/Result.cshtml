@@ -27,7 +27,6 @@ var dataObject = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Mode
 var hotElement = document.querySelector('#hot');
 var hotSettings = {
   data: dataObject,
-  //stretchH: 'last',
   autoRowWarp : true,
   width: window.innerWidth* 0.75,
   height : $("#handsonTableConatiner").height(),

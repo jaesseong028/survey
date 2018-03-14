@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -51,6 +52,11 @@ namespace UBSurvey.Common
                 return attributes[0].Description;
             else
                 return value.ToString();
+        }
+
+        public static string GetRequestDoamin(this HttpRequest request)
+        {
+            return  request.Scheme +  System.Uri.SchemeDelimiter + request.Host;            
         }
 
 

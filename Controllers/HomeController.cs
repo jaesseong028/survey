@@ -34,6 +34,7 @@ namespace UBSurvey.Controllers
         }
         public IActionResult Result(string ubsurveyid)
         {
+            string siteName = HttpContext.Request.GetRequestDoamin();
             if (!SessionManager.IsLogin(_session))
             {
                 return RedirectToAction("required", "login");
@@ -48,11 +49,10 @@ namespace UBSurvey.Controllers
 
             if (string.IsNullOrEmpty(info.SurveyID))
                 return NotFound();
+                
 
-            var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurveyResult",new { channelID = info.ChannelID, surveyID = info.SurveyID });
+            var r = Helpers.HttpPost($"{siteName}/api/survey/GetSurveyResult",new { channelID = info.ChannelID, surveyID = info.SurveyID });
             var d = JsonConvert.DeserializeObject<dynamic>(r.Result);
-
-            
 
             if( (bool)d["success"] && d["data"] != null)
             {
@@ -70,11 +70,13 @@ namespace UBSurvey.Controllers
                 return RedirectToAction("required", "login");
             }
 
+            string siteName = HttpContext.Request.GetRequestDoamin();
+
             IEnumerable<UBServiceInfo> services = _repository.GetServices(SessionManager.GetSession(_session));
             if(services.Count() == 0)
                 return NotFound();
 
-            string url = $"{_globalVariable.Value.ApiDomain}/api/ubsurvey/list/{Request.QueryString.ToString()}";
+            string url = $"{siteName}/api/ubsurvey/list/{Request.QueryString.ToString()}";
 
             if (channelID == string.Empty)
             {
@@ -93,7 +95,7 @@ namespace UBSurvey.Controllers
             var searchData = Helpers.GetQueryStringToDictionary(uri.Query, "channelID", "title", "startDate", "endDate", "approveStatus");
             
             var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, (int)d["totalCount"]);
-            Tuple<object, object, object, object, object> tuple = new Tuple<object, object, object, object, object>(d["data"], pager, searchData, services, _globalVariable.Value.ApiDomain);
+            Tuple<object, object, object, object, object> tuple = new Tuple<object, object, object, object, object>(d["data"], pager, searchData, services, siteName);
             return View(tuple);
         }
 
@@ -108,6 +110,7 @@ namespace UBSurvey.Controllers
                 return RedirectToAction("required", "login");
             }
 
+            string siteName = HttpContext.Request.GetRequestDoamin();
             UBSurveyEditInfo editInfo = new UBSurveyEditInfo();
             UBSurveyInfo info = new UBSurveyInfo()
             {
@@ -121,7 +124,7 @@ namespace UBSurvey.Controllers
                 info = _repository.GetUBSurvey(ubsurveyid);
                 if(!string.IsNullOrEmpty(info.SurveyID))
                 {
-                    var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });
+                    var r = Helpers.HttpPost($"{siteName}/api/survey/GetSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });
                     dynamic d = JsonConvert.DeserializeObject(r.Result);
                     if( (bool)d["success"] && d["data"]["survey"] != null )
                         editInfo.SurveyJson = d["data"]["survey"].ToString();
@@ -137,7 +140,7 @@ namespace UBSurvey.Controllers
             
             editInfo.ChannelName = service.Desript;
             
-            string returnUrl = $"{_globalVariable.Value.ApiDomain}/Home/SurveyEditSave";
+            string returnUrl = $"{siteName}/Home/SurveyEditSave";
             NameValueCollection namedValues =  new NameValueCollection
             {
                 {"channelid" , channelid },
@@ -165,14 +168,19 @@ namespace UBSurvey.Controllers
             if(!Validation.ConfirmPeriod(DateTime.Now, info.StartDate, info.EndDate))
                 return NotFound("기간이 종료 되었습니다.");
 
+
+            string siteName = HttpContext.Request.GetRequestDoamin();
+
             // 전체 진행 수 확인
-            var r = Helpers.HttpPost($"{_globalVariable.Value.ApiDomain}/api/survey/GetSurveyResultCount",new { channelID = info.ChannelID, surveyID = info.SurveyID});
+            var r = Helpers.HttpPost($"{siteName}/api/survey/GetSurveyResultCount",new { channelID = info.ChannelID, surveyID = info.SurveyID});
             dynamic d = JsonConvert.DeserializeObject(r.Result);
             if(!(bool)d["success"])
                 return NotFound("Count 오류.");
             else if(((int)d["data"] >= info.LimitPersons))
                 return NotFound("인원이 마감되었습니다.");
-            string returnUrl = $"{_globalVariable.Value.ApiDomain}/Home/Complete";
+      
+                
+            string returnUrl = $"{siteName}/Home/Complete";
 
             var val = $"AuthDate={DateTime.Now.ToString("yyyyMMddHHmmss")}&SurveyID={info.SurveyID}&retUrl={returnUrl}";
             var enVal = Helpers.AesEncrypt256(val,_globalVariable.Value.UserEncyptKey);
