@@ -152,6 +152,7 @@ function createSurveySet()
     elSurvey.append('div')
                 .addcss('header')
                 .append('p').addcss('title');
+    elSurvey.append('div').addcss('barline');
     elSurvey.append('div').addcss('page-set');
 
     return elSurvey.element;
@@ -161,7 +162,7 @@ function createSurveySet()
 // /// Page Set 생성
 // ////////////////////////////////////
 // <div class='page'>
-//     <div class='header'>
+//     <div class='pheader'>
 //         <p class='title'></p>
 //         <p class='description'></p>
 //     </div>
@@ -171,7 +172,7 @@ function createPageSet()
 {
     var elPage = cdom.get('div').addcss('page');
     elPage.append('div')
-            .addcss('header')
+            .addcss('pheader')
             .append('p')
                 .addcss('title')
             .insert('p')
@@ -214,7 +215,7 @@ function createQuestionSet()
 function e_change_checkradio( obj, items )
 {
     var itemList = document.querySelectorAll('input[name='+ items.name +']');
-
+    
     if('skip'in items)
     {
         var skipList = items.skip;
@@ -228,7 +229,6 @@ function e_change_checkradio( obj, items )
                     {
                         var elskip = document.getElementById(skipList[p].skipQuestionNames[n]);
                         cdom.get(elskip).changecss('show','hide');
-
                     }else
                     {
                         var elskip = document.getElementById(skipList[p].skipQuestionNames[n]);
@@ -409,7 +409,8 @@ function createRate( elItems, items )
                         .attr('name', items.name)
                         .addcss('i_' + items.type)
                     .insert('label')
-                        .addcss('lbl_' + items.type)
+                        //.addcss('lbl_' + items.type)
+                        .addcss('btn').addcss('btn-default')
                         .attr('for', items.name + '_' + p)
                         .inhtml(items.choices[p]);
             
@@ -521,28 +522,29 @@ function isVisiblePage(elPage, isShow)
             .changecss(isShow ? 'hide' : 'show', isShow ? 'show' : 'hide');
 }
 
-function addBtnEvent(elPage, btnType)
+function addBtnEvent(elPage, btnType, currPage)
 {
     var btnTxt = '';
     switch(btnType)
     {
-        case 'Next':
+        case 'next':
             btnTxt = '다음';
             break;
-        case 'Complete':
+        case 'complete':
             btnTxt = '완료';
             break;
-        case 'Pre':
+        case 'pre':
             btnTxt = '이전';
             break;
     }
 
-    var elbtn = cdom.get('button').addcss('btn' + btnType).inhtml(btnTxt);
+    //var elbtn = cdom.get('button').addcss('btn' + btnType).inhtml(btnTxt);
+    var elbtn = cdom.get('button').addcss('btn').addcss(btnType).inhtml(btnTxt);
 
     elbtn.event('click', function(){
         var targetElemnt = event.target || event.srcElement;
         
-        e_click_btn(targetElemnt, btnType);
+        e_click_btn(targetElemnt, btnType, currPage);
     });
 
     cdom.getcss(elPage,'btn-set',0).append(elbtn.element)
@@ -555,9 +557,8 @@ function validQuestion ( pageNode )
 
     for(p in questionNodes)
     {
-        
-        if(questionNodes.hasOwnProperty(p) && questionNodes[p].getElementsByClassName('required').length > 0)
-        {
+        if(questionNodes.hasOwnProperty(p) && questionNodes[p].getElementsByClassName('required').length > 0 && questionNodes[p].getAttribute('class') == 'question')
+        {   
             var itemNodes = questionNodes[p].getElementsByClassName('items')[0];
             var alertMsg;
 
@@ -665,38 +666,46 @@ function validQuestion ( pageNode )
     return true;
 }
 
-function e_click_btn( obj, btnType )
+
+function e_click_btn( obj, btnType, currPage )
 {
 
     var pageNode = obj.parentNode.parentNode;   //page
-    
-    if(btnType == 'Next' && validQuestion(pageNode))
+    //cdom.get('cpage').text(currPage)
+    //console.log(parseInt(currPage)+1);
+    //console.log()
+    if(btnType == 'next' && validQuestion(pageNode))
     {
         isVisiblePage(pageNode, false);
 
         var nextPObj = pageNode.nextSibling;
         isVisiblePage(nextPObj, true);
-    }else if (btnType == 'Pre')
+        // + 1
+        console.log(parseInt(currPage)+1);
+        
+    }else if (btnType == 'pre')
     {
         isVisiblePage(pageNode, false);
 
         var prePObj = pageNode.previousSibling;
         isVisiblePage(prePObj, true);
-    }else if (btnType == 'Complete' && validQuestion(pageNode))
+        console.log(parseInt(currPage)-1);
+        
+    }else if (btnType == 'complete' && validQuestion(pageNode))
     {
         var pageSetNode = pageNode.parentNode;
         makeResultJson(pageSetNode);
+        
     }
 }
 
 function makeResultJson( pageSetNode ){
     var questions = pageSetNode.getElementsByClassName('question');
     var resultJson = {};
-    //var answer = [];
 
     for(p in questions)
     {
-        if(questions.hasOwnProperty(p))
+        if(questions.hasOwnProperty(p) && questions[p].getAttribute('class') == 'question')
         {
             var itemNodes = questions[p].getElementsByClassName('items')[0];
             var itemSet = itemNodes.childNodes[0];
@@ -813,21 +822,23 @@ function createPageBtn(elPage, totalPage, currPage )
     // 페이지 별 이전, 다음 버튼 추가
     if(totalPage == 1) // 페이지가 존재하지 않음
     {
-        addBtnEvent(elPage,'Complete');
+        addBtnEvent(elPage,'complete', currPage);
     }
     else if(totalPage - 1 == currPage)  // 마지막 페이지 일 경우 이전 버튼과 완료 버튼
     {
-        addBtnEvent(elPage,'Pre');
-        addBtnEvent(elPage,'Complete');
+        
+        addBtnEvent(elPage,'complete', currPage);
+        addBtnEvent(elPage,'pre', currPage);
     }
     else if(totalPage > 1 && currPage == 0) // 페이지가 있으며 첫번째 페이지
     {
-        addBtnEvent(elPage,'Next');
+        addBtnEvent(elPage,'next', currPage);
     }
     else if(totalPage > 1 && currPage > 0) // 페이지가 있으며 중간 페이지
     {
-        addBtnEvent(elPage,'Pre');
-        addBtnEvent(elPage,'Next');
+        
+        addBtnEvent(elPage,'next', currPage);
+        addBtnEvent(elPage,'pre', currPage);
     }
 }
 
@@ -837,10 +848,11 @@ function domReady (){
     {
 
         var surveyId = document.getElementById('ubSurvey');
+    
+
+        console.log(surveyInfo.strSurvey);
         
-        parseSurvey = surveyInfo.strSurvey;
-        
-        var surveyJson = parseSurvey.survey == undefined ? parseSurvey : parseSurvey.survey;
+        var surveyJson = surveyInfo.strSurvey.survey == undefined ? surveyInfo.strSurvey : surveyInfo.strSurvey.survey;
 
         if(('pages' in surveyJson) && ('title' in surveyJson))
         {
@@ -850,6 +862,10 @@ function domReady (){
             // Survey Title
             if('title' in surveyJson)
                 cdom.getcss(elSurvey,'title',0).text(surveyJson.title);
+            
+            cdom.getcss(elSurvey,'title',0)
+                    .append('lable').addcss('cpage').text(1)
+                    .insert('label').addcss('tpage').text('/' + surveyJson.pages.length);
 
             // if('description' in surveyJson.survey)
             //     cdom.getcss(elSurvey,'description',0).inhtml(surveyJson.survey.description.replace(/(?:\r\n|\r|\n)/g,'<br />')).addcss('line');
@@ -870,6 +886,8 @@ function domReady (){
                     // Page title
                     if('title' in pages[p])
                         cdom.getcss(elPage,'title',0).text(pages[p].title);
+                    else
+                        cdom.getcss(elPage,'pheader',0).removecss('pheader');
 
                     // Page description
                     if('description' in pages[p] && pages[p].description != '' )
