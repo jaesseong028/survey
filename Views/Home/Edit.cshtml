@@ -17,7 +17,7 @@
         <table class="table table-bordered text-center">
             <tr>
                 <td class="info">서비스명</td>
-                <td colspan="3"><input type="text" class="form-control" ></td>
+                <td colspan="3"><input type="text" class="form-control" v-model="channelName" ></td>
             </tr>
             <tr>
                 <td class="info">제목</td>
@@ -55,7 +55,8 @@
             endDate : '@Model.survey.EndDate.ToString("yyyy-MM-dd")',
             surveyJson : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson)) == null ? '' : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SurveyJson)),
             surveyText : '설문등록',
-            ubSurveyID : '@Model.survey._id'
+            ubSurveyID : '@Model.survey._id',
+            channelName : '@Model.ChannelName'
 
         },
         mounted : function(){
