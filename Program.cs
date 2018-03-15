@@ -23,54 +23,14 @@ namespace UBSurvey
 
 
         public static void BuildWebHost(string[] args) {
-            bool isService = true;
-            if (Debugger.IsAttached || args.Contains("--console"))
-            {
-                isService = false;
-            }
-
-             var pathToContentRoot = Directory.GetCurrentDirectory();
-            if (isService)
-            {
-                var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
-                pathToContentRoot = Path.GetDirectoryName(pathToExe);
-            }
-            IWebHost host = null;
-            string myIP = Helpers.GetMyIp();
-            if (isService)
-            {
-                host = WebHost.CreateDefaultBuilder(args)
-                    .UseContentRoot(pathToContentRoot)
+            IWebHost host = WebHost.CreateDefaultBuilder(args)
                     .UseConfiguration(new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("hosting.json", optional: true)
                     .Build()
-                )
-                .UseStartup<Startup>()
-                //.UseUrls($"http://{myIP}:5000/")
-                .Build();
-            }
-            else
-            {
-                host = WebHost.CreateDefaultBuilder(args)
-                    .UseContentRoot(pathToContentRoot)
-                    .UseConfiguration(new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .Build()
-                )
-                .UseStartup<Startup>()
-                .UseUrls($"http://{myIP}:5000/", "http://locahost:5000")
-                .Build();
-            }
-
-            if(isService)
-            {
-                host.Run();
-                //host.RunAsService();
-            }else
-            {
-                host.Run();
-            }
+            )
+            .UseStartup<Startup>().Build();
+            
+            host.Run();
         }
     }
 }

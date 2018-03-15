@@ -78,8 +78,13 @@ namespace UBSurvey
 
             var builder = services.AddMvc();
             builder.AddMvcOptions(o => { o.Filters.Add(typeof(GlobalExceptionFilter)); });
+            builder.AddSessionStateTempDataProvider();
             services.AddDistributedMemoryCache();
-            services.AddSession();
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "qdol";
+                options.IdleTimeout = TimeSpan.FromHours(60 * 3);
+            });
         }
 
 
@@ -91,6 +96,7 @@ namespace UBSurvey
             app.UseResponseCompression();
             
             Console.WriteLine("ddd :" + env.IsDevelopment());
+            app.UseExceptionHandler("/Home/Error");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

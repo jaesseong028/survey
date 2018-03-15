@@ -16,6 +16,7 @@ namespace UBSurvey.Repository
         
         public DbContext(IOptions<DBSettings> settings) 
         {
+            System.Diagnostics.Debug.WriteLine(settings.Value.ConnectionString);
             var _client = new MongoClient(settings.Value.ConnectionString);
             if (_client != null){
                 _surveyDatabase = _client.GetDatabase(settings.Value.SurveyDatabase);
