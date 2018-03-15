@@ -43,8 +43,9 @@ namespace UBSurvey.Models
     public class UBSurveyEditInfo 
     {
         public string UrlParameter { get; set; }
-        public string SurveyJson { get; set; }
-        public UBSurveyInfo survey { get; set; } 
+        public UBSurveyInfo Survey { get; set; } 
+
+        public SurveyInfo SurveyInfo { get; set; } 
         public string ChannelName { get; set;}
 
     }

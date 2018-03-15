@@ -127,7 +127,7 @@ namespace UBSurvey.Controllers
                     var r = Helpers.HttpPost($"{siteName}/api/survey/GetSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });
                     dynamic d = JsonConvert.DeserializeObject(r.Result);
                     if( (bool)d["success"] && d["data"]["survey"] != null )
-                        editInfo.SurveyJson = d["data"]["survey"].ToString();
+                        editInfo.SurveyInfo = JsonConvert.DeserializeObject<SurveyInfo>(d["data"].ToString());
                 }
             }
             
@@ -148,7 +148,7 @@ namespace UBSurvey.Controllers
                 {"retUrl" , returnUrl },
             };
             editInfo.UrlParameter = Helpers.CreateUri("",namedValues);
-            editInfo.survey = info;
+            editInfo.Survey = info;
 
             return View(editInfo);
         }

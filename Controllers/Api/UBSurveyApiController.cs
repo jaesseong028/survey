@@ -68,13 +68,34 @@ namespace UBSurvey.Controllers.Api
             return Json(new {success = false});
         }
 
+        // [HttpPost]
+        // public JsonResult Save([FromBody]UBSurveyInfo data)
+        // {   
+        //     if (string.IsNullOrEmpty(data.ChannelID))
+        //         return Json(new {success = false, message = "ChannelID 가 존재 하지 않습니다." });    
+            
+        //     bool isSuccess = _repository.UpSertUBSurvey(data);
+        //     return Json(new {success = isSuccess });
+        // }
+
         [HttpPost]
-        public JsonResult Save([FromBody]UBSurveyInfo data)
+        public JsonResult Save([FromBody]UBSurveyEditInfo data)
         {   
-            if (string.IsNullOrEmpty(data.ChannelID))
+            if (string.IsNullOrEmpty(data.Survey.ChannelID))
                 return Json(new {success = false, message = "ChannelID 가 존재 하지 않습니다." });    
             
-            bool isSuccess = _repository.UpSertUBSurvey(data);
+            if(data.SurveyInfo.Survey != null)
+            {
+                //survey save
+                string siteName = HttpContext.Request.GetRequestDoamin();
+                var r = Helpers.HttpPost($"{siteName}/api/survey/save", data.SurveyInfo);
+                var d = JsonConvert.DeserializeObject<dynamic>(r.Result);
+                if( (bool)d["success"] && d["data"] != null )
+                    data.Survey.SurveyID = d["data"]["_id"].ToString();
+
+            }
+
+            bool isSuccess = _repository.UpSertUBSurvey(data.Survey);
             return Json(new {success = isSuccess });
         }
     }
