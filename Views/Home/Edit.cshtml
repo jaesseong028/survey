@@ -26,8 +26,8 @@
             <tr>
                 <td class="info" >배포기간</td>
                 <td class="form-inline">
-                    <input type="text" style="width:auto" class="form-control"  id="startDate" v-model="editinfo.Survey.StartDate"> ~
-                    <input type="text" style="width:auto" class="form-control" id="endDate" v-model="editinfo.Survey.EndDate">
+                    <input type="text" style="width:auto" class="form-control"  id="startDate" v-model="startDate"> ~
+                    <input type="text" style="width:auto" class="form-control" id="endDate" v-model="endDate">
                 </td>
                 <td class="info" >마감인원</td>
                 <td><input type="text" class="form-control " v-model="editinfo.Survey.LimitPersons" v-on:keyup="onlyNumber" id="limitperson" ></td>
@@ -37,7 +37,7 @@
         <div class="row">
             <div class="col-sm-10">
                 
-                    <button class="btn btn-success" v-on:click="register" id="register"  >
+                    <button class="btn btn-success" v-on:click="register" id="register">
                         <template v-if="editinfo.SurveyInfo.Survey">
                             설문수정
                         </template>
@@ -45,7 +45,7 @@
                             설문등록
                         </template>
                     </button>
-                <button class="btn btn-info" v-on:click="preView" v-if="editinfo.SurveyInfo.Survey"  >미리보기</button>
+                <button class="btn btn-info" v-on:click="preView" v-if="editinfo.SurveyInfo.Survey">미리보기</button>
             </div>
             <div class="col-sm-2 text-right">
             <button class="btn btn-primary " v-on:click="save" >저장</button>
@@ -56,7 +56,6 @@
             <input type="hidden" id="surveyJson" name="survey" value="">
         </form>
         <div>
-            <!-- {{vue._data}} -->
         </div>        
 </div>
 
@@ -66,6 +65,25 @@
         data : {
             editinfo : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
         },
+
+        computed : {
+            startDate :{
+                get(){
+                    return this.formatDate(this.editinfo.Survey.StartDate);
+                },
+                set(newVal){
+                    this.editinfo.Survey.StartDate = newVal;   
+                }
+            },
+            endDate :{
+                get(){
+                    return this.formatDate(this.editinfo.Survey.EndDate);
+                },
+                set(newVal){
+                    this.editinfo.Survey.EndDate = newVal;   
+                }
+            }
+        },
         mounted : function(){
             var self = this;
             $("#startDate").datepicker({
@@ -74,7 +92,7 @@
                     self.editinfo.Survey.StartDate = dateText;
                 }
             });
-
+            
             $("#endDate").datepicker(
                 {
                 dateFormat: "yy-mm-dd",
@@ -88,6 +106,12 @@
                 
                 if( this.editinfo.Survey.Title  == '' || this.editinfo.Survey.Title == null)
                     return alert('Title이 입력되지 않았습니다.');
+                
+                if(this.editinfo.Survey.StartDate > this.editinfo.Survey.EndDate )
+                    return alert('날짜 형식이 올바르지 않습니다.');
+
+                if(this.editinfo.Survey.LimitPersons == '' )
+                    return alert('마감인원이 올바르지 않습니다.');
                 
                 $.ajax({
                     type : 'post',
@@ -120,15 +144,23 @@
 
             },
             onlyNumber : function(e){
-                var obj = this;
-                obj.limitperson = obj.limitperson.replace(/[^0-9]/g,"");
+                this.editinfo.Survey.LimitPersons = this.editinfo.Survey.LimitPersons.replace(/[^0-9]/g,"");
             },
             preView : function(){
-
                  window.open("", "popup_window", "width=1000, height=900, scrollbars=no");
                  $("#surveyJson").val( JSON.stringify(this.editinfo.SurveyInfo.Survey));
-                 //console.log()
                 $("#myform").submit();
+            },
+            formatDate : function(date){
+                var d = new Date(date),
+                    month = '' + (d.getMonth() + 1),
+                    day = '' + d.getDate(),
+                    year = d.getFullYear();
+
+                if (month.length < 2) month = '0' + month;
+                if (day.length < 2) day = '0' + day;
+
+                return [year, month, day].join('-');
             }
         }
     });
@@ -137,6 +169,5 @@
     {
         vue._data.editinfo.SurveyInfo.Survey = JSON.parse(val);
     }
-
 </script>
 

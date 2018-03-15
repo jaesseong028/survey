@@ -832,9 +832,8 @@ function createPageBtn(elPage, totalPage, currPage )
     }
     else if(totalPage - 1 == currPage)  // 마지막 페이지 일 경우 이전 버튼과 완료 버튼
     {
-        
-        addBtnEvent(elPage,'complete', currPage);
         addBtnEvent(elPage,'pre', currPage);
+        addBtnEvent(elPage,'complete', currPage);
     }
     else if(totalPage > 1 && currPage == 0) // 페이지가 있으며 첫번째 페이지
     {
@@ -842,9 +841,8 @@ function createPageBtn(elPage, totalPage, currPage )
     }
     else if(totalPage > 1 && currPage > 0) // 페이지가 있으며 중간 페이지
     {
-        
-        addBtnEvent(elPage,'next', currPage);
         addBtnEvent(elPage,'pre', currPage);
+        addBtnEvent(elPage,'next', currPage);
     }
 }
 
