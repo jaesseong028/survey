@@ -41,7 +41,6 @@
             </div>
             <div class="col-sm-2 text-right">
             <button class="btn btn-primary " v-on:click="save" >저장</button>
-            <button class="btn btn-danger " v-on:click="deletesurvey" v-if="ubSurveyID != ''">삭제</button>
             </div>
             
         </div>
@@ -83,46 +82,6 @@
                 this.surveyText = "설문등록";
         },
         methods : {
-            deletesurvey : function(){
-                if(!confirm('해당 설문을 삭제 하시겠습니까?')){
-                return;
-                }
-
-                var ubSurveyID = '@Model.survey._id';
-                var surveyID = '@Model.survey.SurveyID';
-                var channelID = '@Model.survey.ChannelID';
-
-                $.ajax({ 
-                    type : 'post',
-                    url : '/api/UBSurvey/Delete',
-                    contentType: 'application/json',
-                    data : JSON.stringify({'id' : ubSurveyID }),
-                    success : function (res) {
-                        if(res.success)
-                        {
-                            $.ajax({
-                            type : 'post',
-                            url : '/api/survey/RemoveSurvey',
-                            contentType: 'application/json',
-                            data : JSON.stringify({'surveyID' : surveyID, 'channelID' : channelID}),
-                            success : function (res) {
-                                if(res.success)
-                                {
-                                    var url = '/home/index';
-                                    $(location).attr('href',url);
-                                } 
-                            }, 
-                            error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                                alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-                            }   
-                            });
-                        }
-                    }, 
-                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-                    }   
-                });
-            },
             save : function(){
                 if($("#title").val() == '')
                     return alert('Title이 입력되지 않았습니다.');
