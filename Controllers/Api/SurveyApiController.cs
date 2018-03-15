@@ -51,11 +51,6 @@ namespace UBSurvey.Controllers.Api
                 return Json(new { data = data, success = false, message = "데이터를 조회 할 수 없습니다." });
 
 
-            foreach (var r in data._surveyResult)
-            {   
-                var dd = r.GetType().GetProperties();
-            }
-
             return Json(new { data = data, success = true});
         } 
 

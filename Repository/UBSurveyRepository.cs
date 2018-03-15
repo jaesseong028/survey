@@ -21,7 +21,8 @@ namespace UBSurvey.Repository
         //bool UpdateUBSurvey(UBSurveyInfo item);
         IEnumerable<UBServiceInfo> GetServices(string userID);
         UBServiceInfo GetService(string channelID);
-        void DumpError(object o);
+        void DumpError(ErrorDumpInfo o);
+        IEnumerable<ErrorDumpInfo> ErrorDumpList(int pageIndex, int pageSize, out int totalCount);
     }
 
     public class UBSurveyRepository : IUBSurveyRepository
@@ -119,10 +120,20 @@ namespace UBSurvey.Repository
             return _context.UBServices.Find(filter).FirstOrDefault();
         }
 
-        public void DumpError(object o)
+        public void DumpError(ErrorDumpInfo o)
         {
-            BsonDocument doc = BsonDocument.Parse(JsonConvert.SerializeObject(o));
-            _context.ErrorDump.InsertOne(doc);
+            _context.ErrorDump.InsertOne(o);
+        }
+
+        public IEnumerable<ErrorDumpInfo> ErrorDumpList(int pageIndex, int pageSize, out int totalCount)
+        {
+            var filter = Builders<ErrorDumpInfo>.Filter.Empty;
+            var sort = Builders<ErrorDumpInfo>.Sort.Descending("_id");
+            var filterData = _context.ErrorDump.Find(filter);
+
+            totalCount = (int)filterData.Count();
+
+            return filterData.Sort(sort).Skip((pageIndex - 1) * pageSize).Limit(pageSize).ToEnumerable();
         }
     }
 }

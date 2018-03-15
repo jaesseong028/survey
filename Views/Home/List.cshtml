@@ -52,7 +52,7 @@
                 <th>NO</th>
                 <th>설문제목</th>
                 <th>기간</th>
-                <th>참여인원</th>
+                <th>참여가능인원</th>
                 <th>결과</th>
                 <th>URL복사</th>
                 <th>삭제</th>
@@ -153,7 +153,7 @@ var vue = new Vue({
         },
         createActionUrl : function(pid){
             var params = $.param(this.searchData);
-            return '/?' + params + '&pageindex=' + pid;
+            return '@Url.Action("List", "Home")/?' + params + '&pageindex=' + pid;
         },
         deletesurvey : function(_id){
             if(!confirm('해당 설문을 삭제 하시겠습니까?')){

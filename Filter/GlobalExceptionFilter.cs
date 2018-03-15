@@ -16,11 +16,12 @@ public class GlobalExceptionFilter : IExceptionFilter
    {
         var urlHelper = new UrlHelper(context);
         var url = urlHelper.RouteUrl(context.RouteData.Values);
-        var dump = new 
+        ErrorDumpInfo dump = new ErrorDumpInfo()
         {
             Message = context.Exception.Message,
             StackTrace = context.Exception.StackTrace,
             URL = url,
+            CreateDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
         };
 
         var pageMessage = new 

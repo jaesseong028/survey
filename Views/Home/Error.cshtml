@@ -1,0 +1,75 @@
+@model System.Tuple<object, object>
+@{
+    ViewData["Title"] = "Error Page";
+}
+
+@section Scripts {
+    <script src="~/js/vue.min.js"></script>
+}
+<style>
+    .nowrap-stacktrace{overflow: hidden;white-space: nowrap;max-width: 300px;}
+    .ui-tooltip {min-width:800px !important}
+</style>
+
+<div id="container" style="display:none"> 
+    <table class="table table-bordered table-hover">
+        <colgroup>
+            <col width="10%"/>
+            <col width="10%"/>
+            <col width="30%"/>
+            <col width="10%"/>
+            <col width="15%"/>
+        </colgroup>
+        <thead>
+            <tr class="info">
+                <th>NO</th>
+                <th>URL</th>
+                <th>ErrorMessage</th>
+                <th>StackTrace</th>
+                <th>CreateDate</th>
+            </tr>
+        </thead>
+        <tr v-for="(e, index) in errors">
+            <td class="text-right">{{((pager.PageIndex - 1) * 10) + index + 1}}</td>
+            <td>{{e.URL}}</td>
+            <td>{{e.Message}}</td>
+            <td data-toggle="tooltip" data-placement="top" :title="e.StackTrace" class="nowrap-stacktrace">{{e.StackTrace}}</td>
+            <td>{{e.CreateDateStr}}</td>
+        </tr>     
+    </table>
+     <center>
+    <ul class="pagination text-center">
+        <li v-if="pager.First != null"><a :href="createActionUrl(pager.First)"> &lt;&lt;</a></li>
+        <li v-if="pager.Prev != null"><a :href="createActionUrl(pager.Prev)"> &lt; </a></li>
+        <li v-for="page in pager.Pages" :class="{active : pager.PageIndex == page }"><a :href="createActionUrl(page)">{{page}}</a></li>
+        <li v-if="pager.Next != null"><a :href="createActionUrl(pager.Next)"> &gt; </a></li>
+        <li v-if="pager.Last != null"><a :href="createActionUrl(pager.Last)"> &gt;&gt; </a></li>
+    </ul>
+    </center>
+</div>
+
+
+<script type="text/javascript">
+var vue = new Vue({
+    el: '#container',
+    data: {
+        errors : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item1)),
+        pager : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.Item2)),
+    },
+    mounted : function(){
+        console.log('mounted');
+        $("#container").show();
+    },
+    methods : {
+        createActionUrl : function(pid){
+            return '@Url.Action("Error", "Home")/?pageindex=' + pid;
+        }
+    },
+});
+
+$(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip({ container: 'body'
+      , template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><pre class="tooltip-inner large"></pre></div>'
+      });   
+})
+</script>
