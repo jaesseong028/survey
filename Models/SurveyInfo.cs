@@ -29,6 +29,7 @@ namespace UBSurvey.Models
         public override string _id { get; set; }
         public override string _channelID { get; set;}
         public override dynamic Survey { get; set;}
+        [BsonIgnore]
         public override IEnumerable<SurveyResult> _surveyResult { get; set;}
 
     }
@@ -44,7 +45,6 @@ namespace UBSurvey.Models
         public string _info { get; set; }   // SurveyID + channelID : Encrypt
 
         public dynamic Survey{ get; set; }
-
         public dynamic _surveyResult { get; set; }
     }
 }
