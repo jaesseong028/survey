@@ -63,6 +63,21 @@ namespace UBSurvey.Controllers
                 return NotFound();
         }
 
+        public IActionResult Error(int pageIndex = 1)
+        {
+            if (!SessionManager.IsLogin(_session))
+            {
+                return RedirectToAction("required", "login");
+            }
+            int totalCount;
+            var Data = _repository.ErrorDumpList(pageIndex, _globalVariable.Value.PageSize, out totalCount);
+            var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, totalCount);
+
+            Tuple<object, object> tuple = new Tuple<object, object>(Data, pager);
+
+            return View(tuple);
+        }
+
         public IActionResult List(int pageIndex = 1, string channelID = ""/* DateTime? startDate = null, DateTime? endDate = null, int approveStatus = 1*/)
         {
             if (!SessionManager.IsLogin(_session))
