@@ -42,6 +42,10 @@ namespace UBSurvey.Models
 
     public class UBSurveyEditInfo 
     {
+        public UBSurveyEditInfo ()
+        {
+            SurveyInfo = new SurveyInfo();
+        }
         public string UrlParameter { get; set; }
         public UBSurveyInfo Survey { get; set; } 
 

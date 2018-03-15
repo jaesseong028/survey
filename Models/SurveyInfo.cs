@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 
 namespace UBSurvey.Models
 {
+    
     public class SurveyInfo
     {
         public SurveyInfo()
@@ -20,6 +21,7 @@ namespace UBSurvey.Models
         public virtual string _id { get; set; }
         public virtual string _channelID { get; set;}
         public virtual dynamic Survey { get; set;}
+        [JsonIgnore]
         public virtual IEnumerable<SurveyResult> _surveyResult { get; set;}
     }
 
@@ -29,7 +31,6 @@ namespace UBSurvey.Models
         public override string _id { get; set; }
         public override string _channelID { get; set;}
         public override dynamic Survey { get; set;}
-        [BsonIgnore]
         public override IEnumerable<SurveyResult> _surveyResult { get; set;}
 
     }
