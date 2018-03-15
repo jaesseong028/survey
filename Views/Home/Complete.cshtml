@@ -3,20 +3,6 @@
 <html>
     <head>
     <script>
-        /*
-        history.pushState(null, null, location.href);
-        window.onpopstate = function(event) {
-            history.go(1);
-        };
-        */
-
-        $(document).keydown(function(e){   
-            if(e.target.nodeName != "INPUT" && e.target.nodeName != "TEXTAREA"){       
-                if(e.keyCode === 8){   
-                return false;
-                }
-            }
-        });
     
         window.history.forward(0);
 

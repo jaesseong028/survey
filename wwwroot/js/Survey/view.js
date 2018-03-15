@@ -855,8 +855,6 @@ function domReady (){
 
         var surveyId = document.getElementById('ubSurvey');
     
-
-        console.log(surveyInfo.strSurvey);
         
         var surveyJson = surveyInfo.strSurvey.survey == undefined ? surveyInfo.strSurvey : surveyInfo.strSurvey.survey;
 
