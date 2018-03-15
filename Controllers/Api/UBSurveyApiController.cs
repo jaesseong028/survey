@@ -11,6 +11,7 @@ using UBSurvey.Common;
 using UBSurvey.Lib;
 using UBSurvey.Models;
 using UBSurvey.Repository;
+using Newtonsoft.Json;
 
 namespace UBSurvey.Controllers.Api
 {
@@ -48,9 +49,23 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult Delete([FromBody]JObject data)
         {
-            var result = _repository.RemoveUBSurvey(data["id"].ToString());
-            
-            return Json(new {success = true, data = result});
+            UBSurveyInfo info = _repository.GetUBSurvey(data["id"].ToString());
+            if(info != null)
+            {
+                var result = _repository.RemoveUBSurvey(data["id"].ToString());
+                if (result)
+                {
+                    if(string.IsNullOrEmpty(info.SurveyID))
+                        return Json(new {success = true});    
+                    string siteName = HttpContext.Request.GetRequestDoamin();
+                    var r = Helpers.HttpPost($"{siteName}/api/survey/RemoveSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });
+                    var d = JsonConvert.DeserializeObject<dynamic>(r.Result);
+                    
+                    return Json(new {success = (bool)d["success"]});
+                }
+            }
+
+            return Json(new {success = false});
         }
 
         [HttpPost]
