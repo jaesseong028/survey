@@ -34,14 +34,22 @@
             </tr>
         </table>
         <hr>
-        <div>
-            <button class="btn btn-success" v-on:click="register" id="register" >{{surveyText}}</button>
-            <button class="btn btn-primary pull-right" v-on:click="save" >저장</button>
-            <button class="btn btn-danger pull-right" v-on:click="deletesurvey" v-if="ubSurveyID != ''">삭제</button>
+        <div class="row">
+            <div class="col-sm-10">
+                <button class="btn btn-success" v-on:click="register" id="register" >{{surveyText}}</button>
+                <button class="btn btn-info" v-on:click="preView" v-if="surveyJson != ''"  >미리보기</button>
+            </div>
+            <div class="col-sm-2 text-right">
+            <button class="btn btn-primary " v-on:click="save" >저장</button>
+            <button class="btn btn-danger " v-on:click="deletesurvey" v-if="ubSurveyID != ''">삭제</button>
+            </div>
+            
         </div>
-        
+        <form id="myform" name="myform" method="post" action="/edit/prev" target="popup_window">
+            <input type="hidden" id="surveyJson" name="survey" value="" v-model="surveyJson">
+        </form>
         <div>
-            <input type="hidden" id="surveyJson" value="" v-model="surveyJson">
+            
         </div>        
 </div>
 
@@ -199,6 +207,11 @@
                         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
                     }   
                 });
+            },
+            preView : function(){
+
+                 window.open("", "popup_window", "width=1000, height=900, scrollbars=no");                
+                $("#myform").submit();
             }
         }
     });
