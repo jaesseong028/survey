@@ -1,7 +1,7 @@
 
 .survey { font-family: 'Nanum Gothic';   }
-.survey .header { }
-.survey .header .title { font-size:3em; font-size: 35px;margin-left:7px;}
+
+.header .title { margin-bottom: 10px; font-size: 35px;margin-left:7px; }
 
 .barline { background-color: #32BEF9; width: 100%; height: 40px; }
 .page-set { background-color: #f5f9fb;  } /* #f5f9fb */
@@ -13,6 +13,8 @@
 .pheader .title { margin-bottom: 30px; font-weight: bold; font-size:20px; font-family: 'ExtraBole'; color:#222222}
 .pheader .description {font-size:14px; color:#666666; line-height: 21px}
 
+.cpage {float: right; font-size:20px; line-height:100%;}
+.tpage {float: right; font-size:20px; line-height:100%;}
 
 
 /* .btn-set { } #f5f9fb */
@@ -65,8 +67,7 @@
 .question .header .title { font-size: 16px; font-weight: bold; color: #222222}
 .question .header {font-weight: bold; padding-bottom: 5px;}
 .required { color: #FE0000;}
-.cpage {float: right; font-size:20px;}
-.tpage {float: right; font-size:20px;}
+
 
 /* .question .header .description { padding:4px;  font-size: 0.9em; margin-left: 10px; border:1px solid #C3C3C3;} */
 .question .header .description { font-size: 14px; margin-left: 10px; color:#14a5e6;}
