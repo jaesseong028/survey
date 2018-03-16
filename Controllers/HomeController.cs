@@ -150,6 +150,7 @@ namespace UBSurvey.Controllers
 
             string siteName = HttpContext.Request.GetRequestDoamin();
             UBSurveyEditInfo editInfo = new UBSurveyEditInfo();
+            
             UBSurveyInfo info = new UBSurveyInfo()
             {
                 StartDate = DateTime.Now,
@@ -177,6 +178,7 @@ namespace UBSurvey.Controllers
                 return NotFound("channel이 존재하지 않습니다.");
             
             editInfo.ChannelName = service.Desript;
+            editInfo.SurveyInfo._channelID = channelid;
             
             string returnUrl = $"{siteName}/Home/SurveyEditSave";
             NameValueCollection namedValues =  new NameValueCollection

@@ -30,7 +30,7 @@
                     <input type="text" style="width:auto" class="form-control" id="endDate" v-model="endDate">
                 </td>
                 <td class="info" >마감인원</td>
-                <td><input type="text" class="form-control " v-model="editinfo.Survey.LimitPersons" v-on:keyup="onlyNumber" id="limitperson" ></td>
+                <td><input type="text" class="form-control " v-model="editinfo.Survey.LimitPersons" v-on:keypress="onlyNumber(event)" id="limitperson" ></td>
             </tr>
         </table>
         <hr>
@@ -110,7 +110,7 @@
                 if(this.editinfo.Survey.StartDate > this.editinfo.Survey.EndDate )
                     return alert('날짜 형식이 올바르지 않습니다.');
 
-                if(this.editinfo.Survey.LimitPersons == '' )
+                if(this.editinfo.Survey.LimitPersons == '')
                     return alert('마감인원이 올바르지 않습니다.');
 
                 // 새 등록 일경우 아래 와 같이 set 하지 않으면 오류 난다....... 재성 임의로 여기다가 박았는데.. 바꿔줘
@@ -146,12 +146,18 @@
                     child.opener = self;
 
             },
-            onlyNumber : function(e){
-                this.editinfo.Survey.LimitPersons = this.editinfo.Survey.LimitPersons.replace(/[^0-9]/g,"");
+            onlyNumber : function(evt){
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
             },
             preView : function(){
-                 window.open("", "popup_window", "width=1000, height=900, scrollbars=no");
-                 $("#surveyJson").val( JSON.stringify(this.editinfo.SurveyInfo.Survey));
+                window.open("", "popup_window", "width=1000, height=900, scrollbars=no");
+                $("#surveyJson").val( JSON.stringify(this.editinfo.SurveyInfo.Survey));
                 $("#myform").submit();
             },
             formatDate : function(date){
