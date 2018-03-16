@@ -39,8 +39,8 @@
     <div style="margin-bottom:15px"><button class="btn btn-success" v-on:click="createSurvey">설문등록</button></div>
     <table class="table table-bordered table-hover text-center">
         <colgroup>
-            <col width="7%"/>
-            <col width="35%"/>
+            <col width="5%"/>
+            <col width="40%"/>
             <col width="20%"/>
             <col width="10%"/>
             <col width="7%"/>
@@ -53,7 +53,7 @@
                 <th>NO</th>
                 <th>설문제목</th>
                 <th>기간</th>
-                <th>참여/가능</th>
+                <th>참여/마감(인원)</th>
                 <th>상태</th>
                 <th>결과</th>
                 <th>URL복사</th>
@@ -146,9 +146,6 @@ var vue = new Vue({
             }else{
                 actionUrl += '/?' + params + '&pageindex=' + vue.pager.PageIndex;
             }
-
-            //console.log(actionUrl);
-
             location.href = actionUrl;
         },
         editActionUrl : function(_id, channelID){
@@ -159,10 +156,9 @@ var vue = new Vue({
             return '@Url.Action("List", "Home")/?' + params + '&pageindex=' + pid;
         },
         deletesurvey : function(_id){
-            if(!confirm('해당 설문을 삭제 하시겠습니까?')){
+            if (!confirm('해당 설문을 삭제 하시겠습니까?')){
                 return;
             }
-
             $.ajax({
                 type : 'POST',
                 url : '/api/UBSurvey/delete',
