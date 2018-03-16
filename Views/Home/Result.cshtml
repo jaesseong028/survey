@@ -63,13 +63,10 @@ var hotSettings = {
             return p;
         }, {});
 
-        if (Object.keys(contents).length < 10)
-        {
-           var countsExtended = Object.keys(contents).map(function(k) {return [k, contents[k]]; });
-           countsExtended.splice(0, 0, ['Task', '']);
-           var data = google.visualization.arrayToDataTable(countsExtended);
-           drawChart(data, title);
-        }
+        var countsExtended = Object.keys(contents).map(function(k) {return [k, contents[k]]; });
+        countsExtended.splice(0, 0, ['Task', '']);
+        var data = google.visualization.arrayToDataTable(countsExtended);
+        drawChart(data, title);
    }
 };
 
