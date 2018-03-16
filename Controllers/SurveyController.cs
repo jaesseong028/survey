@@ -32,10 +32,6 @@ namespace UBSurvey.Controllers
             string query = Helpers.AesDecrypt256(val, _globalVariable.Value.UserEncyptKey);
             var dic = Helpers.GetQueryStringToDictionary(query, "userToken", "SurveyID", "AuthDate","retUrl");
             bool isAuth = Validation.ConfirmAuthDate(dic["authdate"]);
-            // if(!isAuth)
-            // {
-            //     return NotFound("유효하지 않는 데이터 입니다.");
-            // }
 
             if(!(dic.ContainsKey("surveyid") && dic.ContainsKey("authdate") && dic.ContainsKey("returl")))
             {
@@ -44,7 +40,7 @@ namespace UBSurvey.Controllers
 
             var surveyInfo = _repository.GetSurvey(channelID, dic["surveyid"]);
 
-            if(surveyInfo == null){
+            if (surveyInfo == null){
                 return NotFound();
             }
             
