@@ -29,7 +29,6 @@ namespace UBSurvey
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddResponseCompression();
@@ -55,7 +54,6 @@ namespace UBSurvey
                 options.ConnectionString = Configuration.GetSection("Settings:ConnectionString").Value;
                 options.SurveyDatabase = Configuration.GetSection("Settings:SurveyDatabase").Value;
                 options.UbSurveyDatabase = Configuration.GetSection("Settings:UbSurveyDatabase").Value;
-                
             });
 
             services.Configure<GlobalVariable>(options =>
@@ -65,7 +63,6 @@ namespace UBSurvey
                 options.SurveyEncyptKey = Configuration.GetSection("Settings:SurveyEncyptKey").Value;
                 options.UserEncyptKey = Configuration.GetSection("Settings:UserEncyptKey").Value;
             });
-
 
             services.AddTransient<ISurveyRepository, SurveyRepository>();
             services.AddTransient<IUBSurveyRepository, UBSurveyRepository>();
@@ -83,20 +80,14 @@ namespace UBSurvey
             services.AddSession(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.Cookie.Name = "qdol";
+                options.Cookie.Name = "ucsp";
                 options.IdleTimeout = TimeSpan.FromHours(3);
             });
         }
 
-
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            
             app.UseResponseCompression();
-            
-            Console.WriteLine("ddd :" + env.IsDevelopment());
             app.UseExceptionHandler("/Home/Error");
             if (env.IsDevelopment())
             {
