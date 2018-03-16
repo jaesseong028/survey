@@ -164,6 +164,9 @@ namespace UBSurvey.Controllers
             if( ubsurveyid != null)
             {
                 info = _repository.GetUBSurvey(ubsurveyid);
+                if (info == null)
+                    return NotFound();
+
                 if(!string.IsNullOrEmpty(info.SurveyID))
                 {
                     var r = Helpers.HttpPost($"{siteName}/api/survey/GetSurvey",new { channelID = info.ChannelID, surveyID = info.SurveyID });

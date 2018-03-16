@@ -10,7 +10,6 @@ namespace UBSurvey.Common
 {
     public class Validation
     {
-
         public static bool ConfirmAuthDate(string authDate)
         {  
             if(!string.IsNullOrEmpty(authDate) && Helpers.IsDate(authDate,"yyyyMMddHHmmss"))
@@ -27,6 +26,27 @@ namespace UBSurvey.Common
             }
 
             return true;
+        }
+
+        public static bool SurveyCheck(dynamic survey)
+        {
+            try
+            {
+                var page = survey.pages;
+                foreach(var p in page)
+                {
+                    var pName = p.name;
+                    var elements = p.elements;
+                    foreach(var e in elements)
+                    {
+                        var type = e.type;
+                    }
+                }
+                return true;
+            }catch{
+                return false;
+            }
+            
         }
 
         public static bool ConfirmPeriod(DateTime c, DateTime s, DateTime e)
