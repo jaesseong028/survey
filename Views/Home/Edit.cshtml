@@ -65,7 +65,10 @@
         data : {
             editinfo : @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model))
         },
-
+        created : function() {
+            if(!this.editinfo.Survey._id)            
+                this.editinfo.Survey.LimitPersons = 9999;
+        },
         computed : {
             startDate :{
                 get : function() {
@@ -109,12 +112,9 @@
                 
                 if(this.editinfo.Survey.StartDate > this.editinfo.Survey.EndDate )
                     return alert('날짜 형식이 올바르지 않습니다.');
-
-                if(this.editinfo.Survey.LimitPersons == '')
+                console.log(0 === '' );
+                if(this.editinfo.Survey.LimitPersons === 0)
                     return alert('마감인원이 올바르지 않습니다.');
-
-                // 새 등록 일경우 아래 와 같이 set 하지 않으면 오류 난다....... 재성 임의로 여기다가 박았는데.. 바꿔줘
-                this.editinfo.SurveyInfo._channelID = this.editinfo.Survey.ChannelID;
                 
                 $.ajax({
                     type : 'post',
