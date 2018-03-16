@@ -19,7 +19,8 @@ namespace UBSurvey.Repository
     public interface ISurveyRepository
     {
         bool UpsertSurvey(SurveyInfoDTO contact);
-        SurveyInfoDTO GetSurvey(string channelID, string surveyID);
+        SurveyInfo GetSurvey(string channelID, string surveyID);
+        IEnumerable<SurveyResultCountInfo> GetSurveyResultsCounts(string channelID, IEnumerable<string> surveyIDs);
         bool RemoveSurvey(string channelID, string surveyID);
         bool InsertSurveyResult (string channelID, string surveyID, SurveyResult result);
         int GetSurveyResultCount (string channelID, string surveyID);
@@ -61,7 +62,7 @@ namespace UBSurvey.Repository
             return true;
         }
 
-        public SurveyInfoDTO GetSurvey(string channelID, string surveyID)
+        public SurveyInfo GetSurvey(string channelID, string surveyID)
         {
             ObjectId o;
             if (!ObjectId.TryParse(surveyID, out o))
@@ -77,8 +78,40 @@ namespace UBSurvey.Repository
             if (data == null)
                 return null;
                 
-            return BsonSerializer.Deserialize<SurveyInfoDTO>(data);
+            return BsonSerializer.Deserialize<SurveyInfo>(data);
         }
+
+        public IEnumerable<SurveyResultCountInfo> GetSurveyResultsCounts(string channelID, IEnumerable<string> surveyIDs)
+        {
+            List<ObjectId> objectIds = new List<ObjectId>();
+            foreach(var surveyID in surveyIDs)
+            {
+                ObjectId o;
+                if (!ObjectId.TryParse(surveyID, out o))
+                {
+                    return new List<SurveyResultCountInfo>();
+                }
+                objectIds.Add(o);
+            }
+
+
+            var filter = Builders<BsonDocument>.Filter.In("_id", objectIds);
+            filter &= Builders<BsonDocument>.Filter.Eq("_channelID", channelID);
+
+
+            var ddd =filter.ToString();
+
+            string where = filter.RenderToBsonDocument();
+            BsonDocument query = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(where);
+            var data = _context.Surveys.Find(query).Project("{_surveyResult:1}").ToEnumerable();
+
+            var surveyData = from d in data
+                          select BsonSerializer.Deserialize<SurveyInfo>(d);
+
+            return surveyData.Select(q=> new SurveyResultCountInfo{ _id = q._id, Counts = q._surveyResult.Count() });
+        }
+
+       
 
         public bool RemoveSurvey(string channelID, string surveyID)
         {

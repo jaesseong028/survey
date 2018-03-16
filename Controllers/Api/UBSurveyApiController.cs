@@ -37,13 +37,13 @@ namespace UBSurvey.Controllers.Api
             long totalCount = 0;
             
             IEnumerable<UBSurveyInfo> surveys = _repository.List(channelID, pageIndex, _globalVariable.Value.PageSize, title, startDate, endDate, approveStatus, out totalCount);
-            IEnumerable<UBSurveyListInfo> wrapperSurveys =  Enumerable.Empty<UBSurveyListInfo>();
-            if(surveys.FirstOrDefault() != null)
-            {
-                wrapperSurveys = Mapper.Map<IEnumerable<UBSurveyInfo>, IEnumerable<UBSurveyListInfo>>(surveys);
-            }
+            // IEnumerable<UBSurveyListInfo> wrapperSurveys =  Enumerable.Empty<UBSurveyListInfo>();
+            // if(surveys.FirstOrDefault() != null)
+            // {
+            //     wrapperSurveys = Mapper.Map<IEnumerable<UBSurveyInfo>, IEnumerable<UBSurveyListInfo>>(surveys);
+            // }
 
-            return Json(new {success = true, data = wrapperSurveys, totalCount = totalCount });
+            return Json(new {success = true, data = surveys, totalCount = totalCount });
         } 
 
         [HttpPost]

@@ -55,6 +55,23 @@ namespace UBSurvey.Controllers.Api
         } 
 
         [HttpPost]
+        public JsonResult GetSurveyResultsCounts([FromBody]JObject obj)
+        {
+            if(!obj.paramsValidation( "channelID", "surveyIDs"))
+                return Json(new { success = false, message = "파라미터 오류입니다." });
+
+            
+            var surveyIDs = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<string>>(obj["surveyIDs"].ToString());
+            
+            var data = _repository.GetSurveyResultsCounts((string)obj["channelID"], surveyIDs);
+            if (data == null)
+                return Json(new { data = data, success = false, message = "데이터를 조회 할 수 없습니다." });
+
+
+            return Json(new { data = data, success = true});
+        } 
+
+        [HttpPost]
         public JsonResult RemoveSurvey([FromBody]JObject obj)
         {
             if(!obj.paramsValidation("channelID", "surveyID"))

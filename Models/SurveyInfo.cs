@@ -41,6 +41,14 @@ namespace UBSurvey.Models
         public dynamic Values { get; set;}
     }
 
+
+    
+    public class SurveyResultCountInfo
+    {
+        public string _id { get; set; }
+        public int Counts { get; set;}
+    }
+
     public class V_ProgressInfo
     {
         public string _info { get; set; }   // SurveyID + channelID : Encrypt

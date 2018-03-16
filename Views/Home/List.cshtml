@@ -37,22 +37,24 @@
         </tr>
     </table>
     <div style="margin-bottom:15px"><button class="btn btn-success" v-on:click="createSurvey">설문등록</button></div>
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover text-center">
         <colgroup>
-            <col width="10%"/>
-            <col width="30%"/>
+            <col width="7%"/>
+            <col width="35%"/>
             <col width="20%"/>
             <col width="10%"/>
-            <col width="10%"/>
-            <col width="10%"/>
-            <col width="15%"/>
+            <col width="7%"/>
+            <col width="7%"/>
+            <col width="7%"/>
+            <col width="7%"/>
         </colgroup>
         <thead>
             <tr class="info">
                 <th>NO</th>
                 <th>설문제목</th>
                 <th>기간</th>
-                <th>참여가능인원</th>
+                <th>참여/가능</th>
+                <th>상태</th>
                 <th>결과</th>
                 <th>URL복사</th>
                 <th>삭제</th>
@@ -60,9 +62,10 @@
         </thead>
         <tr v-for="(s, index) in surveys">
             <td class="text-right">{{((pager.PageIndex - 1) * 10) + index + 1}}</td>
-            <td><a :href="editActionUrl(s._id, s.channelID)">{{s.title}}</a></td>
-            <td>{{s.startDateAndEndDate}}</td>
-            <td>{{s.limitPersonsStr}}</td>
+            <td class="text-left"><a :href="editActionUrl(s._id, s.ChannelID)">{{s.Title}}</a></td>
+            <td>{{s.StartDateAndEndDate}}</td>
+            <td>{{s.LimitPersonsStr}}</td>
+            <td>{{s.CurrentStatusStr}}</td>
             <td class="text-center"><a v-on:click="resultPageRedirect(s._id)" href="#" >결과보기</a> </td>
             <td class="text-center"><button class="btn btn-info" v-on:click="copy_to_clipboard(s._id)" >복사</button> </td>
             <td class="text-center"><button class="btn btn-danger" v-on:click="deletesurvey(s._id)" >삭제</button> </td>

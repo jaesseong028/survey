@@ -16,6 +16,7 @@ using UBSurvey.Models;
 using UBSurvey.Repository;
 using SSOCS;
 using System.Dynamic;
+using AutoMapper;
 
 namespace UBSurvey.Controllers
 {
@@ -102,6 +103,28 @@ namespace UBSurvey.Controllers
 
             var r = Helpers.HttpGet(url);
             dynamic d = JsonConvert.DeserializeObject(r.Result);
+            IEnumerable<UBSurveyInfo> data = JsonConvert.DeserializeObject<IEnumerable<UBSurveyInfo>>(d["data"].ToString());
+            var SurveyIDs = data.Where(q=> q.SurveyID != null).Select(s=> s.SurveyID);
+            var r1 = Helpers.HttpPost($"{siteName}/api/survey/GetSurveyResultsCounts",new { channelID = channelID, surveyIDs = SurveyIDs});
+
+            IEnumerable<UBSurveyListInfo> wrUbSurveys =  Enumerable.Empty<UBSurveyListInfo>();
+            if(data.FirstOrDefault() != null)
+            {
+                wrUbSurveys = Mapper.Map<IEnumerable<UBSurveyInfo>, IEnumerable<UBSurveyListInfo>>(data);
+            }
+
+
+            dynamic jData = JsonConvert.DeserializeObject(r1.Result);
+            IEnumerable<SurveyResultCountInfo> countsInfo = JsonConvert.DeserializeObject<IEnumerable<SurveyResultCountInfo>>(jData["data"].ToString());
+
+            foreach(var w in wrUbSurveys)
+            {
+                var s = countsInfo.FirstOrDefault(q=> q._id == w.SurveyID);
+                if(s != null)
+                    w.ResultCount = s.Counts;
+            }
+
+
             if(!(bool)d["success"])
                 return NotFound();
 
@@ -110,7 +133,7 @@ namespace UBSurvey.Controllers
             var searchData = Helpers.GetQueryStringToDictionary(uri.Query, "channelID", "title", "startDate", "endDate", "approveStatus");
             
             var pager = Pager.GetPageModel(pageIndex, _globalVariable.Value.PageSize, (int)d["totalCount"]);
-            Tuple<object, object, object, object, object> tuple = new Tuple<object, object, object, object, object>(d["data"], pager, searchData, services, siteName);
+            Tuple<object, object, object, object, object> tuple = new Tuple<object, object, object, object, object>(wrUbSurveys, pager, searchData, services, siteName);
             return View(tuple);
         }
 

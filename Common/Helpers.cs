@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -269,6 +270,13 @@ namespace UBSurvey.Common
                 }
             }
             return true;
+        }
+
+        public static string RenderToBsonDocument<T>(this FilterDefinition<T> filter)
+        {
+            var serializerRegistry = MongoDB.Bson.Serialization.BsonSerializer.SerializerRegistry;
+            var documentSerializer = serializerRegistry.GetSerializer<T>();
+            return filter.Render(documentSerializer, serializerRegistry).ToJson();
         }
     }
 }

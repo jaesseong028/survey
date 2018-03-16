@@ -35,9 +35,17 @@ namespace UBSurvey.Models
         public override DateTime StartDate { get; set;}
         [JsonIgnore]
         public override DateTime EndDate { get; set;}
+        public int ResultCount { get; set;}
         public string ApproveStatusStr { get { return ((UbSurveyApprove)((int)ApproveStatus)).getEnumDescription(); }}
         public string StartDateAndEndDate { get { return $"{StartDate.ToString("yyyy-MM-dd")}~{EndDate.ToString("yyyy-MM-dd")}"; }}
-        public string LimitPersonsStr { get { return $"{LimitPersons} 명"; }}
+        public string LimitPersonsStr { get { return $"{ResultCount}/{LimitPersons}"; }}
+        public string CurrentStatusStr 
+        {  
+            get     
+            { 
+                return (LimitPersons > ResultCount && DateTime.Now > StartDate && DateTime.Now < EndDate.AddDays(1)) ? "진행중" :  "마감";
+            } 
+        }
     }
 
     public class UBSurveyEditInfo 
