@@ -82,8 +82,9 @@ namespace UBSurvey
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
+                options.Cookie.HttpOnly = true;
                 options.Cookie.Name = "qdol";
-                options.IdleTimeout = TimeSpan.FromHours(60 * 3);
+                options.IdleTimeout = TimeSpan.FromHours(3);
             });
         }
 
