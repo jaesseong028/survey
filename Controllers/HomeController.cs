@@ -49,7 +49,10 @@ namespace UBSurvey.Controllers
                 return NotFound();
 
             if (string.IsNullOrEmpty(info.SurveyID))
-                return NotFound();
+            {
+                Tuple<dynamic, string> tuple = new Tuple<dynamic, string>(new object(), info.Title);
+                return View(tuple);
+            }
                 
 
             var r = Helpers.HttpPost($"{siteName}/api/survey/GetSurveyResult",new { channelID = info.ChannelID, surveyID = info.SurveyID });
