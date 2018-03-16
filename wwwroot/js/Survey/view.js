@@ -454,7 +454,7 @@ function createMultiTextBox( elItems, txtItems )
                 if('is_required' in txtItems.items[p] && txtItems.items[p].is_required == true)
                 {
                     cdom.getcss(elItem.element,'lbl_' + txtItems.type, 0)
-                            .append('strong')
+                            .insert('strong')
                             .text('*')
                             .addcss('required');
                 }
@@ -768,7 +768,6 @@ function makeResultJson( pageSetNode ){
                     if(checkedOther.length > 0)
                     {
                         var checkOther = {};
-                        console.log(checkedOther[0].value);
                         
                         var otherText = itemNodes.getElementsByClassName('txt_checkbox_other')[0];
                         checkOther[checkedOther[0].value == 'undefined' ? '기타' : checkedOther[0].value] = otherText.value;
@@ -802,7 +801,7 @@ function makeResultJson( pageSetNode ){
                         for(var i = 0; textItem.length > i; i ++)
                         {
                             var value = {};
-                            value[textItem[i].previousSibling.outerText] = textItem[i].value;
+                            value[textItem[i].previousSibling.previousSibling.textContent] = textItem[i].value;
                             textValues.push(value);
                         }
                         
