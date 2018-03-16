@@ -90,9 +90,15 @@ namespace UBSurvey.Controllers.Api
                 string siteName = HttpContext.Request.GetRequestDoamin();
                 var r = Helpers.HttpPost($"{siteName}/api/survey/save", data.SurveyInfo);
                 var d = JsonConvert.DeserializeObject<dynamic>(r.Result);
-                if( (bool)d["success"] && d["data"] != null )
-                    data.Survey.SurveyID = d["data"]["_id"].ToString();
-
+                if ((bool)d["success"])
+                {
+                    if (d["data"] != null)
+                        data.Survey.SurveyID = d["data"]["_id"].ToString();
+                }
+                else
+                {
+                    return Json(new {success = false, message = d["message"].ToString()});
+                }
             }
 
             bool isSuccess = _repository.UpSertUBSurvey(data.Survey);
