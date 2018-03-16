@@ -36,7 +36,7 @@ namespace UBSurvey.Controllers.Api
         [HttpPost]
         public JsonResult Save([FromBody]SurveyInfo survey)
         {
-            if (Validation.SurveyCheck(survey.Survey))
+            if (!Validation.SurveyCheck(survey.Survey))
                 return Json(new { success = false, message = "잘못된 설문 데이터 입니다." });
             bool isSuccess =_repository.UpsertSurvey(survey);
             return Json(new { success = isSuccess, data = survey });
