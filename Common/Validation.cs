@@ -40,6 +40,8 @@ namespace UBSurvey.Common
                     foreach(var e in elements)
                     {
                         var type = e.type;
+                        if (type == null)
+                            return false;
                     }
                 }
                 return true;
