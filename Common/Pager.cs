@@ -8,6 +8,7 @@ namespace UBSurvey.Common
     public class PagerModel
     {
         public int PageIndex  { get; set;}
+        public int PageSize { get; set;}
         public int? First { get; set;}
         public int? Prev { get; set;}
         public IEnumerable<int> Pages { get; set;}
@@ -43,6 +44,7 @@ namespace UBSurvey.Common
             }
 
             p.PageIndex = current;
+            p.PageSize = pageSize;
 
             int count = 10;
             if (currentFirstPage + 10 >= lastPage){

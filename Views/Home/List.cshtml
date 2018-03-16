@@ -61,7 +61,7 @@
             </tr>
         </thead>
         <tr v-for="(s, index) in surveys">
-            <td class="text-right">{{((pager.PageIndex - 1) * 10) + index + 1}}</td>
+            <td class="text-right">{{((pager.PageIndex - 1) * pager.PageSize) + index + 1}}</td>
             <td class="text-left title-nowarp"><a :href="editActionUrl(s._id, s.ChannelID)">{{s.Title}}</a></td>
             <td>{{s.StartDateAndEndDate}}</td>
             <td>{{s.LimitPersonsStr}}</td>

@@ -30,7 +30,7 @@
             </tr>
         </thead>
         <tr v-for="(e, index) in errors">
-            <td class="text-right">{{((pager.PageIndex - 1) * 10) + index + 1}}</td>
+            <td class="text-right">{{((pager.PageIndex - 1) * pager.PageSize) + index + 1}}</td>
             <td>{{e.URL}}</td>
             <td>{{e.Message}}</td>
             <td data-toggle="tooltip" data-placement="top" :title="e.StackTrace" class="nowrap-stacktrace">{{e.StackTrace}}</td>
