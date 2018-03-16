@@ -800,8 +800,9 @@ function makeResultJson( pageSetNode ){
                         var textValues = [];
                         for(var i = 0; textItem.length > i; i ++)
                         {
+                            var pNode = textItem[i].parentNode;
                             var value = {};
-                            value[textItem[i].previousSibling.previousSibling.textContent] = textItem[i].value;
+                            value[pNode.getElementsByTagName('label')[0].textContent] = textItem[i].value;
                             textValues.push(value);
                         }
                         
