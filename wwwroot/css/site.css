@@ -28,3 +28,5 @@
         display: none;
     }
 }
+
+.title-nowarp{max-width:445px;overflow: hidden;white-space: nowrap;}

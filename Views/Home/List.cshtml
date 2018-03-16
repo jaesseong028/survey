@@ -53,7 +53,7 @@
                 <th>NO</th>
                 <th>설문제목</th>
                 <th>기간</th>
-                <th>참여/마감(인원)</th>
+                <th>참여/마감</th>
                 <th>상태</th>
                 <th>결과</th>
                 <th>URL복사</th>
@@ -62,7 +62,7 @@
         </thead>
         <tr v-for="(s, index) in surveys">
             <td class="text-right">{{((pager.PageIndex - 1) * 10) + index + 1}}</td>
-            <td class="text-left"><a :href="editActionUrl(s._id, s.ChannelID)">{{s.Title}}</a></td>
+            <td class="text-left title-nowarp"><a :href="editActionUrl(s._id, s.ChannelID)">{{s.Title}}</a></td>
             <td>{{s.StartDateAndEndDate}}</td>
             <td>{{s.LimitPersonsStr}}</td>
             <td>{{s.CurrentStatusStr}}</td>
