@@ -21,22 +21,6 @@ namespace UBSurvey
         {
             var host = BuildWebHost(args);
             host.Run();
-
-
-            // bool isService = true;
-            // if (Debugger.IsAttached || args.Contains("--console"))
-            // {
-            //     isService = false;
-            // }
-            
-            // if (isService)
-            // {
-            //     host.RunAsService();
-            // }
-            // else
-            // {
-            //     host.Run();
-            // }
         }
 
 
@@ -59,7 +43,6 @@ namespace UBSurvey
                 config.SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
         }
     }
 }
